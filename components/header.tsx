@@ -12,6 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import Link from 'next/link'
+
+
 
 export function Header() {
   return (
@@ -53,7 +56,9 @@ export function Header() {
             <DropdownMenuItem>Perfil</DropdownMenuItem>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Sair</DropdownMenuItem>
+            <DropdownMenuItem><Link href="/login">
+      Sair
+    </Link></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
