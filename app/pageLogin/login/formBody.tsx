@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation'
 import { useForm } from "react-hook-form";
 
 export default function FormBody() {
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -12,6 +15,7 @@ export default function FormBody() {
 
   const onSubmit = (data: any) => {
     console.log(data);
+    router.push('/pageInterna')
   };
 
   return (
@@ -71,9 +75,9 @@ export default function FormBody() {
       </div>
 
       <div className="justify-self-center text-sm text-blue-600/100 dark:text-sky-400/100">
-        <Link href="/registerLogin">criar-conta</Link>
+        <Link href="/pageLogin/registerLogin">Criar Conta</Link>
       </div>
-      
+
     </div>
   );
 }

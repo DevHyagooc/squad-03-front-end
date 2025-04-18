@@ -40,12 +40,6 @@ export function Sidebar() {
       active: pathname === "/postos-servico",
     },
     {
-      label: "Recaptulações",
-      icon: FileSignature,
-      href: "/recaptulacoes",
-      active: pathname === "/recaptulacoes",
-    },
-    {
       label: "Relatórios",
       icon: BarChart,
       href: "/relatorios",

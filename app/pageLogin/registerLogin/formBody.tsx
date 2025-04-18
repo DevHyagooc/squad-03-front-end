@@ -109,7 +109,7 @@ export default function FormBody() {
       </div>
 
       <div className="justify-self-center text-sm text-blue-600/100 dark:text-sky-400/100">
-        <Link href="/login">login</Link>
+        <Link href="/pageLogin/login">login</Link>
       </div>
     </div>
   );
