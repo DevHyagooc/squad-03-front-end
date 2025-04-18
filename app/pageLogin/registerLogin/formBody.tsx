@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import FormHeader from "./formHeader";
 
 export default function FormBody() {
   const {
@@ -16,6 +17,10 @@ export default function FormBody() {
 
   return (
     <div>
+
+      <div className="justify-items-center pb-8 ">
+              <FormHeader />
+            </div>
 
       <div className="pb-4">
         <label>Nome de usuário</label>
@@ -33,7 +38,6 @@ export default function FormBody() {
             <p className="error-message">Nome é obrigatório</p>
           )}
         </div>
-
       </div>
 
       <div className="pb-4">
@@ -52,7 +56,6 @@ export default function FormBody() {
             <p className="error-message">Email é obrigatório</p>
           )}
         </div>
-
       </div>
 
       <div className="pb-4">
@@ -71,12 +74,11 @@ export default function FormBody() {
             <p className="error-message">CPF é obrigatório</p>
           )}
         </div>
-
       </div>
 
       <div className="pb-5">
         <label>Senha</label>
- 
+
         <div className=" shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="password"
@@ -95,27 +97,21 @@ export default function FormBody() {
             <p className="error-message">Senha é obrigatoria</p>
           )}
         </div>
-
       </div>
 
       <div className="justify-self-center pb-2 ">
         <button
-        className=" font-serif bg-stone-700 opacity-100 rounded-md  pt-2 pb-2 pl-4 pr-4 shadow-lg text-sm text-white"
+          className=" font-serif bg-stone-700 opacity-100 rounded-md  pt-2 pb-2 pl-4 pr-4 shadow-lg text-sm text-white "
           onClick={() => {
             handleSubmit(onSubmit)();
           }}
         >
-          Criar
+          Salvar
         </button>
       </div>
 
-<<<<<<< HEAD:app/registerLogin/formBody.tsx
       <div className="justify-self-center text-shadow-lg text-sm text-stone-600">
-        <Link href="/login">Login</Link>
-=======
-      <div className="justify-self-center text-sm text-blue-600/100 dark:text-sky-400/100">
         <Link href="/pageLogin/login">login</Link>
->>>>>>> 84c75c1cbc7ae1849e180badb66226758544f42a:app/pageLogin/registerLogin/formBody.tsx
       </div>
     </div>
   );
