@@ -12,15 +12,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <title>Sistema de Gerenciamento de Contratos</title>
+        <title>Getinfo</title>
         <meta name="description" content="Sistema de Gerenciamento de Contratos" />
+        <link rel="icon" href="images/favicon.ico" sizes="16x16" />
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="flex min-h-screen flex-col">
-            <Header />
             <div className="flex flex-1">
-              <Sidebar />
               <main className="flex-1">{children}</main>
             </div>
           </div>
@@ -35,5 +34,5 @@ export default function RootLayout({
 import './globals.css'
 
 export const metadata = {
-      generator: 'v0.dev'
-    };
+  generator: 'v0.dev'
+};
