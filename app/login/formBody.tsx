@@ -20,7 +20,7 @@ export default function FormBody() {
       <div className="pb-4">
         <label>Email</label>
 
-        <div className="border-2 border-stone-500 rounded-md">
+        <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="email"
             className={errors?.email && "input-error"}
@@ -39,7 +39,7 @@ export default function FormBody() {
       <div className="pb-5">
         <label>Senha</label>
 
-        <div className="border-2 border-stone-500 rounded-md">
+        <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="password"
             {...register("senha", { required: true, minLength: 7 })}
@@ -60,18 +60,19 @@ export default function FormBody() {
 
       </div>
 
-      <div className="justify-self-center pb-2 text-sm text-blue-600/100 dark:text-sky-400/100">
+      <div className="justify-self-center pb-2">
         <button
+        className=" shadow-lg bg-stone-700 opacity-100 rounded-md  pt-2 pb-2 pl-4 pr-4 text-sm text-white"
           onClick={() => {
             handleSubmit(onSubmit)();
           }}
         >
-          logar
+          Logar
         </button>
       </div>
 
-      <div className="justify-self-center text-sm text-blue-600/100 dark:text-sky-400/100">
-        <Link href="/registerLogin">criar-conta</Link>
+      <div className="text-shadow-lg justify-self-center text-sm font-serif text-stone-600">
+        <Link href="/registerLogin">Criar Conta</Link>
       </div>
       
     </div>
