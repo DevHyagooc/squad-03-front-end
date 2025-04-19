@@ -7,7 +7,7 @@ export default function FormHeader() {
       </div>
 
       <div>
-        <h1>Logo</h1>
+        <h1>icone</h1>
       </div>
 
     </div>

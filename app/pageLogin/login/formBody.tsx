@@ -31,9 +31,11 @@ export default function FormBody() {
         <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="email"
-            className={errors?.email && "input-error"}
+            className="w-full"
             {...register("email", { required: true })}
+            aria-invalid={errors.email ? "true" : "false"}
           />
+          
         </div>
 
         <div className="text-sm text-red-600/75 dark:text-sky-400/75 pt-1">
@@ -48,6 +50,7 @@ export default function FormBody() {
 
         <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
+          className="w-full"
             type="password"
             {...register("senha", { required: true, minLength: 7 })}
           />

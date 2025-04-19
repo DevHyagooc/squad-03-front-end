@@ -63,7 +63,7 @@ export default function FormBody() {
 
         <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
-            type="text"
+            type="number"
             className={errors?.cpf && "input-error"}
             {...register("cpf", { required: true })}
           />
