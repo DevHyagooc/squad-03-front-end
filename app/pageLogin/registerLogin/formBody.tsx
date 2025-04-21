@@ -111,7 +111,7 @@ export default function FormBody() {
       </div>
 
       <div className="justify-self-center text-shadow-lg text-sm text-stone-600">
-        <Link href="/pageLogin/login">login</Link>
+        <Link href="/pageLogin/login">Voltar</Link>
       </div>
     </div>
   );
