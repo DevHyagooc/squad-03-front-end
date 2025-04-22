@@ -20,86 +20,76 @@ export default function FormBody() {
   };
 
   return (
-    <div>
-      <div className="justify-items-center pb-8">
+    <div className="w-full px-12">
+      <div className="pb-8">
         <FormHeader />
       </div>
 
-      <div className="pb-4 w-full">
-        <label>Email</label>
+      <div className="pb-6 w-full">
+        <label className="text-[13px]" >Usuário</label>
+        <input
+          type="email"
+          className="w-full border-2 border-stone-500 rounded-md h-10 text-[15px] pl-2"
+          {...register("email", { required: true })}
+          aria-invalid={errors.email ? "true" : "false"}
+          placeholder="Digite o seu email..."
+        />
 
-        <div className="shadow-lg border-2 border-stone-500 rounded-md">
-          <input
-            type="email"
-            className="w-full"
-            {...register("email", { required: true })}
-            aria-invalid={errors.email ? "true" : "false"}
-          />
-          
-        </div>
-
-        <div className="text-sm text-red-600/75 dark:text-sky-400/75 pt-1">
+        <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
           {errors?.email?.type === "required" && (
-            <p className="error-message">Email é obrigatório</p>
+            <p className="error-message">Usuário é obrigatório</p>
           )}
         </div>
       </div>
 
-      <div className="pb-5">
-        <label>Senha</label>
-
-        <div className="shadow-lg border-2 border-stone-500 rounded-md">
-          <input
-          className="w-full"
-            type="password"
-            {...register("senha", { required: true, minLength: 7 })}
-          />
-        </div>
-
-        <div className="text-sm text-red-600/75 dark:text-sky-400/75 pt-1">
+      <div className="pb-6">
+        <label className="text-[13px]">Senha</label>
+        <input
+          className="w-full border-2 border-stone-500 rounded-md h-10 text-[15px] pl-2"
+          type="password"
+          {...register("senha", { required: true, minLength: 7 })}
+          placeholder="*******"
+        />
+        <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
           {errors?.senha?.type === "minLength" && (
             <p className="error-message">No mínimo 7 caracteres</p>
           )}
         </div>
 
-        <div className="text-sm text-red-600/75 dark:text-sky-400/75 pt-1">
+        <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
           {errors?.senha?.type === "required" && (
             <p className="error-message">Senha é obrigatoria</p>
           )}
         </div>
       </div>
 
-      <div className="justify-self-center text-shadow-lg justify-self-center text-sm font-serif text-stone-800 ">
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <label>
-                  <input type="checkbox" /> Lembrar senha
-                </label>
-              </td>
+      <div className="flex items-center justify-between px-4 text-shadow-lg text-sm text-stone-800">
+        <label className="flex items-center">
+          <input type="checkbox" className="mr-2" />
+          Lembrar senha
+        </label>
 
-              <td className="text-shadow-lg justify-self-center text-sm font-serif text-stone-600 pl-4">
-                <Link href="/pageLogin/recoverLogin">Esqueceu a senha?</Link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <Link
+          href="/pageLogin/recoverLogin"
+          className="text-cyan-500 ml-4 hover:underline"
+        >
+          Esqueceu a senha?
+        </Link>
       </div>
 
-      <div >
-          <button
-          className=" justify-self-center shadow-lg bg-stone-700 opacity-100 rounded-xl w-full mt-4 mb-2 pt-2 pb-2 pl-4 pr-4 text-sm text-white"
-            onClick={() => {
-              handleSubmit(onSubmit)();
-            }}
-          >
-            Entrar
-          </button>
-        </div>
 
-      <div className="text-shadow-lg justify-self-center text-sm font-serif text-stone-600">
-        <Link href="/pageLogin/registerLogin">Criar conta</Link>
+      <div >
+        <button
+          className=" justify-self-center shadow-lg bg-stone-700 opacity-100 rounded-xl w-full mt-4 mb-2 pt-2 pb-2 pl-4 pr-4 text-sm text-white"
+          onClick={() => {
+            handleSubmit(onSubmit)();
+          }}
+        >
+          Entrar
+        </button>
+      </div>
+
+      <div className="text-shadow-lg justify-self-center text-sm text-stone-600">
       </div>
     </div>
   );

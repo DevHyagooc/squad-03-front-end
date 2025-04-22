@@ -1,13 +1,13 @@
 export default function FormHeader() {
   return (
-    <div className="justify-items-center">
-
-      <div className="font-bold text-cyan-300 text-shadow-lg dark:text-sky-400/75 text-2xl">
-        <h1>LOGIN</h1>
-      </div>
+    <div className="justify-items-start">
 
       <div>
-        <h1>icone</h1>
+        <img src="/images/favicon.ico" alt="Logo GetInfo" className="w-10 pb-4" />
+      </div>
+
+      <div className="font-medium text-[24px]">
+        <h1>Faça o login</h1>
       </div>
 
     </div>
