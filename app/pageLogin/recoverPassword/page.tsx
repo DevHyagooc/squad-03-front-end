@@ -2,7 +2,7 @@ import FormBody from "./formBody";
 
 export default function RecoverPassword() {
   return (
-    <table className="font-serif h-full w-full">
+    <table className="h-full w-full">
       <tbody>
         <tr>
           <td className="bg-stone-200 justify-items-center shadow-md shadow-stone-500 w-80 ">

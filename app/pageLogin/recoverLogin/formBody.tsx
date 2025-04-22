@@ -35,7 +35,7 @@ export default function FormBody() {
             {...register("email", { required: true })}
             aria-invalid={errors.email ? "true" : "false"}
           />
-          
+
         </div>
 
         <div className="text-sm text-red-600/75 dark:text-sky-400/75 pt-1">
@@ -46,17 +46,17 @@ export default function FormBody() {
       </div>
 
       <div >
-          <button
+        <button
           className=" justify-self-center shadow-lg bg-stone-700 opacity-100 rounded-xl w-full mt-4 mb-2 pt-2 pb-2 pl-4 pr-4 text-sm text-white"
-            onClick={() => {
-              handleSubmit(onSubmit)();
-            }}
-          >
-            Enviar
-          </button>
-        </div>
+          onClick={() => {
+            handleSubmit(onSubmit)();
+          }}
+        >
+          Enviar
+        </button>
+      </div>
 
-      <div className="text-shadow-lg justify-self-center text-sm font-serif text-stone-600">
+      <div className="text-shadow-lg justify-self-center text-sm text-stone-600">
         <Link href="/pageLogin/login">Voltar</Link>
       </div>
     </div>

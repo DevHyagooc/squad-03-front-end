@@ -19,8 +19,8 @@ export default function FormBody() {
     <div>
 
       <div className="justify-items-center pb-8 ">
-              <FormHeader />
-            </div>
+        <FormHeader />
+      </div>
 
       <div className="pb-4">
         <label>Nome de usuário</label>
@@ -101,7 +101,7 @@ export default function FormBody() {
 
       <div className="justify-self-center pb-2 ">
         <button
-          className=" font-serif bg-stone-700 opacity-100 rounded-md  pt-2 pb-2 pl-4 pr-4 shadow-lg text-sm text-white "
+          className="bg-stone-700 opacity-100 rounded-md  pt-2 pb-2 pl-4 pr-4 shadow-lg text-sm text-white "
           onClick={() => {
             handleSubmit(onSubmit)();
           }}

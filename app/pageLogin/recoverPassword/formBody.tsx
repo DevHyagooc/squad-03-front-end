@@ -90,7 +90,7 @@ export default function FormBody() {
         </button>
       </div>
 
-      <div className="text-shadow-lg justify-self-center text-sm font-serif text-stone-600">
+      <div className="text-shadow-lg justify-self-center text-sm text-stone-600">
         <Link href="/pageLogin/login">Voltar</Link>
       </div>
     </div>
