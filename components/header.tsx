@@ -55,11 +55,11 @@ export function Header() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Perfil</DropdownMenuItem>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/pageLogin/login">
+            <Link href="/pageLogin/login">
+              <DropdownMenuItem>
                 Sair
-              </Link>
-            </DropdownMenuItem>
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
