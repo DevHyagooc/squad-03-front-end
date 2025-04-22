@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import FormHeader from "./formHeader";
 
 export default function FormBody() {
   const {
@@ -17,10 +18,14 @@ export default function FormBody() {
   return (
     <div>
 
+      <div className="justify-items-center pb-8 ">
+              <FormHeader />
+            </div>
+
       <div className="pb-4">
         <label>Nome de usuário</label>
 
-        <div className="border-2 border-stone-500 rounded-md">
+        <div className=" shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="text"
             className={errors?.name && "input-error"}
@@ -33,13 +38,12 @@ export default function FormBody() {
             <p className="error-message">Nome é obrigatório</p>
           )}
         </div>
-
       </div>
 
       <div className="pb-4">
         <label>Email</label>
 
-        <div className="border-2 border-stone-500 rounded-md">
+        <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="email"
             className={errors?.email && "input-error"}
@@ -52,15 +56,14 @@ export default function FormBody() {
             <p className="error-message">Email é obrigatório</p>
           )}
         </div>
-
       </div>
 
       <div className="pb-4">
         <label>CPF</label>
 
-        <div className="border-2 border-stone-500 rounded-md">
+        <div className="shadow-lg border-2 border-stone-500 rounded-md">
           <input
-            type="text"
+            type="number"
             className={errors?.cpf && "input-error"}
             {...register("cpf", { required: true })}
           />
@@ -71,13 +74,12 @@ export default function FormBody() {
             <p className="error-message">CPF é obrigatório</p>
           )}
         </div>
-
       </div>
 
       <div className="pb-5">
         <label>Senha</label>
 
-        <div className="border-2 border-stone-500 rounded-md">
+        <div className=" shadow-lg border-2 border-stone-500 rounded-md">
           <input
             type="password"
             {...register("senha", { required: true, minLength: 7 })}
@@ -95,21 +97,21 @@ export default function FormBody() {
             <p className="error-message">Senha é obrigatoria</p>
           )}
         </div>
-
       </div>
 
-      <div className="justify-self-center pb-2 text-sm text-blue-600/100 dark:text-sky-400/100">
+      <div className="justify-self-center pb-2 ">
         <button
+          className=" font-serif bg-stone-700 opacity-100 rounded-md  pt-2 pb-2 pl-4 pr-4 shadow-lg text-sm text-white "
           onClick={() => {
             handleSubmit(onSubmit)();
           }}
         >
-          criar
+          Salvar
         </button>
       </div>
 
-      <div className="justify-self-center text-sm text-blue-600/100 dark:text-sky-400/100">
-        <Link href="/pageLogin/login">login</Link>
+      <div className="justify-self-center text-shadow-lg text-sm text-stone-600">
+        <Link href="/pageLogin/login">Voltar</Link>
       </div>
     </div>
   );

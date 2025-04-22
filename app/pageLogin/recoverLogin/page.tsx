@@ -1,7 +1,7 @@
 import FormBody from "./formBody";
 import FormHeader from "./formHeader";
 
-export default function Login() {
+export default function RecoverLogin() {
   return (
     <table className="font-serif h-full w-full">
       <tbody>
