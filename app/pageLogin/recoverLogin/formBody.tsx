@@ -16,26 +16,30 @@ export default function FormBody() {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    router.push("/pageLogin/recoverPassword");
+    // Comentando para que n~]ao seja redirecionado para nenhuma outra página
+    // router.push("/pageLogin/recoverPassword");
   };
 
   return (
-    <div>
-      <div className="justify-items-center pb-8">
+    <div className="w-full px-12">
+      <div className="pb-4">
         <FormHeader />
       </div>
 
-      <div className="pb-4 w-full">
-        <label>Email</label>
+      <div className="pb-6">
+        <h4>Informe seu email para seguirmos com a redefinição da senha.</h4>
+      </div>
 
-        <div className="shadow-lg border-2 border-stone-500 rounded-md">
+      <div className="pb-6 w-full">
+        <label className="text-[13px]">Email</label>
+        <div className="pt-1">
           <input
             type="email"
-            className="w-full"
+            className="w-full border border-stone-400 rounded-lg h-10 text-[15px] pl-2"
             {...register("email", { required: true })}
             aria-invalid={errors.email ? "true" : "false"}
+            placeholder="Digite aqui o email..."
           />
-
         </div>
 
         <div className="text-sm text-red-600/75 dark:text-sky-400/75 pt-1">

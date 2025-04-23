@@ -1,19 +1,18 @@
 import FormBody from "./formBody";
 
-export default function RegisterLogin() {
+export default function Login() {
   return (
-    <table className="h-full w-full">
-      <tbody>
-        <tr>
-          <td className="bg-stone-200 justify-items-center shadow-md shadow-stone-500 w-80 ">
-            <h1>Logo</h1>
-          </td>
-
-          <td className="justify-items-center w-20">
-            <FormBody />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div className="h-full w-full flex">
+      <div className="w-[67%] bg-stone-100 shadow-stone-500 flex items-center justify-center">
+        <img
+          src="/images/logoGetInfo.png"
+          className="w-80"
+          alt="Logo GetInfo"
+        />
+      </div>
+      <div className="w-[33%] flex items-center">
+        <FormBody />
+      </div>
+    </div>
   );
 }

@@ -27,13 +27,15 @@ export default function FormBody() {
 
       <div className="pb-6 w-full">
         <label className="text-[13px]" >Usuário</label>
-        <input
-          type="email"
-          className="w-full border-2 border-stone-500 rounded-md h-10 text-[15px] pl-2"
-          {...register("email", { required: true })}
-          aria-invalid={errors.email ? "true" : "false"}
-          placeholder="Digite o seu email..."
-        />
+        <div className="pt-1">
+          <input
+            type="email"
+            className="w-full border border-stone-400 rounded-lg h-10 text-[15px] pl-2"
+            {...register("email", { required: true })}
+            aria-invalid={errors.email ? "true" : "false"}
+            placeholder="Digite o seu email..."
+          />
+        </div>
 
         <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
           {errors?.email?.type === "required" && (
@@ -44,12 +46,14 @@ export default function FormBody() {
 
       <div className="pb-6">
         <label className="text-[13px]">Senha</label>
-        <input
-          className="w-full border-2 border-stone-500 rounded-md h-10 text-[15px] pl-2"
-          type="password"
-          {...register("senha", { required: true, minLength: 7 })}
-          placeholder="*******"
-        />
+        <div className="pt-1">
+          <input
+            className="w-full border border-stone-400 rounded-lg h-10 text-[15px] pl-2"
+            type="password"
+            {...register("senha", { required: true, minLength: 7 })}
+            placeholder="*******"
+          />
+        </div>
         <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
           {errors?.senha?.type === "minLength" && (
             <p className="error-message">No mínimo 7 caracteres</p>
