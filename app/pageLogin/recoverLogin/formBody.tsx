@@ -16,7 +16,7 @@ export default function FormBody() {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    // Comentando para que n~]ao seja redirecionado para nenhuma outra página
+    // Comentando para que não seja redirecionado para nenhuma outra página
     // router.push("/pageLogin/recoverPassword");
   };
 
