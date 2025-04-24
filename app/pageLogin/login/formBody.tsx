@@ -20,81 +20,94 @@ export default function FormBody() {
   };
 
   return (
-    <div className="w-full px-12">
+    <div className="w-full max-w-md px-6 py-8 mx-auto">
       <div className="pb-8">
         <FormHeader />
       </div>
 
-      <div className="pb-6 w-full">
-        <label className="text-[13px]" >Usuário</label>
-        <div className="pt-1">
-          <input
-            type="email"
-            className="w-full border border-stone-400 rounded-lg h-10 text-[15px] pl-2"
-            {...register("email", { required: true })}
-            aria-invalid={errors.email ? "true" : "false"}
-            placeholder="Digite o seu email..."
-          />
-        </div>
-
-        <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
-          {errors?.email?.type === "required" && (
-            <p className="error-message">Usuário é obrigatório</p>
-          )}
-        </div>
-      </div>
-
-      <div className="pb-6">
-        <label className="text-[13px]">Senha</label>
-        <div className="pt-1">
-          <input
-            className="w-full border border-stone-400 rounded-lg h-10 text-[15px] pl-2"
-            type="password"
-            {...register("senha", { required: true, minLength: 7 })}
-            placeholder="*******"
-          />
-        </div>
-        <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
-          {errors?.senha?.type === "minLength" && (
-            <p className="error-message">No mínimo 7 caracteres</p>
-          )}
-        </div>
-
-        <div className="text-xs text-red-600/75 dark:text-sky-400/75 pt-1">
-          {errors?.senha?.type === "required" && (
-            <p className="error-message">Senha é obrigatoria</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between px-4 text-shadow-lg text-sm text-stone-800">
-        <label className="flex items-center">
-          <input type="checkbox" className="mr-2" />
-          Lembrar senha
-        </label>
-
-        <Link
-          href="/pageLogin/recoverLogin"
-          className="text-cyan-500 ml-4 hover:underline"
-        >
-          Esqueceu a senha?
-        </Link>
-      </div>
-
-
-      <div >
-        <button
-          className=" justify-self-center shadow-lg bg-stone-700 opacity-100 rounded-xl w-full mt-4 mb-2 pt-2 pb-2 pl-4 pr-4 text-sm text-white"
-          onClick={() => {
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
             handleSubmit(onSubmit)();
-          }}
-        >
-          Entrar
-        </button>
-      </div>
+          }
+        }}
+        className="space-y-6"
+      >
+        {/* Campo de Usuário */}
+        <div>
+          <label htmlFor="email" className="text-sm font-semibold text-gray-700">
+            Usuário
+          </label>
+          <div className="pt-1">
+            <input
+              id="email"
+              type="email"
+              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3"
+              {...register("email", { required: "Usuário é obrigatório" })}
+              aria-invalid={errors.email ? "true" : "false"}
+              placeholder="Digite o seu email..."
+              aria-describedby="email-error"
+            />
+          </div>
+          {errors.email && (
+            <div id="email-error" className="text-xs text-red-600 pt-1">
+              {errors.email.message as string} {/* Certifique-se de que isso é uma string */}
+            </div>
+          )}
+        </div>
 
-      <div className="text-shadow-lg justify-self-center text-sm text-stone-600">
-      </div>
+        {/* Campo de Senha */}
+        <div>
+          <label htmlFor="senha" className="text-sm font-semibold text-gray-700">
+            Senha
+          </label>
+          <div className="pt-1">
+            <input
+              id="senha"
+              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3"
+              type="password"
+              {...register("senha", {
+                required: "Senha é obrigatória",
+                minLength: { value: 7, message: "No mínimo 7 caracteres" },
+              })}
+              placeholder="*******"
+              aria-describedby="senha-error"
+            />
+          </div>
+          {errors.senha && (
+            <div id="senha-error" className="text-xs text-red-600 pt-1">
+              {errors.senha.message as string} {/* Certifique-se de que isso é uma string */}
+            </div>
+          )}
+        </div>
+
+        {/* Lembrar Senha e Link para Recuperação */}
+        <div className="flex items-center justify-between text-sm text-gray-700">
+          <label className="flex items-center">
+            <input type="checkbox" className="mr-2" />
+            Lembrar senha
+          </label>
+          <Link
+            href="/pageLogin/recoverLogin"
+            className="text-cyan-500 hover:underline"
+          >
+            Esqueceu a senha?
+          </Link>
+        </div>
+
+        {/* Botão de Submissão */}
+        <div>
+          <button
+            type="submit"
+            className="w-full mt-4 py-2 bg-gray-800 text-white rounded-lg shadow-lg hover:bg-gray-700"
+          >
+            Entrar
+          </button>
+        </div>
+      </form>
+
+      <div className="text-center mt-4 text-sm text-gray-600"></div>
     </div>
   );
 }
