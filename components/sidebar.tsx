@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FileText, ClipboardList, Truck, Users, FileSignature, BarChart, Settings, Home } from "lucide-react"
+import { FileText, ClipboardList, Truck, Users, MapPin, FileSignature, BarChart, Settings, Home } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function Sidebar() {
@@ -28,6 +28,12 @@ export function Sidebar() {
       active: pathname === "/pageInterna/entregaveis",
     },
     {
+      label: "Funcionários",
+      icon: Users,
+      href: "/pageInterna/funcionarios",
+      active: pathname === "/pageInterna/funcionarios",
+    },
+    {
       label: "Ordens de Serviço",
       icon: Truck,
       href: "/pageInterna/ordens-servico",
@@ -35,7 +41,7 @@ export function Sidebar() {
     },
     {
       label: "Postos de Serviço",
-      icon: Users,
+      icon: MapPin,
       href: "/pageInterna/postos-servico",
       active: pathname === "/pageInterna/postos-servico",
     },
