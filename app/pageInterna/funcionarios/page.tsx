@@ -37,7 +37,7 @@ export default function FuncionariosPage() {
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle>Adicionar Novo Funcionário</DialogTitle>
+            <DialogTitle className="text-md">Adicionar Novo Funcionário</DialogTitle>
             <FormFunc closeForm={closeForm} />
             <DialogClose asChild>
               <button onClick={closeForm} className="mt-4 px-4 py-2 bg-red-500 text-white">

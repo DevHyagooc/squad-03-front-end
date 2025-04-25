@@ -60,7 +60,7 @@ export function Sidebar() {
   ]
 
   return (
-    <div className="flex h-screen w-64 flex-col border-r bg-muted/40">
+    <div className="sticky flex h-screen w-64 flex-col border-r bg-muted/40">
       <div className="flex flex-col gap-2 p-4">
         {routes.map((route) => (
           <Link
