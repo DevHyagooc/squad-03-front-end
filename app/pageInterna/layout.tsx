@@ -14,15 +14,15 @@ export default function RootLayout({
       <div className="flex min-h-screen flex-col">
         <Header />
         <div className="flex flex-1">
-          <Sidebar />
-          <main className="flex-1">{children}</main>
+          <div className="fixed top-16 w-64 h-screen bg-muted/40 z-10">
+            <Sidebar />
+          </div>
+          <main className="flex-1 ml-64 overflow-auto p-4">
+            {children}
+          </main>
         </div>
       </div>
     </ThemeProvider>
   )
 }
 
-
-export const metadata = {
-  generator: 'v0.dev'
-};
