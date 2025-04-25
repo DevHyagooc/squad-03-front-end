@@ -1,8 +1,6 @@
 import type React from "react"
 import "@/app/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Sidebar } from "@/components/sidebar"
-import { Header } from "@/components/header"
 
 export default function RootLayout({
   children,
@@ -33,6 +31,3 @@ export default function RootLayout({
 
 import './globals.css'
 
-export const metadata = {
-  generator: 'v0.dev'
-};
