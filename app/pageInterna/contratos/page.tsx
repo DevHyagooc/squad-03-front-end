@@ -122,13 +122,12 @@ export default function ContratosPage() {
                   <TableCell>{contract.endDate}</TableCell>
                   <TableCell>
                     <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        contract.status === "Ativo"
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contract.status === "Ativo"
                           ? "bg-green-100 text-green-800"
                           : contract.status === "Em análise"
                             ? "bg-yellow-100 text-yellow-800"
                             : "bg-gray-100 text-gray-800"
-                      }`}
+                        }`}
                     >
                       {contract.status}
                     </div>
@@ -138,7 +137,7 @@ export default function ContratosPage() {
                       <Button variant="ghost" size="icon">
                         <FileText className="h-4 w-4" />
                       </Button>
-                      <Link href={`/contratos/${contract.id}`}>
+                      <Link href={`/pageInterna/contratos/${contract.id}`}>
                         <Button variant="outline" size="sm">
                           Detalhes
                         </Button>
