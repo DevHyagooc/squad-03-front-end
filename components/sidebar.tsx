@@ -22,34 +22,16 @@ export function Sidebar() {
       active: pathname === "/pageInterna/contratos",
     },
     {
-      label: "Entregáveis",
-      icon: ClipboardList,
-      href: "/pageInterna/entregaveis",
-      active: pathname === "/pageInterna/entregaveis",
+      label: "Empresas",
+      icon: MapPin,
+      href: "/pageInterna/empresas",
+      active: pathname === "/pageInterna/empresas",
     },
     {
       label: "Funcionários",
       icon: Users,
       href: "/pageInterna/funcionarios",
       active: pathname === "/pageInterna/funcionarios",
-    },
-    {
-      label: "Ordens de Serviço",
-      icon: Truck,
-      href: "/pageInterna/ordens-servico",
-      active: pathname === "/pageInterna/ordens-servico",
-    },
-    {
-      label: "Postos de Serviço",
-      icon: MapPin,
-      href: "/pageInterna/postos-servico",
-      active: pathname === "/pageInterna/postos-servico",
-    },
-    {
-      label: "Relatórios",
-      icon: BarChart,
-      href: "/pageInterna/relatorios",
-      active: pathname === "/pageInterna/relatorios",
     },
     {
       label: "Configurações",
