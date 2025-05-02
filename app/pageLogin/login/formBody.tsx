@@ -36,14 +36,14 @@ export default function FormBody() {
       >
         {/* Campo de Usuário */}
         <div>
-          <label htmlFor="email" className="text-sm font-semibold text-gray-700">
+          <label htmlFor="email" className="text-xs text-gray-700">
             Usuário
           </label>
           <div className="pt-1">
             <input
               id="email"
               type="email"
-              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3"
+              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3 focus:border-cyan-500 focus:border-2 focus:outline-none"
               {...register("email", { required: "Usuário é obrigatório" })}
               aria-invalid={errors.email ? "true" : "false"}
               placeholder="Digite o seu email..."
@@ -59,13 +59,13 @@ export default function FormBody() {
 
         {/* Campo de Senha */}
         <div>
-          <label htmlFor="senha" className="text-sm font-semibold text-gray-700">
+          <label htmlFor="senha" className="text-xs text-gray-700">
             Senha
           </label>
           <div className="pt-1">
             <input
               id="senha"
-              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3"
+              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3 focus:border-cyan-500 focus:border-2 focus:outline-none"
               type="password"
               {...register("senha", {
                 required: "Senha é obrigatória",
@@ -85,7 +85,7 @@ export default function FormBody() {
         {/* Lembrar Senha e Link para Recuperação */}
         <div className="flex items-center justify-between text-sm text-gray-700">
           <label className="flex items-center">
-            <input type="checkbox" className="mr-2" />
+            <input type="checkbox" className="mr-2 w-4 h-4" />
             Lembrar senha
           </label>
           <Link
@@ -100,7 +100,8 @@ export default function FormBody() {
         <div>
           <button
             type="submit"
-            className="w-full mt-4 py-2 bg-gray-800 text-white rounded-lg shadow-lg hover:bg-gray-700"
+            className="w-full mt-4 py-2 bg-stone-700 opacity-100 text-white rounded-xl shadow-lg hover:bg-cyan-500 hover:text-stone-700 duration-500"
+
           >
             Entrar
           </button>
