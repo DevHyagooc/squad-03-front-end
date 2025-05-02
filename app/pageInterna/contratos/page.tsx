@@ -17,10 +17,7 @@ export default function ContratosPage() {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtros</CardTitle>
-        </CardHeader>
+      <Card className="border-none pt-1">
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
@@ -123,10 +120,10 @@ export default function ContratosPage() {
                   <TableCell>
                     <div
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contract.status === "Ativo"
-                          ? "bg-green-100 text-green-800"
-                          : contract.status === "Em análise"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-gray-100 text-gray-800"
+                        ? "bg-green-100 text-green-800"
+                        : contract.status === "Em análise"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-gray-100 text-gray-800"
                         }`}
                     >
                       {contract.status}
