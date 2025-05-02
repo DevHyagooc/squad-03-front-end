@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import FormFunc from "@/components/FuncionarioForm"
+import FormFunc from "@/components/EmpresaForm"
 import Link from "next/link"
 import React, { useState } from 'react';
 
@@ -24,26 +24,22 @@ export default function FuncionariosPage() {
   return (
     <div className="flex flex-col gap-6 p-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Funcionários</h1>
+        <h1 className="text-3xl font-bold">Empresas</h1>
 
         {/* Aqui o DialogTrigger deve estar dentro do Dialog */}
         <Dialog open={showForm}>
           <DialogTrigger asChild>
             <Button onClick={handleButtonClick}>
               <Plus className="mr-2 h-4 w-4" />
-              Novo Funcionário
+              Nova Empresa
             </Button>
           </DialogTrigger>
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle className="text-md">Adicionar Novo Funcionário</DialogTitle>
+            <DialogTitle className="text-md">Adicionar Novo Empresa</DialogTitle>
             <FormFunc closeForm={closeForm} />
-            <DialogClose asChild>
-              <button onClick={closeForm} className="mt-4 px-4 py-2 bg-red-500 text-white">
-                Fechar
-              </button>
-            </DialogClose>
+            
           </DialogContent>
         </Dialog>
       </div>
