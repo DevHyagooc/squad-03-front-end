@@ -44,7 +44,7 @@ export default function Dashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Ordens de Serviço</CardTitle>
+                  <CardTitle className="text-sm font-medium">Contratos Finalizados</CardTitle>
                   <Truck className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -54,12 +54,12 @@ export default function Dashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Postos de Serviço</CardTitle>
+                  <CardTitle className="text-sm font-medium">......................</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">6</div>
-                  <p className="text-xs text-muted-foreground">Todos ativos</p>
+                  <p className="text-xs text-muted-foreground">.................................</p>
                 </CardContent>
               </Card>
             </div>
@@ -108,11 +108,10 @@ export default function Dashboard() {
                         <div className="flex items-center gap-4">
                           <div className="text-sm text-muted-foreground">{contract.date}</div>
                           <div
-                            className={`rounded-full px-2 py-1 text-xs ${
-                              contract.status === "Ativo"
+                            className={`rounded-full px-2 py-1 text-xs ${contract.status === "Ativo"
                                 ? "bg-green-100 text-green-800"
                                 : "bg-yellow-100 text-yellow-800"
-                            }`}
+                              }`}
                           >
                             {contract.status}
                           </div>
@@ -161,11 +160,10 @@ export default function Dashboard() {
                         <div className="flex items-center justify-between">
                           <p className="font-medium">{deliverable.name}</p>
                           <div
-                            className={`rounded-full px-2 py-1 text-xs ${
-                              deliverable.status === "Em andamento"
+                            className={`rounded-full px-2 py-1 text-xs ${deliverable.status === "Em andamento"
                                 ? "bg-blue-100 text-blue-800"
                                 : "bg-gray-100 text-gray-800"
-                            }`}
+                              }`}
                           >
                             {deliverable.status}
                           </div>
