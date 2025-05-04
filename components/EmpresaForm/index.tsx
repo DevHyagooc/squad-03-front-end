@@ -49,7 +49,7 @@ const Form = () => {
               Estado:
             </label>
             <br />
-            <select id="estado" className="w-52">
+            <select id="estado" className="w-52 h-10 border border-stone-200 rounded-md">
               <option value="estado">Rio de Janeiro</option>
             </select>
           </div>
@@ -59,7 +59,7 @@ const Form = () => {
               Município:
             </label>
             <br />
-            <select id="municipio" className="w-52">
+            <select id="municipio" className="w-52 h-10 border border-stone-200 rounded-md">
               <option value="rioDeJaneiro">Rio de Janeiro</option>
             </select>
           </div>
@@ -69,7 +69,7 @@ const Form = () => {
               Bairro:
             </label>
             <br />
-            <select id="bairro" className="w-52">
+            <select id="bairro" className="w-52 h-10 border border-stone-200 rounded-md">
               <option value="Centro">Centro</option>
             </select>
           </div>
@@ -79,7 +79,7 @@ const Form = () => {
               Endereço:
             </label>
             <br />
-            <select id="endereco" className="w-52">
+            <select id="endereco" className="w-52 h-10 border border-stone-200 rounded-md">
               <option value="avRioBranco">AV Rio Branco</option>
             </select>
           </div>
