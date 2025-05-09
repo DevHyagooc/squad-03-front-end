@@ -3,16 +3,16 @@ import { Input } from "../ui/input";
 
 
 const Form = () => {
-   interface FormFuncProps {
+   interface FormColabProps {
       closeForm: () => void;  // closeForm é uma função que não retorna nada
    }
 
-   const FormFunc: React.FC<FormFuncProps> = ({ closeForm }) => {
+   const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
       return (
          <form className="space-y-4">
             <div className="flex flex-wrap w-full gap-4 justify-center py-4">
                <div className="px-2">
-                  <label htmlFor="nome" className="text-sm font-semibold">Nome do Funcionário:</label>
+                  <label htmlFor="nome" className="text-sm font-semibold">Nome do Colaborador:</label>
                   <Input id="nome" type="text" placeholder="Nome Completo..." className="w-52" />
                </div>
                <div className="px-2">
@@ -26,7 +26,7 @@ const Form = () => {
                </div>
                <div className="px-2">
                   <label htmlFor="nome" className="text-sm font-semibold">Nome:</label>
-                  <Input id="nome" type="text" placeholder="Digite o nome do funcionário" className="w-52" />
+                  <Input id="nome" type="text" placeholder="Digite o nome do colaborador" className="w-52" />
                </div>
             </div>
             <div className="flex justify-end gap-4">
@@ -42,7 +42,7 @@ const Form = () => {
       );
    };
 
-   return <FormFunc closeForm={() => { }} />;
+   return <FormColab closeForm={() => { }} />;
 };
 
 export default Form;

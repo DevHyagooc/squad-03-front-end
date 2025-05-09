@@ -6,12 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import FormFunc from "@/components/EmpresaForm"
+import FormColab from "@/components/EmpresaForm"
 import Link from "next/link"
 import React, { useState } from 'react';
 
-export default function FuncionariosPage() {
-  const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormFunc
+export default function ColaboradoresPage() {
+  const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormColab
 
   const handleButtonClick = () => {
     setShowForm(true); // Exibe o formulário quando o botão for clicado
@@ -38,8 +38,8 @@ export default function FuncionariosPage() {
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
             <DialogTitle className="text-md">Adicionar Novo Empresa</DialogTitle>
-            <FormFunc closeForm={closeForm} />
-            
+            <FormColab closeForm={closeForm} />
+
           </DialogContent>
         </Dialog>
       </div>

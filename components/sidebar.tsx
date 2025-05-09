@@ -28,10 +28,10 @@ export function Sidebar() {
       active: pathname === "/pageInterna/empresas",
     },
     {
-      label: "Funcionários",
+      label: "Colaboradores",
       icon: Users,
-      href: "/pageInterna/funcionarios",
-      active: pathname === "/pageInterna/funcionarios",
+      href: "/pageInterna/colaboradores",
+      active: pathname === "/pageInterna/colaboradores",
     },
     {
       label: "Configurações",

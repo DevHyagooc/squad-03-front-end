@@ -6,12 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import FormFunc from "@/components/FuncionarioForm"
+import FormColab from "@/components/ColaboradorForm"
 import Link from "next/link"
 import React, { useState } from 'react';
 
-export default function FuncionariosPage() {
-  const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormFunc
+export default function COlaboradoresPage() {
+  const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormColab
 
   const handleButtonClick = () => {
     setShowForm(true); // Exibe o formulário quando o botão for clicado
@@ -24,21 +24,21 @@ export default function FuncionariosPage() {
   return (
     <div className="flex flex-col gap-6 p-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Funcionários</h1>
+        <h1 className="text-3xl font-bold">Colaboradores</h1>
 
         {/* Aqui o DialogTrigger deve estar dentro do Dialog */}
         <Dialog open={showForm}>
           <DialogTrigger asChild>
             <Button onClick={handleButtonClick}>
               <Plus className="mr-2 h-4 w-4" />
-              Novo Funcionário
+              Novo Colaborador
             </Button>
           </DialogTrigger>
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle className="text-2xl">Novo Funcionário</DialogTitle>
-            <FormFunc />
+            <DialogTitle className="text-2xl">Novo Colaborador</DialogTitle>
+            <FormColab />
           </DialogContent>
         </Dialog>
       </div>
