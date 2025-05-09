@@ -54,12 +54,12 @@ export default function Dashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">......................</CardTitle>
+                  <CardTitle className="text-sm font-medium">Notificações Urgentes</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">6</div>
-                  <p className="text-xs text-muted-foreground">.................................</p>
+                  <p className="text-xs text-muted-foreground">6 em andamento</p>
                 </CardContent>
               </Card>
             </div>
@@ -109,8 +109,8 @@ export default function Dashboard() {
                           <div className="text-sm text-muted-foreground">{contract.date}</div>
                           <div
                             className={`rounded-full px-2 py-1 text-xs ${contract.status === "Ativo"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
                               }`}
                           >
                             {contract.status}
@@ -161,8 +161,8 @@ export default function Dashboard() {
                           <p className="font-medium">{deliverable.name}</p>
                           <div
                             className={`rounded-full px-2 py-1 text-xs ${deliverable.status === "Em andamento"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-gray-100 text-gray-800"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
                               }`}
                           >
                             {deliverable.status}
