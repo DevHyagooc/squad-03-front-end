@@ -2,109 +2,117 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 const Form = () => {
-  interface FormColabProps {
+  interface FormEmpresaProps {
     closeForm: () => void; // closeForm é uma função que não retorna nada
   }
 
-  const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
+  const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm }) => {
     return (
-      <form className="space-y-4">
-        <div className="flex flex-wrap w-full gap-4 justify-center py-4">
-
-          <div className="px-2">
-            <label htmlFor="cnpj" className="text-sm font-semibold">
+      <div className="space-y-4">
+        <div className="flex flex-wrap w-full gap-4 py-3 px-1 pl-2">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="cnpj" className="text-sm font-normal">
               CNPJ:
             </label>
             <Input
               id="cnpj"
               type="text"
               placeholder="xxx.xxx.xxx-xx"
-              className="w-52"
+              className="w-52 mt-1 text-black"
             />
           </div>
 
-          <div className="px-2">
-            <label htmlFor="razaoSocial" className="text-sm font-semibold">
-              Razão social:
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="razaoSocial" className="text-sm font-normal">
+              Razão Social:
             </label>
-            <Input id="razaoSocial" type="text" className="w-52" />
+            <Input id="razaoSocial" type="text" className="w-52 mt-1 text-black" />
           </div>
 
-          <div className="px-2">
-            <label htmlFor="nomeFantasia" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="nomeFantasia" className="text-sm font-normal">
               Nome Fantasia:
             </label>
-            <Input id="nomeFantasia" type="text" className="w-52" />
+            <Input id="nomeFantasia" type="text" className="w-52 mt-1 text-black" />
           </div>
 
-          <div className="px-2">
-            <label htmlFor="cep" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="cep" className="text-sm font-normal">
               CEP:
             </label>
-            <Input id="cep" type="text" className="w-52" />
+            <Input id="cep" type="text" className="w-52 mt-1 text-black" />
           </div>
 
-          <div className="px-2">
-            <label htmlFor="estado" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="estado" className="text-sm font-normal">
               Estado:
             </label>
             <br />
-            <select id="estado" className="w-52 h-10 border border-stone-200 rounded-md">
+            <select
+              id="estado"
+              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            >
               <option value="estado">Rio de Janeiro</option>
             </select>
           </div>
 
-          <div className="px-2">
-            <label htmlFor="municipio" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="municipio" className="text-sm font-normal">
               Município:
             </label>
             <br />
-            <select id="municipio" className="w-52 h-10 border border-stone-200 rounded-md">
+            <select
+              id="municipio"
+              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            >
               <option value="rioDeJaneiro">Rio de Janeiro</option>
             </select>
           </div>
 
-          <div className="px-2">
-            <label htmlFor="bairro" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="bairro" className="text-sm font-normal">
               Bairro:
             </label>
             <br />
-            <select id="bairro" className="w-52 h-10 border border-stone-200 rounded-md">
+            <select
+              id="bairro"
+              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            >
               <option value="Centro">Centro</option>
             </select>
           </div>
 
-          <div className="px-2">
-            <label htmlFor="endereco" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="cep" className="text-sm font-normal">
               Endereço:
             </label>
-            <br />
-            <select id="endereco" className="w-52 h-10 border border-stone-200 rounded-md">
-              <option value="avRioBranco">AV Rio Branco</option>
-            </select>
+            <Input id="cep" type="text" className="w-52 mt-1 text-black" />
           </div>
 
-          <div className="px-2">
-            <label htmlFor="email" className="text-sm font-semibold">
-              Email:
-            </label>
-            <Input id="email" type="email" className="w-52" />
-          </div>
-
-          <div className="px-2">
-            <label htmlFor="inscricaoMunicipal" className="text-sm font-semibold">
-              Inscrição municipal:
-            </label>
-            <Input id="inscricaoMunicipal" type="text" className="w-52" />
-          </div>
-
-          <div className="px-2">
-            <label htmlFor="numero" className="text-sm font-semibold">
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="numero" className="text-sm font-normal">
               Número:
             </label>
-            <Input id="numero" type="text" className="w-52" />
+            <Input id="numero" type="text" className="w-52 mt-1 text-black" />
           </div>
 
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="email" className="text-sm font-normal">
+              Email:
+            </label>
+            <Input id="email" type="email" className="w-52 mt-1 text-black" />
+          </div>
+
+          <div className="px-2 focus-within:text-cyan-500">
+            <label htmlFor="inscricaoMunicipal" className="text-sm font-normal">
+              Inscrição Municipal:
+            </label>
+            <Input
+              id="inscricaoMunicipal"
+              type="text"
+              className="w-52 mt-1 text-black"
+            />
+          </div>
         </div>
         <div className="flex justify-end gap-4">
           {/* Botão "Cancelar" chama o closeForm */}
@@ -115,11 +123,11 @@ const Form = () => {
             Salvar
           </Button>
         </div>
-      </form>
+      </div>
     );
   };
 
-  return <FormColab closeForm={() => { }} />;
+  return <FormEmpresa closeForm={() => { }} />;
 };
 
 export default Form;

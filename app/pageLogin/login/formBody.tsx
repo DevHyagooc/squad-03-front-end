@@ -35,15 +35,15 @@ export default function FormBody() {
         className="space-y-6"
       >
         {/* Campo de Usuário */}
-        <div>
-          <label htmlFor="email" className="text-xs text-gray-700">
+        <div className="text-gray-700 focus-within:text-cyan-500">
+          <label htmlFor="email" className="text-xs">
             Usuário
           </label>
           <div className="pt-1">
             <input
               id="email"
               type="email"
-              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3 focus:border-cyan-500 focus:border-2 focus:outline-none"
+              className="text-black w-full border border-gray-300 rounded-lg h-10 text-sm pl-3 focus:border-cyan-500 focus:border-2 focus:outline-none"
               {...register("email", { required: "Usuário é obrigatório" })}
               aria-invalid={errors.email ? "true" : "false"}
               placeholder="Digite o seu email..."
@@ -58,14 +58,14 @@ export default function FormBody() {
         </div>
 
         {/* Campo de Senha */}
-        <div>
-          <label htmlFor="senha" className="text-xs text-gray-700">
+        <div className="text-gray-700 focus-within:text-cyan-500">
+          <label htmlFor="senha" className="text-xs">
             Senha
           </label>
           <div className="pt-1">
             <input
               id="senha"
-              className="w-full border border-gray-300 rounded-lg h-10 text-sm pl-3 focus:border-cyan-500 focus:border-2 focus:outline-none"
+              className="text-black w-full border border-gray-300 rounded-lg h-10 text-sm pl-3 focus:border-cyan-500 focus:border-2 focus:outline-none"
               type="password"
               {...register("senha", {
                 required: "Senha é obrigatória",

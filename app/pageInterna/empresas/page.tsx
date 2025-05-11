@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import FormColab from "@/components/EmpresaForm"
+import FormEmpresa from "@/components/EmpresaForm"
 import Link from "next/link"
 import React, { useState } from 'react';
 
@@ -37,8 +37,8 @@ export default function ColaboradoresPage() {
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle className="text-md">Adicionar Novo Empresa</DialogTitle>
-            <FormColab closeForm={closeForm} />
+            <DialogTitle className="text-md">Cadastrar Nova Empresa</DialogTitle>
+            <FormEmpresa />
 
           </DialogContent>
         </Dialog>

@@ -49,8 +49,8 @@ export function Sidebar() {
             key={route.href}
             href={route.href}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:text-primary",
-              route.active ? "bg-muted text-primary" : "text-muted-foreground",
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:text-cyan-600",
+              route.active ? "bg-muted text-cyan-600" : "text-muted-foreground",
             )}
           >
             <route.icon className="h-4 w-4" />
