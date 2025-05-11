@@ -8,7 +8,7 @@ const Form = () => {
 
   const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm }) => {
     return (
-      <div className="space-y-4">
+      <form className="space-y-4">
         <div className="flex flex-wrap w-full gap-4 py-3 px-1 pl-2">
           <div className="px-2 focus-within:text-cyan-500">
             <label htmlFor="cnpj" className="text-sm font-normal">
@@ -123,7 +123,7 @@ const Form = () => {
             Salvar
           </Button>
         </div>
-      </div>
+      </form>
     );
   };
 
