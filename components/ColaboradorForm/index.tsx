@@ -51,7 +51,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
       // Remover tudo que não for número
       const cleaned = value.replace(/\D/g, '');
 
-      // Limitar o CPF a 10 caracteres
+      // Limitar o telefone a 13 caracteres
       const limited = cleaned.substring(0, 13);  // Número tem 13 dígitos (Com o DDI)
 
       // Adicionar formatação conforme a máscara
@@ -71,7 +71,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
       // Remover tudo que não for número
       const cleaned = value.replace(/\D/g, '');
 
-      // Limitar o CPF a 10 caracteres
+      // Limitar a data a 8 caracteres
       const limited = cleaned.substring(0, 8);  // Data tem 8 dígitos
 
       // Adicionar formatação conforme a máscara
