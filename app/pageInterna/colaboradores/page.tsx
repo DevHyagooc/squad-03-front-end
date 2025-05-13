@@ -10,15 +10,16 @@ import FormColab from "@/components/ColaboradorForm"
 import Link from "next/link"
 import React, { useState } from 'react';
 
-export default function COlaboradoresPage() {
-  const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormColab
+export default function ColaboradoresPage() {
+  const [showForm, setShowForm] = useState(false);
 
   const handleButtonClick = () => {
-    setShowForm(true); // Exibe o formulário quando o botão for clicado
+    setShowForm(true);
   };
 
   const closeForm = () => {
-    setShowForm(false); // Fecha o formulário quando o botão de "Cancelar" for clicado
+    setShowForm(false);  // Altere isso para setShowForm para fechar o formulário
+    console.log("Formulário fechado");
   };
 
   return (
@@ -38,7 +39,7 @@ export default function COlaboradoresPage() {
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
             <DialogTitle className="text-2xl">Cadastrar Novo Colaborador</DialogTitle>
-            <FormColab />
+            <FormColab closeForm={closeForm} />
           </DialogContent>
         </Dialog>
       </div>

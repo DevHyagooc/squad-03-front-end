@@ -11,14 +11,15 @@ import Link from "next/link"
 import React, { useState } from 'react';
 
 export default function ColaboradoresPage() {
-  const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormColab
+  const [showForm, setShowForm] = useState(false);
 
   const handleButtonClick = () => {
-    setShowForm(true); // Exibe o formulário quando o botão for clicado
+    setShowForm(true);
   };
 
   const closeForm = () => {
-    setShowForm(false); // Fecha o formulário quando o botão de "Cancelar" for clicado
+    setShowForm(false);  // Altere isso para setShowForm para fechar o formulário
+    console.log("Formulário fechado");
   };
 
   return (
@@ -38,7 +39,7 @@ export default function ColaboradoresPage() {
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
             <DialogTitle className="text-md">Cadastrar Nova Empresa</DialogTitle>
-            <FormEmpresa />
+            <FormEmpresa closeForm={closeForm} />
 
           </DialogContent>
         </Dialog>
