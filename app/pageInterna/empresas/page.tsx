@@ -92,7 +92,7 @@ export default function ColaboradoresPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
-                <TableHead>Nome do Entregável</TableHead>
+                <TableHead>Nome da Empresa</TableHead>
                 <TableHead>Contrato</TableHead>
                 <TableHead>Data de Entrega</TableHead>
                 <TableHead>Status</TableHead>
