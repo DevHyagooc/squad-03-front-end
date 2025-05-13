@@ -30,7 +30,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const [logradouro, setLogradouro] = useState<string>("");
 
   const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const value = event.target.value.replace(/\D/g, '');
     setCep(value);
 
     if (value.length === 8) {  // Verifica se o CEP tem 8 caracteres
@@ -60,7 +60,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
     // Remover tudo que não for número
     const cleaned = value.replace(/\D/g, '');
 
-    // Limitar o CPF a 10 caracteres
+    // Limitar o CEP a 8 caracteres
     const limited = cleaned.substring(0, 14);  // CNPJ tem 14 dígitos
 
     // Adicionar formatação conforme a máscara
@@ -74,6 +74,21 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       return limited.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
     } else {
       return limited.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+    }
+  };
+
+  const formatCEP = (value: string) => {
+    // Remover tudo que não for número
+    const cleaned = value.replace(/\D/g, '');
+
+    // Limitar o CEP a 8 caracteres
+    const limited = cleaned.substring(0, 8);  // CEP tem 8 dígitos
+
+    // Adicionar formatação conforme a máscara
+    if (limited.length <= 5) {
+      return limited;
+    } else {
+      return limited.replace(/(\d{5})(\d{1,3})/, '$1-$2');
     }
   };
 
@@ -152,13 +167,15 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                 control={control}
                 render={({ field }) => (
                   <Input
-                    id="cep"
+                    id="cnpj"
                     type="text"
+                    placeholder="xxxxx-xxx"
                     className="w-52 mt-1 text-black"
-                    value={cep}
+                    value={field.value}
                     onChange={(e) => {
-                      field.onChange(e.target.value);
-                      handleCepChange(e);  // Chama a função handleCepChange quando o valor do CEP mudar
+                      field.onChange(formatCEP(e.target.value));
+                      console.log(e);
+                      handleCepChange(e);
                     }}
                   />
                 )}
