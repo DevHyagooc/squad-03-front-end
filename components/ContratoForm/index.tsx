@@ -105,7 +105,7 @@ const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                     className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
                   >
                     <option value="Ativo">Ativo</option>
-                    <option value="Cancelado">Cancelado</option>
+                    <option value="Cancelado">Em Análise</option>
                     <option value="Encerrado">Encerrado</option>
                   </select>
                 )}
