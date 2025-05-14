@@ -1,175 +1,313 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { FormProvider, useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";  // Verifique se o caminho está correto
+import { formatCEP, formatCNPJ } from "@/lib/formatData";
 
-const Form = () => {
-  interface FormEmpresaProps {
-    closeForm: () => void; // closeForm é uma função que não retorna nada
-  }
+const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
+  const methods = useForm({
+    defaultValues: {
+      cnpj: "",
+      razaoSocial: "",
+      nomeFantasia: "",
+      cep: "",
+      estado: "",
+      municipio: "",
+      bairro: "",
+      logradouro: "",
+      numero: "",
+      email: "",
+      inscricaoMunicipal: ""
+    }
+  });
 
-  const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm }) => {
-    const [cep, setCep] = useState<string>("");  // Estado para armazenar o valor do CEP
-    const [estado, setEstado] = useState<string>("");  // Estado para armazenar o estado
-    const [municipio, setMunicipio] = useState<string>("");  // Estado para armazenar o município
-    const [bairro, setBairro] = useState<string>("");  // Estado para armazenar o bairro
-    const [logradouro, setLogradouro] = useState<string>("");  // Estado para armazenar o bairro
+  const { control, handleSubmit, formState: { errors }, setValue } = methods;
+  const [cep, setCep] = useState<string>("");
+  const [estado, setEstado] = useState<string>("");
+  const [municipio, setMunicipio] = useState<string>("");
+  const [bairro, setBairro] = useState<string>("");
+  const [logradouro, setLogradouro] = useState<string>("");
 
-    const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setCep(value);  // Atualiza o valor do CEP
+  const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.replace(/\D/g, '');
+    setCep(value);
 
-      if (value.length === 8) {  // Verifica se o CEP tem 8 caracteres
-        try {
-          const localData = await getLocal(value);  // Chama a função getLocal passando o CEP
-          setEstado(localData.uf);  // Atualiza o estado com os dados retornados
-          setMunicipio(localData.localidade);  // Atualiza o município com os dados retornados
-          setBairro(localData.bairro);  // Atualiza o bairro com os dados retornados
-          setLogradouro(localData.logradouro);  // Atualiza o logradouro com os dados retornados
-        } catch (error) {
-          console.error("Erro ao buscar o local:", error);
-        }
+    if (value.length === 8) {  // Verifica se o CEP tem 8 caracteres
+      try {
+        const localData = await getLocal(value);
+        setEstado(localData.uf);
+        setMunicipio(localData.localidade);
+        setBairro(localData.bairro);
+        setLogradouro(localData.logradouro);
+        // Atualiza os campos automaticamente
+        setValue("estado", localData.uf);
+        setValue("municipio", localData.localidade);
+        setValue("bairro", localData.bairro);
+        setValue("logradouro", localData.logradouro);
+      } catch (error) {
+        console.error("Erro ao buscar o local:", error);
       }
-    };
+    }
+  };
 
-    return (
-      <form className="space-y-4">
+  const onSubmit = (data: any) => {
+    console.log(data);
+    closeForm();
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex flex-wrap w-full gap-4 py-3 px-1 pl-2">
-          {/* Outros campos */}
+          {/* CNPJ */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
+            <FormControl>
+              <Controller
+                name="cnpj"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="cnpj"
+                    type="text"
+                    placeholder="xx.xxx.xxx/xxxx-xx"
+                    className="w-52 mt-1 text-black"
+                    value={field.value}
+                    onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="cnpj" className="text-sm font-normal">
-              CNPJ:
-            </label>
-            <Input
-              id="cnpj"
-              type="text"
-              placeholder="xxx.xxx.xxx-xx"
-              className="w-52 mt-1 text-black"
-            />
-          </div>
+          {/* Razão Social */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="razaoSocial">Razão Social:</FormLabel>
+            <FormControl>
+              <Controller
+                name="razaoSocial"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="razaoSocial"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.razaoSocial && errors.razaoSocial.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="razaoSocial" className="text-sm font-normal">
-              Razão Social:
-            </label>
-            <Input id="razaoSocial" type="text" className="w-52 mt-1 text-black" />
-          </div>
+          {/* Nome Fantasia */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="nomeFantasia">Nome Fantasia:</FormLabel>
+            <FormControl>
+              <Controller
+                name="nomeFantasia"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="nomeFantasia"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.nomeFantasia && errors.nomeFantasia.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="nomeFantasia" className="text-sm font-normal">
-              Nome Fantasia:
-            </label>
-            <Input id="nomeFantasia" type="text" className="w-52 mt-1 text-black" />
-          </div>
+          {/* CEP */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="cep">CEP:</FormLabel>
+            <FormControl>
+              <Controller
+                name="cep"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="cnpj"
+                    type="text"
+                    placeholder="xxxxx-xxx"
+                    className="w-52 mt-1 text-black"
+                    value={field.value}
+                    onChange={(e) => {
+                      field.onChange(formatCEP(e.target.value));
+                      console.log(e);
+                      handleCepChange(e);
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.cep && errors.cep.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="cep" className="text-sm font-normal">
-              CEP:
-            </label>
-            <Input
-              id="cep"
-              type="text"
-              className="w-52 mt-1 text-black"
-              value={cep}
-              onChange={handleCepChange}  // Chama a função handleCepChange quando o valor do CEP mudar
-            />
-          </div>
+          {/* Estado */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="estado">Estado:</FormLabel>
+            <FormControl>
+              <Controller
+                name="estado"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    id="estado"
+                    {...field}
+                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                  >
+                    <option value="">Selecione um estado</option>
+                    <option value={estado}>{estado}</option>
+                  </select>
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.estado && errors.estado.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="estado" className="text-sm font-normal">
-              Estado:
-            </label>
-            <select
-              id="estado"
-              value={estado}
-              onChange={(e) => setEstado(e.target.value)}  // Atualiza o estado
-              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-            >
-              <option value={estado}>{estado || "Selecione um estado"}</option>
-            </select>
-          </div>
+          {/* Município */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="municipio">Município:</FormLabel>
+            <FormControl>
+              <Controller
+                name="municipio"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    id="municipio"
+                    {...field}
+                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                  >
+                    <option value="">Selecione um município</option>
+                    <option value={municipio}>{municipio}</option>
+                  </select>
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.municipio && errors.municipio.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="municipio" className="text-sm font-normal">
-              Município:
-            </label>
-            <select
-              id="municipio"
-              value={municipio}
-              onChange={(e) => setMunicipio(e.target.value)}  // Atualiza o município
-              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-            >
-              <option value={municipio}>{municipio || "Selecione um município"}</option>
-            </select>
-          </div>
+          {/* Bairro */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="bairro">Bairro:</FormLabel>
+            <FormControl>
+              <Controller
+                name="bairro"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    id="bairro"
+                    {...field}
+                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                  >
+                    <option value="">Selecione um bairro</option>
+                    <option value={bairro}>{bairro}</option>
+                  </select>
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.bairro && errors.bairro.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="bairro" className="text-sm font-normal">
-              Bairro:
-            </label>
-            <select
-              id="bairro"
-              value={bairro}
-              onChange={(e) => setBairro(e.target.value)}  // Atualiza o bairro
-              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-            >
-              <option value={bairro}>{bairro || "Selecione um bairro"}</option>
-            </select>
-          </div>
+          {/* Logradouro */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="logradouro">Logradouro:</FormLabel>
+            <FormControl>
+              <Controller
+                name="logradouro"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="logradouro"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    value={logradouro}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.logradouro && errors.logradouro.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="logradouro" className="text-sm font-normal">
-              Logradouro:
-            </label>
-            <input
-              id="logradouro"
-              value={logradouro}
-              onChange={(e) => setLogradouro(e.target.value)}  // Atualiza o logradouro
-              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:border-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-            >
-            </input>
-          </div>
+          {/* Número */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="numero">Número:</FormLabel>
+            <FormControl>
+              <Controller
+                name="numero"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="numero"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.numero && errors.numero.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="numero" className="text-sm font-normal">
-              Número:
-            </label>
-            <Input id="numero" type="text" className="w-52 mt-1 text-black" />
-          </div>
+          {/* Email */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="email">Email:</FormLabel>
+            <FormControl>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="email"
+                    type="email"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.email && errors.email.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="email" className="text-sm font-normal">
-              Email:
-            </label>
-            <Input id="email" type="email" className="w-52 mt-1 text-black" />
-          </div>
-
-          <div className="px-2 focus-within:text-cyan-500">
-            <label htmlFor="inscricaoMunicipal" className="text-sm font-normal">
-              Inscrição Municipal:
-            </label>
-            <Input
-              id="inscricaoMunicipal"
-              type="text"
-              className="w-52 mt-1 text-black"
-            />
-          </div>
+          {/* Inscrição Municipal */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="inscricaoMunicipal">Inscrição Municipal:</FormLabel>
+            <FormControl>
+              <Controller
+                name="inscricaoMunicipal"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="inscricaoMunicipal"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.inscricaoMunicipal && errors.inscricaoMunicipal.message}</FormMessage>
+          </FormItem>
         </div>
+
         <div className="flex justify-end gap-4">
-          {/* Botão "Cancelar" chama o closeForm */}
           <Button onClick={closeForm} variant="destructive" className="w-20">
             Cancelar
           </Button>
-          <Button onClick={closeForm} className="w-20">
+          <Button type="submit" className="w-20">
             Salvar
           </Button>
         </div>
       </form>
-    );
-  };
-
-  return <FormEmpresa closeForm={() => { }} />;
+    </FormProvider>
+  );
 };
 
-export default Form;
+export default FormEmpresa;

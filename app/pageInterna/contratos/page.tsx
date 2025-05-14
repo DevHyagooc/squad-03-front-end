@@ -6,28 +6,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import FormFunc from "@/components/ContratoForm"
 import Link from "next/link"
 import React, { useState } from 'react';
+import FormContrato from "@/components/ContratoForm"
 
 export default function ContratosPage() {
   const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormFunc
-  
-    const handleButtonClick = () => {
-      setShowForm(true); // Exibe o formulário quando o botão for clicado
-    };
-  
-    const closeForm = () => {
-      setShowForm(false); // Fecha o formulário quando o botão de "Cancelar" for clicado
-    };
-  
+
+  const handleButtonClick = () => {
+    setShowForm(true); // Exibe o formulário quando o botão for clicado
+  };
+
+  const closeForm = () => {
+    setShowForm(false); // Fecha o formulário quando o botão de "Cancelar" for clicado
+  };
+
   return (
     <div className="flex flex-col gap-6 p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Contratos</h1>
-       
 
-{/* Aqui o DialogTrigger deve estar dentro do Dialog */}
+
+        {/* Aqui o DialogTrigger deve estar dentro do Dialog */}
         <Dialog open={showForm}>
           <DialogTrigger asChild>
             <Button onClick={handleButtonClick}>
@@ -39,7 +39,7 @@ export default function ContratosPage() {
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
             <DialogTitle className="text-2xl">Novo Contrato</DialogTitle>
-            <FormFunc />
+            <FormContrato closeForm={closeForm} />
           </DialogContent>
         </Dialog>
       </div>

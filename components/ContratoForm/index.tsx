@@ -1,90 +1,194 @@
+import { useForm, Controller, FormProvider } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho está correto
+import { formatDate } from "@/lib/formatData";
 
-const Form = () => {
-  interface FormFuncProps {
-    closeForm: () => void; // closeForm é uma função que não retorna nada
-  }
+const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
+  const methods = useForm({
+    defaultValues: {
+      prazo: "",
+      valorContrato: "",
+      orgaoContratante: "",
+      status: "Ativo",
+      criado: "",
+      representante: "",
+      responsavel: ""
+    }
+  });
 
-  const FormFunc: React.FC<FormFuncProps> = ({ closeForm }) => {
-    return (
-      <form className="space-y-4">
-        <div className="flex flex-wrap w-full gap-4 justify-center py-4">
-          <div className="px-2">
-            <label htmlFor="prazo" className="text-sm font-semibold">
-              Prazo do contrato:
-            </label>
-          <Input id="prazo" type="text" placeholder= "DD/MM/AAAA"className="w-52" />
-          </div>
+  const { control, handleSubmit, formState: { errors } } = methods;
 
-          <div className="px-2">
-            <label htmlFor="ValorContrato" className="text-sm font-semibold">
-              Valor do contrato:
-            </label>
-            <Input id="ValorContrato" type="text" className="w-52" />
-          </div>
+  const onSubmit = (data: any) => {
+    console.log(data);
+    closeForm();
+  };
 
-          <div className="px-2">
-            <label htmlFor="OrgaoContratante" className="text-sm font-semibold">
-              Orgão Contratante: 
-            </label>
-            <Input id="OrgaoContratante" type="text" className="w-52" />
-          </div>          
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex flex-wrap w-full gap-4 py-3 px-1 pl-2">
 
-          <div className="px-2">
-            <label htmlFor="status" className="text-sm font-semibold">
-              Status:
-            </label>
-            <br />
-            <select id="status" className="w-52 h-10 border border-stone-200 rounded-md">
-              <option value="status">Ativo</option>
-              <option value="status">Cancelado</option>
-              <option value="status">Encerrado</option>
-            </select>
-          </div>
+          {/* Prazo do contrato */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="prazo">Prazo do contrato:</FormLabel>
+            <FormControl>
+              <Controller
+                name="prazo"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="prazo"
+                    type="text"
+                    placeholder="DD/MM/AAAA"
+                    className="w-52 mt-1 text-black"
+                    value={field.value}
+                    onChange={(e) => field.onChange(formatDate(e.target.value))}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.prazo && errors.prazo.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2">
-            <label htmlFor="criado" className="text-sm font-semibold">
-              Criado em:
-            </label>
-            <Input id="criado" type="text" placeholder="DD/MM/AAAA" className="w-52" />
-            <br />
-           
-          </div>
+          {/* Valor do contrato */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="valorContrato">Valor do contrato:</FormLabel>
+            <FormControl>
+              <Controller
+                name="valorContrato"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="valorContrato"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.valorContrato && errors.valorContrato.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2">
-            <label htmlFor="representante" className="text-sm font-semibold">
-            Representante:
-            </label>
-            <Input id="representante" type="text" className="w-52" />
-            <br />
-            
-          </div>
+          {/* Orgão Contratante */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="orgaoContratante">Orgão Contratante:</FormLabel>
+            <FormControl>
+              <Controller
+                name="orgaoContratante"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="orgaoContratante"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.orgaoContratante && errors.orgaoContratante.message}</FormMessage>
+          </FormItem>
 
-          <div className="px-2">
-            <label htmlFor="responsavel" className="text-sm font-semibold">
-              Responsável pelo contrato:
-            </label> 
-            <Input id="responsavel" type="text" className="w-52" />
-            <br />
-            
-          </div>
+          {/* Status */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="status">Status:</FormLabel>
+            <FormControl>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    id="status"
+                    {...field}
+                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                  >
+                    <option value="Ativo">Ativo</option>
+                    <option value="Cancelado">Em Análise</option>
+                    <option value="Encerrado">Encerrado</option>
+                  </select>
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.status && errors.status.message}</FormMessage>
+          </FormItem>
+
+          {/* Criado em */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="criado">Criado em:</FormLabel>
+            <FormControl>
+              <Controller
+                name="criado"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="criado"
+                    type="text"
+                    placeholder="DD/MM/AAAA"
+                    className="w-52 mt-1 text-black"
+                    value={field.value}
+                    onChange={(e) => field.onChange(formatDate(e.target.value))}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.criado && errors.criado.message}</FormMessage>
+          </FormItem>
+
+          {/* Representante */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="representante">Representante:</FormLabel>
+            <FormControl>
+              <Controller
+                name="representante"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="representante"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.representante && errors.representante.message}</FormMessage>
+          </FormItem>
+
+          {/* Responsável */}
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="responsavel">Responsável pelo contrato:</FormLabel>
+            <FormControl>
+              <Controller
+                name="responsavel"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="responsavel"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.responsavel && errors.responsavel.message}</FormMessage>
+          </FormItem>
 
         </div>
+
         <div className="flex justify-end gap-4">
-          {/* Botão "Cancelar" chama o closeForm */}
           <Button onClick={closeForm} variant="destructive" className="w-20">
             Cancelar
           </Button>
-          <Button onClick={closeForm} className="w-20">
+          <Button type="submit" className="w-20">
             Salvar
           </Button>
         </div>
       </form>
-    );
-  };
-
-  return <FormFunc closeForm={() => {}} />;
+    </FormProvider>
+  );
 };
 
-export default Form;
+export default FormContrato;
