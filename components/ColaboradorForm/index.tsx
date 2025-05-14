@@ -2,6 +2,7 @@ import { FormProvider, useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho esteja correto
+import { formatCPF, formatPhone, formatDate } from "@/lib/formatData";
 
 interface FormColabProps {
    closeForm: () => void;
@@ -12,7 +13,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
       defaultValues: {
          nome: "",
          cpf: "",
-         funcao: "",
+         cargo: "",
          email: "",
          telefone: "",
          nascimento: "",
@@ -27,61 +28,6 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
    const onSubmit = (data: any) => {
       console.log(data);
       closeForm();
-   };
-
-   const formatCPF = (value: string) => {
-      // Remover tudo que não for número
-      const cleaned = value.replace(/\D/g, '');
-
-      // Limitar o CPF a 10 caracteres
-      const limited = cleaned.substring(0, 11);  // CPF tem 11 dígitos
-
-      // Adicionar formatação conforme a máscara
-      if (limited.length <= 3) {
-         return limited;
-      } else if (limited.length <= 6) {
-         return limited.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-      } else if (limited.length <= 9) {
-         return limited.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-      } else {
-         return limited.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
-      }
-   };
-   const formatPhone = (value: string) => {
-      // Remover tudo que não for número
-      const cleaned = value.replace(/\D/g, '');
-
-      // Limitar o telefone a 13 caracteres
-      const limited = cleaned.substring(0, 13);  // Número tem 13 dígitos (Com o DDI)
-
-      // Adicionar formatação conforme a máscara
-      if (limited.length <= 0) {
-         return limited;
-      } else if (limited.length <= 2) {
-         return limited.replace(/(\d{0})(\d{1,2})/, '$1($2');
-      } else if (limited.length <= 4) {
-         return limited.replace(/(\d{0})(\d{2})(\d{1,2})/, '$1($2) $3');
-      } else if (limited.length <= 9) {
-         return limited.replace(/(\d{0})(\d{2})(\d{2})(\d{1,5})/, '$1($2) $3 $4');
-      } else {
-         return limited.replace(/(\d{0})(\d{2})(\d{2})(\d{5})(\d{1,4})/, '$1($2) $3 $4-$5');
-      }
-   };
-   const formatDate = (value: string) => {
-      // Remover tudo que não for número
-      const cleaned = value.replace(/\D/g, '');
-
-      // Limitar a data a 8 caracteres
-      const limited = cleaned.substring(0, 8);  // Data tem 8 dígitos
-
-      // Adicionar formatação conforme a máscara
-      if (limited.length <= 2) {
-         return limited;
-      } else if (limited.length <= 4) {
-         return limited.replace(/(\d{2})(\d{1,2})/, '$1/$2');
-      } else {
-         return limited.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
-      }
    };
 
    return (
@@ -132,24 +78,24 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
                </FormItem>
 
                <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="funcao">Função do colaborador:</FormLabel>
+                  <FormLabel htmlFor="cargo">Cargo do colaborador:</FormLabel>
                   <FormControl>
                      <Controller
-                        name="funcao"
+                        name="cargo"
                         control={control}
                         render={({ field }) => (
                            <select
-                              id="funcao"
+                              id="cargo"
                               className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-sm"
                               {...field}
                            >
-                              <option value="" disabled>Escolha uma função...</option>
+                              <option value="" disabled>Escolha um cargo...</option>
                               <option value="Desenvolvedor Back-end">Desenvolvedor Back-end</option>
                            </select>
                         )}
                      />
                   </FormControl>
-                  <FormMessage>{errors.funcao && errors.funcao.message}</FormMessage>
+                  <FormMessage>{errors.cargo && errors.cargo.message}</FormMessage>
                </FormItem>
 
                <FormItem className="focus-within:text-cyan-500">

@@ -2,6 +2,7 @@ import { useForm, Controller, FormProvider } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho está correto
+import { formatDate } from "@/lib/formatData";
 
 const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const methods = useForm({
@@ -21,23 +22,6 @@ const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const onSubmit = (data: any) => {
     console.log(data);
     closeForm();
-  };
-
-  const formatDate = (value: string) => {
-    // Remover tudo que não for número
-    const cleaned = value.replace(/\D/g, '');
-
-    // Limitar a data a 8 caracteres
-    const limited = cleaned.substring(0, 8);  // Data tem 8 dígitos
-
-    // Adicionar formatação conforme a máscara
-    if (limited.length <= 2) {
-      return limited;
-    } else if (limited.length <= 4) {
-      return limited.replace(/(\d{2})(\d{1,2})/, '$1/$2');
-    } else {
-      return limited.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
-    }
   };
 
   return (

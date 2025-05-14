@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";  // Verifique se o caminho está correto
+import { formatCEP, formatCNPJ } from "@/lib/formatData";
 
 const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const methods = useForm({
@@ -54,42 +55,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const onSubmit = (data: any) => {
     console.log(data);
     closeForm();
-  };
-
-  const formatCNPJ = (value: string) => {
-    // Remover tudo que não for número
-    const cleaned = value.replace(/\D/g, '');
-
-    // Limitar o CEP a 8 caracteres
-    const limited = cleaned.substring(0, 14);  // CNPJ tem 14 dígitos
-
-    // Adicionar formatação conforme a máscara
-    if (limited.length <= 2) {
-      return limited;
-    } else if (limited.length <= 5) {
-      return limited.replace(/(\d{2})(\d{1,3})/, '$1.$2');
-    } else if (limited.length <= 8) {
-      return limited.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
-    } else if (limited.length <= 12) {
-      return limited.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
-    } else {
-      return limited.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
-    }
-  };
-
-  const formatCEP = (value: string) => {
-    // Remover tudo que não for número
-    const cleaned = value.replace(/\D/g, '');
-
-    // Limitar o CEP a 8 caracteres
-    const limited = cleaned.substring(0, 8);  // CEP tem 8 dígitos
-
-    // Adicionar formatação conforme a máscara
-    if (limited.length <= 5) {
-      return limited;
-    } else {
-      return limited.replace(/(\d{5})(\d{1,3})/, '$1-$2');
-    }
   };
 
   return (
