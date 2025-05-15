@@ -41,7 +41,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
         setMunicipio(localData.localidade);
         setBairro(localData.bairro);
         setLogradouro(localData.logradouro);
-        // Atualiza os campos automaticamente
+
         setValue("estado", localData.uf);
         setValue("municipio", localData.localidade);
         setValue("bairro", localData.bairro);
@@ -60,8 +60,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex flex-wrap w-full gap-4 py-3 px-1 pl-2">
-          {/* CNPJ */}
+        <p className="font-semibold text-xl pl-3 pt-1">Dados da Empresa</p>
+        <div className="flex flex-wrap w-full gap-4 pb-3 px-1 pl-2">
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
             <FormControl>
@@ -82,8 +82,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
           </FormItem>
-
-          {/* Razão Social */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="razaoSocial">Razão Social:</FormLabel>
             <FormControl>
@@ -102,8 +100,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.razaoSocial && errors.razaoSocial.message}</FormMessage>
           </FormItem>
-
-          {/* Nome Fantasia */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="nomeFantasia">Nome Fantasia:</FormLabel>
             <FormControl>
@@ -122,8 +118,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.nomeFantasia && errors.nomeFantasia.message}</FormMessage>
           </FormItem>
-
-          {/* CEP */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="cep">CEP:</FormLabel>
             <FormControl>
@@ -148,8 +142,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.cep && errors.cep.message}</FormMessage>
           </FormItem>
-
-          {/* Estado */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="estado">Estado:</FormLabel>
             <FormControl>
@@ -170,8 +162,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.estado && errors.estado.message}</FormMessage>
           </FormItem>
-
-          {/* Município */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="municipio">Município:</FormLabel>
             <FormControl>
@@ -192,8 +182,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.municipio && errors.municipio.message}</FormMessage>
           </FormItem>
-
-          {/* Bairro */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="bairro">Bairro:</FormLabel>
             <FormControl>
@@ -214,8 +202,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.bairro && errors.bairro.message}</FormMessage>
           </FormItem>
-
-          {/* Logradouro */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="logradouro">Logradouro:</FormLabel>
             <FormControl>
@@ -235,8 +221,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.logradouro && errors.logradouro.message}</FormMessage>
           </FormItem>
-
-          {/* Número */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="numero">Número:</FormLabel>
             <FormControl>
@@ -255,8 +239,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.numero && errors.numero.message}</FormMessage>
           </FormItem>
-
-          {/* Email */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="email">Email:</FormLabel>
             <FormControl>
@@ -275,8 +257,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.email && errors.email.message}</FormMessage>
           </FormItem>
-
-          {/* Inscrição Municipal */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="inscricaoMunicipal">Inscrição Municipal:</FormLabel>
             <FormControl>
@@ -294,6 +274,36 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               />
             </FormControl>
             <FormMessage>{errors.inscricaoMunicipal && errors.inscricaoMunicipal.message}</FormMessage>
+          </FormItem>
+        </div>
+        <p className="font-semibold text-xl pl-3 pt-1">Dados do Representante</p>
+
+
+
+
+
+
+
+        <div className="flex flex-wrap w-full gap-4 pb-3 px-1 pl-2">
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
+            <FormControl>
+              <Controller
+                name="cnpj"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="cnpj"
+                    type="text"
+                    placeholder="xx.xxx.xxx/xxxx-xx"
+                    className="w-52 mt-1 text-black"
+                    value={field.value}
+                    onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
           </FormItem>
         </div>
 

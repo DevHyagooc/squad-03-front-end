@@ -33,7 +33,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
    return (
       <FormProvider {...methods}>
          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="flex flex-wrap w-full gap-4 py-4 px-1 pl-2">
+            <div className="flex flex-wrap w-full gap-4 pb-3 pt-1 px-1 pl-2">
                <FormItem className="focus-within:text-cyan-500"> {/* Garantindo que focus-within esteja aqui */}
                   <FormLabel htmlFor="nome">Nome do Colaborador:</FormLabel>
                   <FormControl>

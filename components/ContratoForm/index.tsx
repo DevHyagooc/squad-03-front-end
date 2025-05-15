@@ -27,7 +27,7 @@ const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex flex-wrap w-full gap-4 py-3 px-1 pl-2">
+        <div className="flex flex-wrap w-full gap-4 pb-3 pt-1 px-1 pl-2">
 
           {/* Prazo do contrato */}
           <FormItem className="px-2 focus-within:text-cyan-500">

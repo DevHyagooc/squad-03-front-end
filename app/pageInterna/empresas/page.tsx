@@ -38,7 +38,7 @@ export default function ColaboradoresPage() {
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle className="text-md">Cadastrar Nova Empresa</DialogTitle>
+            <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
             <FormEmpresa closeForm={closeForm} />
 
           </DialogContent>
