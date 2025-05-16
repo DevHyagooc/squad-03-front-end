@@ -18,8 +18,7 @@ export default function ColaboradoresPage() {
   };
 
   const closeForm = () => {
-    setShowForm(false);  // Altere isso para setShowForm para fechar o formulário
-    console.log("Formulário fechado");
+    setShowForm(false);
   };
 
   return (

@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho esteja correto
 import { formatCPF, formatPhone, formatDate } from "@/lib/formatData";
+import { postColaborador } from "@/services/colaboradores";
 
 interface FormColabProps {
    closeForm: () => void;
@@ -25,8 +26,9 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
    // Expressão regular para validar um email
    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-   const onSubmit = (data: any) => {
-      console.log(data);
+   const onSubmit = (colaborador: any) => {
+      console.log(colaborador);
+      postColaborador(colaborador)
       closeForm();
    };
 
