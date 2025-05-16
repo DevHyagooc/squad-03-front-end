@@ -2,9 +2,16 @@ import { useState } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { getLocal } from "@/services/cep";  // Verifique se o caminho está correto
+import {
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { getLocal } from "@/services/cep";
 import { formatCEP, formatCNPJ } from "@/lib/formatData";
+
+const steps = ["Empresa", "Endereço", "Contato", "Representante", "Revisão"];
 
 const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const methods = useForm({
@@ -19,29 +26,38 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       logradouro: "",
       numero: "",
       email: "",
-      inscricaoMunicipal: ""
-    }
+      inscricaoMunicipal: "",
+      representanteNome: "",
+      representanteCpf: "",
+      representanteTelefone: "",
+    },
   });
 
-  const { control, handleSubmit, formState: { errors }, setValue } = methods;
-  const [cep, setCep] = useState<string>("");
-  const [estado, setEstado] = useState<string>("");
-  const [municipio, setMunicipio] = useState<string>("");
-  const [bairro, setBairro] = useState<string>("");
-  const [logradouro, setLogradouro] = useState<string>("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = methods;
+
+  const [step, setStep] = useState(0);
+
+  const handleNext = () => {
+    if (step < steps.length - 1) setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    if (step > 0) setStep(step - 1);
+  };
 
   const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.replace(/\D/g, '');
-    setCep(value);
+    setValue("cep", formatCEP(value));
 
-    if (value.length === 8) {  // Verifica se o CEP tem 8 caracteres
+    if (value.length === 8) {
       try {
         const localData = await getLocal(value);
-        setEstado(localData.uf);
-        setMunicipio(localData.localidade);
-        setBairro(localData.bairro);
-        setLogradouro(localData.logradouro);
-
         setValue("estado", localData.uf);
         setValue("municipio", localData.localidade);
         setValue("bairro", localData.bairro);
@@ -53,267 +69,239 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   };
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    console.log("Dados enviados:", data);
     closeForm();
   };
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <p className="font-semibold text-xl pl-3 pt-1">Dados da Empresa</p>
-        <div className="flex flex-wrap w-full gap-4 pb-3 px-1 pl-2">
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
-            <FormControl>
-              <Controller
-                name="cnpj"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="cnpj"
-                    type="text"
-                    placeholder="xx.xxx.xxx/xxxx-xx"
-                    className="w-52 mt-1 text-black"
-                    value={field.value}
-                    onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="razaoSocial">Razão Social:</FormLabel>
-            <FormControl>
-              <Controller
-                name="razaoSocial"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="razaoSocial"
-                    type="text"
-                    className="w-52 mt-1 text-black"
-                    {...field}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.razaoSocial && errors.razaoSocial.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="nomeFantasia">Nome Fantasia:</FormLabel>
-            <FormControl>
-              <Controller
-                name="nomeFantasia"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="nomeFantasia"
-                    type="text"
-                    className="w-52 mt-1 text-black"
-                    {...field}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.nomeFantasia && errors.nomeFantasia.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="cep">CEP:</FormLabel>
-            <FormControl>
-              <Controller
-                name="cep"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="cnpj"
-                    type="text"
-                    placeholder="xxxxx-xxx"
-                    className="w-52 mt-1 text-black"
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(formatCEP(e.target.value));
-                      console.log(e);
-                      handleCepChange(e);
-                    }}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.cep && errors.cep.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="estado">Estado:</FormLabel>
-            <FormControl>
-              <Controller
-                name="estado"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    id="estado"
-                    {...field}
-                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
-                  >
-                    <option value="">Selecione um estado</option>
-                    <option value={estado}>{estado}</option>
-                  </select>
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.estado && errors.estado.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="municipio">Município:</FormLabel>
-            <FormControl>
-              <Controller
-                name="municipio"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    id="municipio"
-                    {...field}
-                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
-                  >
-                    <option value="">Selecione um município</option>
-                    <option value={municipio}>{municipio}</option>
-                  </select>
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.municipio && errors.municipio.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="bairro">Bairro:</FormLabel>
-            <FormControl>
-              <Controller
-                name="bairro"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    id="bairro"
-                    {...field}
-                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
-                  >
-                    <option value="">Selecione um bairro</option>
-                    <option value={bairro}>{bairro}</option>
-                  </select>
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.bairro && errors.bairro.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="logradouro">Logradouro:</FormLabel>
-            <FormControl>
-              <Controller
-                name="logradouro"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="logradouro"
-                    type="text"
-                    className="w-52 mt-1 text-black"
-                    value={logradouro}
-                    onChange={(e) => field.onChange(e.target.value)}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.logradouro && errors.logradouro.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="numero">Número:</FormLabel>
-            <FormControl>
-              <Controller
-                name="numero"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="numero"
-                    type="text"
-                    className="w-52 mt-1 text-black"
-                    {...field}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.numero && errors.numero.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="email">Email:</FormLabel>
-            <FormControl>
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="email"
-                    type="email"
-                    className="w-52 mt-1 text-black"
-                    {...field}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.email && errors.email.message}</FormMessage>
-          </FormItem>
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="inscricaoMunicipal">Inscrição Municipal:</FormLabel>
-            <FormControl>
-              <Controller
-                name="inscricaoMunicipal"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="inscricaoMunicipal"
-                    type="text"
-                    className="w-52 mt-1 text-black"
-                    {...field}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.inscricaoMunicipal && errors.inscricaoMunicipal.message}</FormMessage>
-          </FormItem>
-        </div>
-        <p className="font-semibold text-xl pl-3 pt-1">Dados do Representante</p>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <h2 className="text-xl font-bold">{steps[step]}</h2>
 
+        {/* Step 0: Empresa */}
+        {step === 0 && (
+          <div className="flex flex-wrap gap-4">
+            <FormItem>
+              <FormLabel>CNPJ:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="cnpj"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="xx.xxx.xxx/xxxx-xx"
+                      value={field.value}
+                      onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
 
+            <FormItem>
+              <FormLabel>Razão Social:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="razaoSocial"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
 
+            <FormItem>
+              <FormLabel>Nome Fantasia:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="nomeFantasia"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
 
+        {/* Step 1: Endereço */}
+        {step === 1 && (
+          <div className="flex flex-wrap gap-4">
+            <FormItem>
+              <FormLabel>CEP:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="cep"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      placeholder="xxxxx-xxx"
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(formatCEP(e.target.value));
+                        handleCepChange(e);
+                      }}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
 
+            <FormItem>
+              <FormLabel>Estado:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="estado"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
 
+            <FormItem>
+              <FormLabel>Município:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="municipio"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
 
-        <div className="flex flex-wrap w-full gap-4 pb-3 px-1 pl-2">
-          <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
-            <FormControl>
-              <Controller
-                name="cnpj"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    id="cnpj"
-                    type="text"
-                    placeholder="xx.xxx.xxx/xxxx-xx"
-                    className="w-52 mt-1 text-black"
-                    value={field.value}
-                    onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
-          </FormItem>
-        </div>
+            <FormItem>
+              <FormLabel>Bairro:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="bairro"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
 
-        <div className="flex justify-end gap-4">
-          <Button onClick={closeForm} variant="destructive" className="w-20">
-            Cancelar
+            <FormItem>
+              <FormLabel>Logradouro:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="logradouro"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Número:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="numero"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+
+        {/* Step 2: Contato */}
+        {step === 2 && (
+          <div className="flex flex-wrap gap-4">
+            <FormItem>
+              <FormLabel>Email:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => <Input type="email" {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Inscrição Municipal:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="inscricaoMunicipal"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+
+        {/* Step 3: Representante */}
+        {step === 3 && (
+          <div className="flex flex-wrap gap-4">
+            <FormItem>
+              <FormLabel>Nome do Representante:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="representanteNome"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>CPF:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="representanteCpf"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Telefone:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="representanteTelefone"
+                  control={control}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+
+        {/* Step 4: Revisão */}
+        {step === 4 && (
+          <div className="text-sm bg-slate-100 p-4 rounded">
+            <pre>{JSON.stringify(getValues(), null, 2)}</pre>
+          </div>
+        )}
+
+        {/* Navegação */}
+        <div className="flex justify-between pt-6">
+          <Button type="button" onClick={handleBack} disabled={step === 0}>
+            Voltar
           </Button>
-          <Button type="submit" className="w-20">
-            Salvar
-          </Button>
+
+          {step < steps.length - 1 ? (
+            <Button type="button" onClick={handleNext}>
+              Próximo
+            </Button>
+          ) : (
+            <Button type="submit">Enviar</Button>
+          )}
         </div>
       </form>
     </FormProvider>
