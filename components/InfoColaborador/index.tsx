@@ -1,12 +1,4 @@
-import { getColaboradorId } from "@/services/colaboradores";
-import { useState, useEffect } from "react";
-import Loading from "@/components/loading/index";
 import { Button } from "../ui/button";
-
-interface FormColabProps {
-   closeForm: () => void;
-   idColaborador: string;
-}
 
 interface Colaborador {
    idFuncionario: string;
@@ -16,33 +8,12 @@ interface Colaborador {
    email: string;
    nascimento: string;
 }
+interface FormColabProps {
+   closeForm: () => void;
+   colaborador: Colaborador
+}
 
-const InfoColab: React.FC<FormColabProps> = ({ closeForm, idColaborador }) => {
-   const [colaborador, setColaborador] = useState<Colaborador | null>(null);
-   const [loading, setLoading] = useState<boolean>(false);
-
-   useEffect(() => {
-      const fetchColaborador = async () => {
-         setLoading(true);
-         try {
-            const colaboradorData = await getColaboradorId(idColaborador);
-            setColaborador(colaboradorData);
-         } catch (error) {
-            console.error("Erro ao buscar colaborador:", error);
-         } finally {
-            setLoading(false);
-         }
-      };
-
-      fetchColaborador();
-   }, [idColaborador]);
-   if (loading) {
-      return <Loading />;
-   }
-
-   if (!colaborador) {
-      return <div>Colaborador não encontrado.</div>;
-   }
+const InfoColab: React.FC<FormColabProps> = ({ closeForm, colaborador }) => {
 
    return (
       <div>

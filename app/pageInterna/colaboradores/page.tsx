@@ -8,7 +8,7 @@ import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } f
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
 import React, { useEffect, useState } from 'react';
-import { getColaboradorList } from "@/services/colaboradores";
+import { getColaboradorId, getColaboradorList } from "@/services/colaboradores";
 import Loading from "@/components/loading/index";
 import InfoColab from "@/components/InfoColaborador"
 
@@ -21,18 +21,23 @@ interface Colaborador {
   nascimento: string;
 }
 
+
+
+
+
 export default function ColaboradoresPage() {
   const [showForm, setShowForm] = useState(false);
-  const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
+  const [listColaboradores, setListColaboradores] = useState<Colaborador[]>([]);
   const [loading, setLoading] = useState(false);
+  const [colaborador, setColaborador] = useState<Colaborador | null>(null);
 
   const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
 
-  const fetchColaboradores = async () => {
+  const fetchListColaboradores = async () => {
     setLoading(true);  // Ativa o loading
     try {
       const colaboradoresData = await getColaboradorList();
-      setColaboradores(colaboradoresData);
+      setListColaboradores(colaboradoresData);
     } catch (error) {
       console.error("Erro ao buscar colaboradores:", error);
     } finally {
@@ -49,22 +54,35 @@ export default function ColaboradoresPage() {
   };
 
   const submitForm = () => {
-    fetchColaboradores();
+    fetchListColaboradores();
     setShowForm(false);
   };
 
   // Lógica para buscar colaboradores
   useEffect(() => {
-    fetchColaboradores();
+    fetchListColaboradores();
   }, []);
 
   // Função para abrir o Dialog de informações do colaborador
   const openInfoDialog = (colaborador: Colaborador) => {
     setSelectedColaborador(colaborador);
+    fetchColaborador(colaborador.idFuncionario)
   };
 
   const closeInfoDialog = () => {
     setSelectedColaborador(null);
+  };
+
+  const fetchColaborador = async (idColaborador: String) => {
+    setLoading(true);
+    try {
+      const colaboradorData = await getColaboradorId(idColaborador);
+      setColaborador(colaboradorData);
+    } catch (error) {
+      console.error("Erro ao buscar colaborador:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -145,7 +163,7 @@ export default function ColaboradoresPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {colaboradores.map((Colaborador) => (
+                {listColaboradores.map((Colaborador) => (
                   <TableRow key={Colaborador.idFuncionario}>
                     <TableCell>{`CO-${Colaborador.idFuncionario}`}</TableCell>
                     <TableCell className="max-w-[150px] truncate">{Colaborador.nome}</TableCell>
@@ -179,7 +197,7 @@ export default function ColaboradoresPage() {
         <Dialog open={Boolean(selectedColaborador)} onOpenChange={() => closeInfoDialog()}>
           <DialogContent>
             <DialogTitle className="text-2xl">Informações do Colaborador</DialogTitle>
-            <InfoColab closeForm={closeInfoDialog} idColaborador={selectedColaborador.idFuncionario} />
+            <InfoColab closeForm={closeInfoDialog} colaborador={selectedColaborador} />
           </DialogContent>
         </Dialog>
       )}
