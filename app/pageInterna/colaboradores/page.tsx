@@ -54,8 +54,9 @@ export default function ColaboradoresPage() {
   };
 
   const submitForm = () => {
-    fetchListColaboradores();
     setShowForm(false);
+    fetchListColaboradores();
+    fetchListColaboradores();
   };
 
   // Lógica para buscar colaboradores
@@ -66,24 +67,12 @@ export default function ColaboradoresPage() {
   // Função para abrir o Dialog de informações do colaborador
   const openInfoDialog = (colaborador: Colaborador) => {
     setSelectedColaborador(colaborador);
-    fetchColaborador(colaborador.idFuncionario)
   };
 
   const closeInfoDialog = () => {
     setSelectedColaborador(null);
   };
 
-  const fetchColaborador = async (idColaborador: String) => {
-    setLoading(true);
-    try {
-      const colaboradorData = await getColaboradorId(idColaborador);
-      setColaborador(colaboradorData);
-    } catch (error) {
-      console.error("Erro ao buscar colaborador:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex flex-col gap-6 p-8">

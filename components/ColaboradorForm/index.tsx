@@ -29,7 +29,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
 
    const handleFormSubmit: SubmitHandler<any> = (colaborador) => {
       postColaborador(colaborador)
-      onSubmit(colaborador); // Chama a função onSubmit com os dados do formulário
+      onSubmit(colaborador);
       closeForm();
    };
 
