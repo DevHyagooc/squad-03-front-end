@@ -4,14 +4,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
+import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
-import Link from "next/link"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getColaboradorList } from "@/services/colaboradores";
+import Loading from "@/components/loading/index";
+import InfoColab from "@/components/InfoColaborador"
+
+interface Colaborador {
+  idFuncionario: string;
+  nome: string;
+  cargo: string;
+  telefone: string;
+  email: string;
+  nascimento: string;
+}
 
 export default function ColaboradoresPage() {
   const [showForm, setShowForm] = useState(false);
+  const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
+
+  const fetchColaboradores = async () => {
+    setLoading(true);  // Ativa o loading
+    try {
+      const colaboradoresData = await getColaboradorList();
+      setColaboradores(colaboradoresData);
+    } catch (error) {
+      console.error("Erro ao buscar colaboradores:", error);
+    } finally {
+      setLoading(false);  // Desativa o loading
+    }
+  };
 
   const handleButtonClick = () => {
     setShowForm(true);
@@ -19,6 +46,25 @@ export default function ColaboradoresPage() {
 
   const closeForm = () => {
     setShowForm(false);
+  };
+
+  const submitForm = () => {
+    fetchColaboradores();
+    setShowForm(false);
+  };
+
+  // Lógica para buscar colaboradores
+  useEffect(() => {
+    fetchColaboradores();
+  }, []);
+
+  // Função para abrir o Dialog de informações do colaborador
+  const openInfoDialog = (colaborador: Colaborador) => {
+    setSelectedColaborador(colaborador);
+  };
+
+  const closeInfoDialog = () => {
+    setSelectedColaborador(null);
   };
 
   return (
@@ -38,15 +84,12 @@ export default function ColaboradoresPage() {
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
             <DialogTitle className="text-2xl">Cadastrar Novo Colaborador</DialogTitle>
-            <FormColab closeForm={closeForm} />
+            <FormColab closeForm={closeForm} onSubmit={submitForm} />
           </DialogContent>
         </Dialog>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtros</CardTitle>
-        </CardHeader>
+      <Card className="border-none pt-1">
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
@@ -86,103 +129,60 @@ export default function ColaboradoresPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Nome do Entregável</TableHead>
-                <TableHead>Contrato</TableHead>
-                <TableHead>Data de Entrega</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                {
-                  id: "ENT-001",
-                  name: "Relatório Mensal",
-                  contract: "Contrato de Manutenção Predial",
-                  date: "15/04/2025",
-                  status: "Em andamento",
-                  responsible: "João Silva",
-                },
-                {
-                  id: "ENT-002",
-                  name: "Instalação de Equipamentos",
-                  contract: "Fornecimento de Equipamentos",
-                  date: "20/04/2025",
-                  status: "Planejado",
-                  responsible: "Maria Santos",
-                },
-                {
-                  id: "ENT-003",
-                  name: "Treinamento da Equipe",
-                  contract: "Serviços de Consultoria",
-                  date: "25/04/2025",
-                  status: "Planejado",
-                  responsible: "Carlos Oliveira",
-                },
-                {
-                  id: "ENT-004",
-                  name: "Documentação Técnica",
-                  contract: "Contrato de Prestação de Serviços",
-                  date: "10/04/2025",
-                  status: "Concluído",
-                  responsible: "Ana Pereira",
-                },
-                {
-                  id: "ENT-005",
-                  name: "Relatório de Qualidade",
-                  contract: "Contrato de Fornecimento",
-                  date: "05/04/2025",
-                  status: "Atrasado",
-                  responsible: "Pedro Costa",
-                },
-              ].map((deliverable) => (
-                <TableRow key={deliverable.id}>
-                  <TableCell>{deliverable.id}</TableCell>
-                  <TableCell>{deliverable.name}</TableCell>
-                  <TableCell>{deliverable.contract}</TableCell>
-                  <TableCell className="flex items-center gap-1">
-                    <CalendarDays className="h-3 w-3" />
-                    {deliverable.date}
-                  </TableCell>
-                  <TableCell>
-                    <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${deliverable.status === "Concluído"
-                        ? "bg-green-100 text-green-800"
-                        : deliverable.status === "Em andamento"
-                          ? "bg-blue-100 text-blue-800"
-                          : deliverable.status === "Planejado"
-                            ? "bg-gray-100 text-gray-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                    >
-                      {deliverable.status}
-                    </div>
-                  </TableCell>
-                  <TableCell>{deliverable.responsible}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <FileText className="h-4 w-4" />
-                      </Button>
-                      <Link href={`/entregaveis/${deliverable.id}`}>
-                        <Button variant="outline" size="sm">
-                          Detalhes
-                        </Button>
-                      </Link>
-                    </div>
-                  </TableCell>
+          {/* Mostra o loading enquanto os colaboradores estão sendo carregados */}
+          {loading ? (
+            <Loading />
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Nome do Colaborador</TableHead>
+                  <TableHead>Cargo</TableHead>
+                  <TableHead>Telefone</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {colaboradores.map((Colaborador) => (
+                  <TableRow key={Colaborador.idFuncionario}>
+                    <TableCell>{`CO-${Colaborador.idFuncionario}`}</TableCell>
+                    <TableCell className="max-w-[150px] truncate">{Colaborador.nome}</TableCell>
+                    <TableCell>{Colaborador.cargo}</TableCell>
+                    <TableCell>{Colaborador.telefone}</TableCell>
+                    <TableCell>{Colaborador.email}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {/* Agora o Dialog é aberto para um colaborador específico */}
+                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(Colaborador)}>
+                          <Info className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
-    </div>
-  )
-}
 
+      {/* Dialog para exibir as informações do colaborador */}
+      {selectedColaborador && (
+        <Dialog open={Boolean(selectedColaborador)} onOpenChange={() => closeInfoDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl">Informações do Colaborador</DialogTitle>
+            <InfoColab closeForm={closeInfoDialog} idColaborador={selectedColaborador.idFuncionario} />
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}

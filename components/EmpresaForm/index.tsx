@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";  // Verifique se o caminho está correto
-import { formatCEP, formatCNPJ } from "@/lib/formatData";
+import { formatCEP, formatCNPJ, formatCPF } from "@/lib/formatData";
 
 const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const methods = useForm({
@@ -19,7 +19,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       logradouro: "",
       numero: "",
       email: "",
-      inscricaoMunicipal: ""
+      inscricaoMunicipal: "",
+      cpfRepresentante: ""
     }
   });
 
@@ -286,24 +287,24 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
         <div className="flex flex-wrap w-full gap-4 pb-3 px-1 pl-2">
           <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
+            <FormLabel htmlFor="cpfRepresentante">CPF:</FormLabel>
             <FormControl>
               <Controller
-                name="cnpj"
+                name="cpfRepresentante"
                 control={control}
                 render={({ field }) => (
                   <Input
-                    id="cnpj"
+                    id="cpfRepresentante"
                     type="text"
-                    placeholder="xx.xxx.xxx/xxxx-xx"
+                    placeholder="xxx.xxx.xxx-xx"
                     className="w-52 mt-1 text-black"
                     value={field.value}
-                    onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
+                    onChange={(e) => field.onChange(formatCPF(e.target.value))}
                   />
                 )}
               />
             </FormControl>
-            <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
+            <FormMessage>{errors.cpfRepresentante && errors.cpfRepresentante.message}</FormMessage>
           </FormItem>
         </div>
 
