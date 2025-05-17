@@ -1,3 +1,4 @@
+// src/components/FormEmpresa.tsx
 import { useState } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
@@ -9,14 +10,34 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";
-import { formatCEP, formatCNPJ } from "@/lib/formatData";
+import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
 
-const steps = ["Empresa", "Endereço", "Contato", "Representante", "Revisão"];
+const steps = ["Empresa", "Endereço", "Contato", "Representante"];
+
+type FormData = {
+  cnpj: string;
+  inscricaoMunicipal: string;
+  razaoSocial: string;
+  nomeFantasia: string;
+  cep: string;
+  estado: string;
+  municipio: string;
+  bairro: string;
+  logradouro: string;
+  numero: string;
+  complemento: string;
+  email: string;
+  telefone: string;
+  representanteNome: string;
+  representanteCpf: string;
+  representanteTelefone: string;
+};
 
 const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
-  const methods = useForm({
+  const methods = useForm<FormData>({
     defaultValues: {
       cnpj: "",
+      inscricaoMunicipal: "",
       razaoSocial: "",
       nomeFantasia: "",
       cep: "",
@@ -25,73 +46,116 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       bairro: "",
       logradouro: "",
       numero: "",
+      complemento: "",
       email: "",
-      inscricaoMunicipal: "",
+      telefone: "",
       representanteNome: "",
       representanteCpf: "",
       representanteTelefone: "",
     },
+    mode: "onChange",
   });
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    watch,
     setValue,
-    getValues,
+    formState: { errors, isValid },
+    trigger,
   } = methods;
 
+  // Observa todos os valores do formulário
+  const formValues = watch();
   const [step, setStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleNext = () => {
-    if (step < steps.length - 1) setStep(step + 1);
+  const handleNext = async () => {
+    // Valida os campos do passo atual antes de avançar
+    const fields = stepsFields[step];
+    const isValidStep = await trigger(fields as any);
+    
+    if (isValidStep && step < steps.length - 1) {
+      setStep(step + 1);
+    }
   };
 
   const handleBack = () => {
-    if (step > 0) setStep(step - 1);
+    if (step > 0) {
+      setStep(step - 1);
+    }
   };
 
-  const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setValue("cep", formatCEP(value));
-
-    if (value.length === 8) {
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digits = e.target.value.replace(/\D/g, "");
+    const formattedCep = formatCEP(digits);
+    setValue("cep", formattedCep, { shouldValidate: true });
+    
+    if (digits.length === 8) {
       try {
-        const localData = await getLocal(value);
-        setValue("estado", localData.uf);
-        setValue("municipio", localData.localidade);
-        setValue("bairro", localData.bairro);
-        setValue("logradouro", localData.logradouro);
-      } catch (error) {
-        console.error("Erro ao buscar o local:", error);
+        const local = await getLocal(digits);
+        setValue("estado", local.uf, { shouldValidate: true });
+        setValue("municipio", local.localidade, { shouldValidate: true });
+        setValue("bairro", local.bairro, { shouldValidate: true });
+        setValue("logradouro", local.logradouro, { shouldValidate: true });
+      } catch (err) {
+        console.error("Erro ao buscar CEP:", err);
       }
     }
   };
 
-  const onSubmit = (data: any) => {
-    console.log("Dados enviados:", data);
-    closeForm();
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    try {
+      console.log("Dados enviados:", data);
+      // Simula uma requisição API
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      closeForm();
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  // Campos requeridos para validação em cada step
+  const stepsFields = [
+    ["cnpj", "razaoSocial"], // Step 0
+    ["cep", "logradouro", "numero", "municipio", "estado"], // Step 1
+    ["email", "telefone"], // Step 2
+    ["representanteNome", "representanteCpf"], // Step 3
+  ];
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <h2 className="text-xl font-bold">{steps[step]}</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold">{steps[step]}</h2>
+          <span className="text-sm text-gray-500">Passo {step + 1} de {steps.length}</span>
+        </div>
 
-        {/* Step 0: Empresa */}
+        {/* Progress bar */}
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div 
+            className="bg-cyan-500 h-2.5 rounded-full transition-all duration-300" 
+            style={{ width: `${((step + 1) / 4) * 100}%` }}
+          ></div>
+        </div>
+
+        {/* STEP 0: Empresa */}
         {step === 0 && (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem>
-              <FormLabel>CNPJ:</FormLabel>
+              <FormLabel>CNPJ*</FormLabel>
               <FormControl>
                 <Controller
                   name="cnpj"
                   control={control}
+                  rules={{ required: "CNPJ é obrigatório" }}
                   render={({ field }) => (
                     <Input
-                      type="text"
+                      {...field}
                       placeholder="xx.xxx.xxx/xxxx-xx"
-                      value={field.value}
                       onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
                     />
                   )}
@@ -101,10 +165,10 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Razão Social:</FormLabel>
+              <FormLabel>Inscrição Municipal</FormLabel>
               <FormControl>
                 <Controller
-                  name="razaoSocial"
+                  name="inscricaoMunicipal"
                   control={control}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -113,7 +177,20 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Nome Fantasia:</FormLabel>
+              <FormLabel>Razão Social*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="razaoSocial"
+                  control={control}
+                  rules={{ required: "Razão social é obrigatória" }}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Nome Fantasia</FormLabel>
               <FormControl>
                 <Controller
                   name="nomeFantasia"
@@ -126,19 +203,20 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
           </div>
         )}
 
-        {/* Step 1: Endereço */}
+        {/* STEP 1: Endereço */}
         {step === 1 && (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem>
-              <FormLabel>CEP:</FormLabel>
+              <FormLabel>CEP*</FormLabel>
               <FormControl>
                 <Controller
                   name="cep"
                   control={control}
+                  rules={{ required: "CEP é obrigatório" }}
                   render={({ field }) => (
                     <Input
+                      {...field}
                       placeholder="xxxxx-xxx"
-                      value={field.value}
                       onChange={(e) => {
                         field.onChange(formatCEP(e.target.value));
                         handleCepChange(e);
@@ -151,10 +229,36 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Estado:</FormLabel>
+              <FormLabel>Logradouro*</FormLabel>
               <FormControl>
                 <Controller
-                  name="estado"
+                  name="logradouro"
+                  control={control}
+                  rules={{ required: "Logradouro é obrigatório" }}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Número*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="numero"
+                  control={control}
+                  rules={{ required: "Número é obrigatório" }}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Complemento</FormLabel>
+              <FormControl>
+                <Controller
+                  name="complemento"
                   control={control}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -163,19 +267,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Município:</FormLabel>
-              <FormControl>
-                <Controller
-                  name="municipio"
-                  control={control}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-
-            <FormItem>
-              <FormLabel>Bairro:</FormLabel>
+              <FormLabel>Bairro</FormLabel>
               <FormControl>
                 <Controller
                   name="bairro"
@@ -187,11 +279,12 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Logradouro:</FormLabel>
+              <FormLabel>Município*</FormLabel>
               <FormControl>
                 <Controller
-                  name="logradouro"
+                  name="municipio"
                   control={control}
+                  rules={{ required: "Município é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
                 />
               </FormControl>
@@ -199,11 +292,12 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Número:</FormLabel>
+              <FormLabel>Estado*</FormLabel>
               <FormControl>
                 <Controller
-                  name="numero"
+                  name="estado"
                   control={control}
+                  rules={{ required: "Estado é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
                 />
               </FormControl>
@@ -212,15 +306,22 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
           </div>
         )}
 
-        {/* Step 2: Contato */}
+        {/* STEP 2: Contato */}
         {step === 2 && (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem>
-              <FormLabel>Email:</FormLabel>
+              <FormLabel>Email*</FormLabel>
               <FormControl>
                 <Controller
                   name="email"
                   control={control}
+                  rules={{ 
+                    required: "Email é obrigatório",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Email inválido"
+                    }
+                  }}
                   render={({ field }) => <Input type="email" {...field} />}
                 />
               </FormControl>
@@ -228,12 +329,18 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>Inscrição Municipal:</FormLabel>
+              <FormLabel>Telefone*</FormLabel>
               <FormControl>
                 <Controller
-                  name="inscricaoMunicipal"
+                  name="telefone"
                   control={control}
-                  render={({ field }) => <Input {...field} />}
+                  rules={{ required: "Telefone é obrigatório" }}
+                  render={({ field }) => (
+                    <Input 
+                      {...field} 
+                      onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                    />
+                  )}
                 />
               </FormControl>
               <FormMessage />
@@ -241,15 +348,16 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
           </div>
         )}
 
-        {/* Step 3: Representante */}
+        {/* STEP 3: Representante */}
         {step === 3 && (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem>
-              <FormLabel>Nome do Representante:</FormLabel>
+              <FormLabel>Nome do Representante*</FormLabel>
               <FormControl>
                 <Controller
                   name="representanteNome"
                   control={control}
+                  rules={{ required: "Nome do representante é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
                 />
               </FormControl>
@@ -257,52 +365,91 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem>
-              <FormLabel>CPF:</FormLabel>
+              <FormLabel>CPF*</FormLabel>
               <FormControl>
                 <Controller
                   name="representanteCpf"
                   control={control}
-                  render={({ field }) => <Input {...field} />}
+                  rules={{ required: "CPF é obrigatório" }}
+                  render={({ field }) => (
+                    <Input 
+                      {...field} 
+                      onChange={(e) => field.onChange(formatCPF(e.target.value))}
+                    />
+                  )}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
 
             <FormItem>
-              <FormLabel>Telefone:</FormLabel>
+              <FormLabel>Telefone</FormLabel>
               <FormControl>
                 <Controller
                   name="representanteTelefone"
                   control={control}
-                  render={({ field }) => <Input {...field} />}
+                  render={({ field }) => (
+                    <Input 
+                      {...field} 
+                      onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                    />
+                  )}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           </div>
         )}
+        {/* NAVEGAÇÃO */}
+        
+<div className="flex justify-between pt-6 border-t">
+  {step === 0 ? (
+    <Button 
+      type="button" 
+      variant="destructive" 
+      onClick={closeForm}
+      className="text-white bg-black"
+      
+    >
+      Cancelar
+    </Button>
+  ) : (
+    <Button 
+      type="button" 
+      variant="outline" 
+      onClick={handleBack}
+    >
+      Voltar
+    </Button>
+  )}
 
-        {/* Step 4: Revisão */}
-        {step === 4 && (
-          <div className="text-sm bg-slate-100 p-4 rounded">
-            <pre>{JSON.stringify(getValues(), null, 2)}</pre>
-          </div>
-        )}
-
-        {/* Navegação */}
-        <div className="flex justify-between pt-6">
-          <Button type="button" onClick={handleBack} disabled={step === 0}>
-            Voltar
-          </Button>
-
-          {step < steps.length - 1 ? (
-            <Button type="button" onClick={handleNext}>
-              Próximo
-            </Button>
-          ) : (
-            <Button type="submit">Enviar</Button>
-          )}
-        </div>
+  {step < steps.length - 1 ? (
+    <Button 
+      type="button" 
+      onClick={handleNext}
+      disabled={!isValid}
+      className="bg-cyan-500 hover:bg-cyan-700"
+    >
+      Próximo
+    </Button>
+  ) : (
+    <Button 
+      type="submit" 
+      disabled={isSubmitting}
+      className="bg-cyan-500 hover:bg-cyan-700"
+    >
+      {isSubmitting ? (
+        <>
+          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Salvando...
+        </>
+      ) : 'Salvar'}
+    </Button>
+  )}
+</div>
       </form>
     </FormProvider>
   );
