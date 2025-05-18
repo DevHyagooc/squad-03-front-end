@@ -1,11 +1,15 @@
 const BASE_URL = 'https://squad-03-back-end.onrender.com';
+const user = 'admin'
+const password = 'admin123'
+const auth = btoa(`${user}:${password}`);
 
 export const postColaborador = async (colaborador) => {
    try {
-      const response = await fetch(`${BASE_URL}/api/funcionarios`, {
+      const response = await fetch(`${BASE_URL}/api/colaboradores`, {
          method: "POST",
          headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`
          },
          body: JSON.stringify({
             nome: colaborador.nome,
@@ -16,9 +20,63 @@ export const postColaborador = async (colaborador) => {
          })
       });
       if (!response.ok) {
-         throw new Error('Erro ao criar colaborador');
+         throw new Error('Erro ao criar colaborador!');
       }
       return response.json();
+   } catch (error) {
+      console.error('Erro na requisição GET:', error);
+      throw error;
+   }
+};
+
+export const getColaboradorList = async () => {
+   try {
+      const response = await fetch(`${BASE_URL}/api/colaboradores`, {
+         headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`
+         }
+      });
+      if (!response.ok) {
+         throw new Error('Erro ao obter lista de colaboradores!');
+      }
+      return response.json();
+   } catch (error) {
+      console.error('Erro na requisição GET:', error);
+      throw error;
+   }
+};
+export const getColaboradorId = async (id) => {
+   try {
+      const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
+         headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`
+         }
+      });
+      if (!response.ok) {
+         throw new Error('Erro ao obter colaborador!');
+      }
+      return response.json();
+   } catch (error) {
+      console.error('Erro na requisição GET:', error);
+      throw error;
+   }
+};
+
+export const deleteColaborador = async (id_colaborador) => {
+   try {
+      const response = await fetch(`${BASE_URL}/api/colaboradores/${id_colaborador}`, {
+         method: 'DELETE',
+         headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`
+         }
+      });
+      if (!response.ok) {
+         throw new Error('Erro ao deletar colaborador!');
+      }
+      return 'Usuário deletado!';
    } catch (error) {
       console.error('Erro na requisição GET:', error);
       throw error;

@@ -2,14 +2,9 @@ import { useState } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import {
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { getLocal } from "@/services/cep";
-import { formatCEP, formatCNPJ } from "@/lib/formatData";
+import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { getLocal } from "@/services/cep";  // Verifique se o caminho está correto
+import { formatCEP, formatCNPJ, formatCPF } from "@/lib/formatData";
 
 const steps = ["Empresa", "Endereço", "Contato", "Representante", "Revisão"];
 
@@ -173,7 +168,6 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               </FormControl>
               <FormMessage />
             </FormItem>
-
             <FormItem>
               <FormLabel>Bairro:</FormLabel>
               <FormControl>
