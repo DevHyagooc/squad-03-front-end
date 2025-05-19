@@ -8,9 +8,9 @@ import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } f
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
 import React, { useEffect, useState } from 'react';
-import { getColaboradorList } from "@/services/colaboradores";
+import { deleteColaborador, getColaboradorList } from "@/services/colaboradores";
 import Loading from "@/components/loading/index";
-import InfoColab from "@/components/InfoColaborador"
+import InfoColab from "@/components/info/InfoColaborador"
 
 interface Colaborador {
   idFuncionario: string;
@@ -23,16 +23,20 @@ interface Colaborador {
 
 export default function ColaboradoresPage() {
   const [showForm, setShowForm] = useState(false);
-  const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
+  const [listColaboradores, setListColaboradores] = useState<Colaborador[]>([]);
   const [loading, setLoading] = useState(false);
+  const [colaborador, setColaborador] = useState<Colaborador | null>(null);
 
+  // Estados separados para controle dos diálogos
   const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
+  const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false); // Controle do diálogo de informações
 
-  const fetchColaboradores = async () => {
+  const fetchListColaboradores = async () => {
     setLoading(true);  // Ativa o loading
     try {
       const colaboradoresData = await getColaboradorList();
-      setColaboradores(colaboradoresData);
+      setListColaboradores(colaboradoresData);
     } catch (error) {
       console.error("Erro ao buscar colaboradores:", error);
     } finally {
@@ -49,21 +53,40 @@ export default function ColaboradoresPage() {
   };
 
   const submitForm = () => {
-    fetchColaboradores();
     setShowForm(false);
+    fetchListColaboradores();
+  };
+  const confirmDelete = (id: any) => {
+    deleteColaborador(id)
+    setShowDeleteDialog(false);
+    fetchListColaboradores();
+    fetchListColaboradores();
   };
 
   // Lógica para buscar colaboradores
   useEffect(() => {
-    fetchColaboradores();
+    fetchListColaboradores();
   }, []);
 
   // Função para abrir o Dialog de informações do colaborador
   const openInfoDialog = (colaborador: Colaborador) => {
     setSelectedColaborador(colaborador);
+    setShowInfoDialog(true); // Abre o diálogo de informações
+  };
+
+  // Função para abrir o Dialog de exclusão
+  const openDeleteDialog = (colaborador: Colaborador) => {
+    setSelectedColaborador(colaborador);
+    setShowDeleteDialog(true); // Abre o diálogo de exclusão
   };
 
   const closeInfoDialog = () => {
+    setShowInfoDialog(false); // Fecha o diálogo de informações
+    setSelectedColaborador(null);
+  };
+
+  const closeDeleteDialog = () => {
+    setShowDeleteDialog(false); // Fecha o diálogo de exclusão
     setSelectedColaborador(null);
   };
 
@@ -72,7 +95,6 @@ export default function ColaboradoresPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Colaboradores</h1>
 
-        {/* Aqui o DialogTrigger deve estar dentro do Dialog */}
         <Dialog open={showForm}>
           <DialogTrigger asChild>
             <Button onClick={handleButtonClick}>
@@ -81,7 +103,6 @@ export default function ColaboradoresPage() {
             </Button>
           </DialogTrigger>
 
-          {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
             <DialogTitle className="text-2xl">Cadastrar Novo Colaborador</DialogTitle>
             <FormColab closeForm={closeForm} onSubmit={submitForm} />
@@ -129,7 +150,6 @@ export default function ColaboradoresPage() {
 
       <Card>
         <CardContent className="pt-6">
-          {/* Mostra o loading enquanto os colaboradores estão sendo carregados */}
           {loading ? (
             <Loading />
           ) : (
@@ -145,23 +165,22 @@ export default function ColaboradoresPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {colaboradores.map((Colaborador) => (
-                  <TableRow key={Colaborador.idFuncionario}>
-                    <TableCell>{`CO-${Colaborador.idFuncionario}`}</TableCell>
-                    <TableCell className="max-w-[150px] truncate">{Colaborador.nome}</TableCell>
-                    <TableCell>{Colaborador.cargo}</TableCell>
-                    <TableCell>{Colaborador.telefone}</TableCell>
-                    <TableCell>{Colaborador.email}</TableCell>
+                {listColaboradores.map((colaborador) => (
+                  <TableRow key={colaborador.idFuncionario}>
+                    <TableCell>{`CO-${colaborador.idFuncionario}`}</TableCell>
+                    <TableCell className="max-w-[150px] truncate">{colaborador.nome}</TableCell>
+                    <TableCell>{colaborador.cargo}</TableCell>
+                    <TableCell>{colaborador.telefone}</TableCell>
+                    <TableCell>{colaborador.email}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {/* Agora o Dialog é aberto para um colaborador específico */}
-                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(Colaborador)}>
+                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(colaborador)}>
                           <Info className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon">
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(colaborador)}>
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
@@ -175,11 +194,29 @@ export default function ColaboradoresPage() {
       </Card>
 
       {/* Dialog para exibir as informações do colaborador */}
-      {selectedColaborador && (
-        <Dialog open={Boolean(selectedColaborador)} onOpenChange={() => closeInfoDialog()}>
+      {showInfoDialog && selectedColaborador && (
+        <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
           <DialogContent>
             <DialogTitle className="text-2xl">Informações do Colaborador</DialogTitle>
-            <InfoColab closeForm={closeInfoDialog} idColaborador={selectedColaborador.idFuncionario} />
+            <InfoColab closeForm={closeInfoDialog} colaborador={selectedColaborador} />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog para exibir a confirmação de exclusão do colaborador */}
+      {showDeleteDialog && selectedColaborador && (
+        <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
+          <DialogContent className="max-w-sm text-center">
+            <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
+            <p>Você confirma a exclusão do colaborador {selectedColaborador.nome}?</p>
+            <div className="flex gap-4">
+              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedColaborador.idFuncionario)}>
+                Confirmar
+              </Button>
+              <Button className='mr-auto ml-2' variant="outline" onClick={closeDeleteDialog}>
+                Cancelar
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       )}
