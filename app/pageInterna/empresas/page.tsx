@@ -45,10 +45,7 @@ export default function ColaboradoresPage() {
         </Dialog>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtros</CardTitle>
-        </CardHeader>
+      <Card className="border-none pt-1">
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">

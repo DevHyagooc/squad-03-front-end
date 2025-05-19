@@ -1,4 +1,4 @@
-import { FormProvider, useForm, Controller } from "react-hook-form";
+import { FormProvider, useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho esteja correto
@@ -7,9 +7,10 @@ import { postColaborador } from "@/services/colaboradores";
 
 interface FormColabProps {
    closeForm: () => void;
+   onSubmit: (colaborador: any) => void;
 }
 
-const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
+const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
    const methods = useForm({
       defaultValues: {
          nome: "",
@@ -26,15 +27,15 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
    // Expressão regular para validar um email
    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-   const onSubmit = (colaborador: any) => {
-      console.log(colaborador);
+   const handleFormSubmit: SubmitHandler<any> = (colaborador) => {
       postColaborador(colaborador)
+      onSubmit(colaborador); // Chama a função onSubmit com os dados do formulário
       closeForm();
    };
 
    return (
       <FormProvider {...methods}>
-         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+         <form onSubmit={methods.handleSubmit(handleFormSubmit)} className="space-y-4">
             <div className="flex flex-wrap w-full gap-4 pb-3 pt-1 px-1 pl-2">
                <FormItem className="focus-within:text-cyan-500"> {/* Garantindo que focus-within esteja aqui */}
                   <FormLabel htmlFor="nome">Nome do Colaborador:</FormLabel>
