@@ -172,10 +172,10 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
             </div>
 
             <div className="flex justify-end gap-4">
-               <Button type="button" onClick={closeForm} variant="destructive" className="w-20">
+               <Button type="button" onClick={closeForm} variant="destructive" className="text-white bg-black">
                   Cancelar
                </Button>
-               <Button type="submit" className="w-20">
+               <Button type="submit" className="bg-cyan-500 hover:bg-cyan-700">
                   Salvar
                </Button>
             </div>
