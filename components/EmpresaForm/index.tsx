@@ -145,7 +145,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
         {/* STEP 0: Empresa */}
         {step === 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>CNPJ*</FormLabel>
               <FormControl>
                 <Controller
@@ -164,7 +164,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Inscrição Municipal</FormLabel>
               <FormControl>
                 <Controller
@@ -176,7 +176,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Razão Social*</FormLabel>
               <FormControl>
                 <Controller
@@ -189,7 +189,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Nome Fantasia</FormLabel>
               <FormControl>
                 <Controller
@@ -200,13 +200,35 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               </FormControl>
               <FormMessage />
             </FormItem>
+
+           <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="tipoempresa">Tipo de Empresa:</FormLabel>
+            <FormControl>
+              <Controller
+                name="tipoempresa"
+                control={control}
+                render={({ field }) => (
+                  <select
+                    id="tipoempresa"
+                    {...field}
+                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                  >
+                    <option value="Ativo">Pública</option>
+                    <option value="Cancelado">Privada</option>
+                   
+                  </select>
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.tipoempresa && errors.tipoempresa.message}</FormMessage>
+          </FormItem>
           </div>
         )}
 
         {/* STEP 1: Endereço */}
         {step === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>CEP*</FormLabel>
               <FormControl>
                 <Controller
@@ -228,7 +250,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Logradouro*</FormLabel>
               <FormControl>
                 <Controller
@@ -241,7 +263,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Número*</FormLabel>
               <FormControl>
                 <Controller
@@ -254,7 +276,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Complemento</FormLabel>
               <FormControl>
                 <Controller
@@ -266,7 +288,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Bairro</FormLabel>
               <FormControl>
                 <Controller
@@ -278,7 +300,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Município*</FormLabel>
               <FormControl>
                 <Controller
@@ -291,7 +313,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Estado*</FormLabel>
               <FormControl>
                 <Controller
@@ -309,7 +331,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
         {/* STEP 2: Contato */}
         {step === 2 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Email*</FormLabel>
               <FormControl>
                 <Controller
@@ -328,7 +350,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Telefone*</FormLabel>
               <FormControl>
                 <Controller
@@ -351,7 +373,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
         {/* STEP 3: Representante */}
         {step === 3 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Nome do Representante*</FormLabel>
               <FormControl>
                 <Controller
@@ -364,7 +386,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>CPF*</FormLabel>
               <FormControl>
                 <Controller
@@ -382,7 +404,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Telefone</FormLabel>
               <FormControl>
                 <Controller
@@ -394,6 +416,25 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                       onChange={(e) => field.onChange(formatPhone(e.target.value))}
                     />
                   )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+             <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Email*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="emailRepresentante"
+                  control={control}
+                  rules={{ 
+                    required: "Email é obrigatório",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Email inválido"
+                    }
+                  }}
+                  render={({ field }) => <Input type="emailRepresentante" {...field} />}
                 />
               </FormControl>
               <FormMessage />
