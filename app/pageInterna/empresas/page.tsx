@@ -4,22 +4,84 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
+import { CalendarDays, FileText, Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
-import Link from "next/link"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { deleteOrgaoContratante, getOrgaoContratanteList } from "@/services/org_contratante";
+import Loading from "@/components/loading"
+import InfoOrgContratante from "@/components/info/InfoOrgContratante"
 
-export default function ColaboradoresPage() {
+interface OrgContratante {
+  idOrgao: number;
+    nome: string;
+    nomeFantasia: string;
+    razaoSocial: string;
+    numeroEmpresa: string;
+    estado: string;
+    cidade: string;
+}
+
+export default function OragosContratantesPage() {
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
+  const [listOrgContratantes, setListOrgContratantes] = useState<OrgContratante[]>([]);
+  const [selectedOrgContratante, setSelectedOrgContratante] = useState<OrgContratante | null>(null)
+
+  const fetchListOrgContratante = async () => {
+    setLoading(true);
+    try {
+      const data = await getOrgaoContratanteList();
+      setListOrgContratantes(data);
+    } catch (err) {
+      console.error("Erro ao buscar órgaos contratantes", err)
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchListOrgContratante();
+  }, []);
 
   const handleButtonClick = () => {
     setShowForm(true);
   };
 
   const closeForm = () => {
-    setShowForm(false);  // Altere isso para setShowForm para fechar o formulário
+    setShowForm(false); 
     console.log("Formulário fechado");
+    fetchListOrgContratante();
+  };
+
+  const confirmDelete = (id: any) => {
+      deleteOrgaoContratante(id)
+      setShowDeleteDialog(false);
+      fetchListOrgContratante();
+      fetchListOrgContratante();
+  };
+
+  const openInfoDialog = (orgContratante: OrgContratante) => {
+    setSelectedOrgContratante(orgContratante);
+    setShowInfoDialog(true); // Abre o diálogo de informações
+  };
+
+  // Função para abrir o Dialog de exclusão
+  const openDeleteDialog = (orgContratante: OrgContratante) => {
+    setSelectedOrgContratante(orgContratante);
+    setShowDeleteDialog(true); // Abre o diálogo de exclusão
+  };
+
+  const closeInfoDialog = () => {
+    setShowInfoDialog(false); // Fecha o diálogo de informações
+    setSelectedOrgContratante(null);
+  };
+
+  const closeDeleteDialog = () => {
+    setShowDeleteDialog(false); // Fecha o diálogo de exclusão
+    setSelectedOrgContratante(null);
   };
 
   return (
@@ -38,7 +100,20 @@ export default function ColaboradoresPage() {
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
+            <div className="flex justify-between items-center mb-4">
+              <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
+              <DialogClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowForm(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogClose>
+            </div>
+
+            {/* Seu formulário */}
             <FormEmpresa closeForm={closeForm} />
 
           </DialogContent>
@@ -85,103 +160,79 @@ export default function ColaboradoresPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Nome da Empresa</TableHead>
-                <TableHead>Contrato</TableHead>
-                <TableHead>Data de Entrega</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                {
-                  id: "ENT-001",
-                  name: "Relatório Mensal",
-                  contract: "Contrato de Manutenção Predial",
-                  date: "15/04/2025",
-                  status: "Em andamento",
-                  responsible: "João Silva",
-                },
-                {
-                  id: "ENT-002",
-                  name: "Instalação de Equipamentos",
-                  contract: "Fornecimento de Equipamentos",
-                  date: "20/04/2025",
-                  status: "Planejado",
-                  responsible: "Maria Santos",
-                },
-                {
-                  id: "ENT-003",
-                  name: "Treinamento da Equipe",
-                  contract: "Serviços de Consultoria",
-                  date: "25/04/2025",
-                  status: "Planejado",
-                  responsible: "Carlos Oliveira",
-                },
-                {
-                  id: "ENT-004",
-                  name: "Documentação Técnica",
-                  contract: "Contrato de Prestação de Serviços",
-                  date: "10/04/2025",
-                  status: "Concluído",
-                  responsible: "Ana Pereira",
-                },
-                {
-                  id: "ENT-005",
-                  name: "Relatório de Qualidade",
-                  contract: "Contrato de Fornecimento",
-                  date: "05/04/2025",
-                  status: "Atrasado",
-                  responsible: "Pedro Costa",
-                },
-              ].map((deliverable) => (
-                <TableRow key={deliverable.id}>
-                  <TableCell>{deliverable.id}</TableCell>
-                  <TableCell>{deliverable.name}</TableCell>
-                  <TableCell>{deliverable.contract}</TableCell>
-                  <TableCell className="flex items-center gap-1">
-                    <CalendarDays className="h-3 w-3" />
-                    {deliverable.date}
-                  </TableCell>
-                  <TableCell>
-                    <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${deliverable.status === "Concluído"
-                        ? "bg-green-100 text-green-800"
-                        : deliverable.status === "Em andamento"
-                          ? "bg-blue-100 text-blue-800"
-                          : deliverable.status === "Planejado"
-                            ? "bg-gray-100 text-gray-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                    >
-                      {deliverable.status}
-                    </div>
-                  </TableCell>
-                  <TableCell>{deliverable.responsible}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <FileText className="h-4 w-4" />
-                      </Button>
-                      <Link href={`/entregaveis/${deliverable.id}`}>
-                        <Button variant="outline" size="sm">
-                          Detalhes
-                        </Button>
-                      </Link>
-                    </div>
-                  </TableCell>
+          {loading ? (
+            <Loading />
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Nome da Empresa</TableHead>
+                  <TableHead>Contrato</TableHead>
+                  <TableHead>Data de Entrega</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Responsável</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {listOrgContratantes.map(org => (
+                  <TableRow key={org.idOrgao}>
+                    <TableCell>{org.idOrgao}</TableCell>
+                    <TableCell>{org.nome}</TableCell>
+                    <TableCell>{org.nomeFantasia}</TableCell>
+                    <TableCell>{org.razaoSocial}</TableCell>
+                    <TableCell>{org.numeroEmpresa}</TableCell>
+                    <TableCell>{org.estado}</TableCell>
+                    <TableCell>{org.cidade}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(org)}>
+                          <Info className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(org)}>
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
-    </div>
-  )
-}
 
+      {/* Dialog para exibir as informações do colaborador */}
+      {showInfoDialog && selectedOrgContratante && (
+        <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl">Informações do Orgão Contratante</DialogTitle>
+            <InfoOrgContratante closeForm={closeInfoDialog} orgContratante={selectedOrgContratante} />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog para exibir a confirmação de exclusão do colaborador */}
+      {showDeleteDialog && selectedOrgContratante && (
+        <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
+          <DialogContent className="max-w-sm text-center">
+            <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
+            <p>Você confirma a exclusão do orgão contratante {selectedOrgContratante.nome}?</p>
+            <div className="flex gap-4">
+              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedOrgContratante.idOrgao)}>
+                Confirmar
+              </Button>
+              <Button className='mr-auto ml-2' variant="outline" onClick={closeDeleteDialog}>
+                Cancelar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
