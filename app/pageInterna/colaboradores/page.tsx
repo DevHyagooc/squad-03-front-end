@@ -197,7 +197,7 @@ export default function ColaboradoresPage() {
       {showInfoDialog && selectedColaborador && (
         <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
           <DialogContent>
-            <DialogTitle className="text-2xl">Informações do Colaborador</DialogTitle>
+            <DialogTitle className="text-2xl"></DialogTitle>
             <InfoColab closeForm={closeInfoDialog} colaborador={selectedColaborador} />
           </DialogContent>
         </Dialog>

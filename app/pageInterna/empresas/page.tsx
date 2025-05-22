@@ -29,6 +29,7 @@ export default function OragosContratantesPage() {
   const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
   const [listOrgContratantes, setListOrgContratantes] = useState<OrgContratante[]>([]);
   const [selectedOrgContratante, setSelectedOrgContratante] = useState<OrgContratante | null>(null)
+  const [editingOrgContratante, setEditingOrgContratante] = useState<OrgContratante | null>(null); 
 
   const fetchListOrgContratante = async () => {
     setLoading(true);
@@ -83,6 +84,11 @@ export default function OragosContratantesPage() {
     setShowDeleteDialog(false); // Fecha o diálogo de exclusão
     setSelectedOrgContratante(null);
   };
+
+  const openEditDialog = (orgContratante: OrgContratante) => {
+    setEditingOrgContratante(orgContratante)
+    setShowForm
+  }
 
   return (
     <div className="flex flex-col gap-6 p-8">
@@ -168,9 +174,10 @@ export default function OragosContratantesPage() {
                 <TableRow>
                   <TableHead>ID</TableHead>
                   <TableHead>Nome da Empresa</TableHead>
-                  <TableHead>Contrato</TableHead>
-                  <TableHead>Data de Entrega</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Nome Fantasia</TableHead>
+                  <TableHead>Razão Social</TableHead>
+                  <TableHead>Numero da Empresa</TableHead>
+                  <TableHead>Estado</TableHead>
                   <TableHead>Responsável</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
@@ -210,7 +217,7 @@ export default function OragosContratantesPage() {
       {showInfoDialog && selectedOrgContratante && (
         <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
           <DialogContent>
-            <DialogTitle className="text-2xl">Informações do Orgão Contratante</DialogTitle>
+            <DialogTitle className="text-2xl"></DialogTitle>
             <InfoOrgContratante closeForm={closeInfoDialog} orgContratante={selectedOrgContratante} />
           </DialogContent>
         </Dialog>
