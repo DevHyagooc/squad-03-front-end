@@ -78,7 +78,7 @@ export const deleteColaborador = async (id_colaborador) => {
       }
       return 'Usuário deletado!';
    } catch (error) {
-      console.error('Erro na requisição GET:', error);
+      console.error('Erro na requisição DELETE:', error);
       throw error;
    }
 };
