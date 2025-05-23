@@ -77,3 +77,30 @@ export const updateOrgaoContratante = async (id, org ) => {
         throw error;
     }
 };
+
+export const postOrgaoContratante = async (org) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/orgao-contratante` ,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            },
+            body: JSON.stringify({
+                nome: org.nome,
+                nomeFantasia: org.nomeFantasia,
+                razaoSocial: org.razaoSocial,
+                // cnpj: org.cnpj,
+                numeroEmpresa: org.numeroEmpresa,
+                estado: org.estado,
+                cidade: org.cidade
+            })
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao criar orgão contratante!');
+        }
+        return response.json();
+    } catch (error) {
+        console.error('Erro na requisição POST', error);
+    }
+};
