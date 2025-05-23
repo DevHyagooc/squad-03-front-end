@@ -8,12 +8,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { X } from "lucide-react"
+import { formatCNPJ } from "@/lib/formatData"
 
 interface OrgContratante {
     idOrgao: number
     nome: string
     nomeFantasia: string
     razaoSocial: string
+    tipoempresa: string
     cnpj: string
     numeroEmpresa: string
     estado: string
@@ -101,10 +103,16 @@ const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, 
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="cnpj">CNPJ:</Label>
                             <Input
-                                id="cnpj"
                                 name="cnpj"
+                                id="cnpj"
                                 value={formData.cnpj}
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    const formatted = formatCNPJ(e.target.value)
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        cnpj: formatted,
+                                    }))
+                                }}
                                 className="text-sm"
                                 required
                             />

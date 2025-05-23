@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
+import { formatDate, formatPhone } from "@/lib/formatData";
 
 export interface Colaborador {
   idFuncionario: string;
@@ -90,11 +91,18 @@ const UpdateColaborador: React.FC<UpdateColaboradorProps> = ({ closeForm, colabo
                 Telefone:
               </Label>
               <Input
-                id="telefone"
                 name="telefone"
+                id="telefone"
                 value={formData.telefone}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const formatted = formatPhone(e.target.value)
+                  setFormData((prev) => ({
+                    ...prev,
+                    telefone: formatted,
+                  }))
+                }}
                 className="text-sm"
+                required
               />
             </div>
 
@@ -118,12 +126,18 @@ const UpdateColaborador: React.FC<UpdateColaboradorProps> = ({ closeForm, colabo
                 Data de Nascimento:
               </Label>
               <Input
-                id="nascimento"
                 name="nascimento"
-                type="date"
+                id="nascimento"
                 value={formData.nascimento}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const formatted = formatDate(e.target.value)
+                  setFormData((prev) => ({
+                    ...prev,
+                    nascimento: formatted,
+                  }))
+                }}
                 className="text-sm"
+                required
               />
             </div>
           </div>

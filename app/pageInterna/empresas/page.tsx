@@ -18,6 +18,7 @@ interface OrgContratante {
   nome: string;
   nomeFantasia: string;
   razaoSocial: string;
+  tipoempresa: string;
   cnpj: string;
   numeroEmpresa: string;
   estado: string;
