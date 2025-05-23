@@ -31,63 +31,30 @@ const InfoColab: React.FC<FormColabProps> = ({ closeForm, colaborador }) => {
         </div>
       </CardHeader>
       <CardContent className="pt-6 pb-2">
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700">
-              <User className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Nome</span>
-              <span className="text-base font-medium">{colaborador.nome}</span>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nome:</span>
+            <span className="text-sm font-medium">{colaborador.nome}</span>
           </div>
 
-          <Separator />
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700">
-              <Briefcase className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Cargo</span>
-              <span className="text-base">{colaborador.cargo}</span>
-            </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Cargo:</span>
+            <span className="text-sm">{colaborador.cargo}</span>
           </div>
 
-          <Separator />
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700">
-              <Phone className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Telefone</span>
-              <span className="text-base">{colaborador.telefone}</span>
-            </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Telefone:</span>
+            <span className="text-sm">{colaborador.telefone}</span>
           </div>
 
-          <Separator />
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700">
-              <Mail className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</span>
-              <span className="text-base">{colaborador.email}</span>
-            </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email:</span>
+            <span className="text-sm">{colaborador.email}</span>
           </div>
 
-          <Separator />
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700">
-              <Calendar className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Nascimento</span>
-              <span className="text-base">{colaborador.nascimento || "Não informado"}</span>
-            </div>
+          <div className="flex flex-col col-span-1 md:col-span-2">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Data de Nascimento:</span>
+            <span className="text-sm">{colaborador.nascimento || "Não informado"}</span>
           </div>
         </div>
       </CardContent>
