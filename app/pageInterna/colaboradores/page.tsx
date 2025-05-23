@@ -13,7 +13,7 @@ import Loading from "@/components/loading/index";
 import InfoColab from "@/components/infoDialog/InfoColaborador"
 import UpdateColab from "@/components/updateDialog/updateColaborador"
 
-interface Colaborador {
+export interface Colaborador {
   idFuncionario: string;
   nome: string;
   cargo: string;

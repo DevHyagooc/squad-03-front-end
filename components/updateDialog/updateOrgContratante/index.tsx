@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { X } from "lucide-react"
 import { formatCNPJ } from "@/lib/formatData"
+import ConfirmationDialog from "@/components/confirmDialog"
 
 interface OrgContratante {
     idOrgao: number
@@ -30,6 +31,7 @@ interface UpdateOrgContratanteProps {
 
 const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, orgContratante: initialData, onSave }) => {
     const [formData, setFormData] = useState<OrgContratante>(initialData)
+    const [showConfirmation, setShowConfirmation] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,120 +44,139 @@ const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setShowConfirmation(true)
+    }
+
+    const handleConfirmSave = async () => {
         setIsSubmitting(true)
 
         try {
             await onSave(formData)
             closeForm()
         } catch (error) {
-            console.error("Erro ao salvar:", error)
+            console.error("Erro ao salvar", error)
         } finally {
             setIsSubmitting(false)
         }
     }
 
+    const hasChanges = JSON.stringify(formData) !== JSON.stringify(initialData)
+
     return (
-        <Card className="w-full h-full shadow-none border-0">
-            <CardHeader className="bg-gray-50 dark:bg-gray-800 pb-2">
-                <div className="flex justify-between items-center">
-                    <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">Editar Órgão Contratante</CardTitle>
-                    <Button variant="ghost" size="icon" onClick={closeForm} className="h-8 w-8">
-                        <X className="h-4 w-4" />
-                    </Button>
-                </div>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-                <CardContent className="pt-6 pb-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="nome" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Nome:
-                            </Label>
-                            <Input id="nome" name="nome" value={formData.nome} onChange={handleChange} className="text-sm" required />
-                        </div>
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="nomeFantasia" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Nome Fantasia:
-                            </Label>
-                            <Input
-                                id="nomeFantasia"
-                                name="nomeFantasia"
-                                value={formData.nomeFantasia}
-                                onChange={handleChange}
-                                className="text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="razaoSocial" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Razão Social:
-                            </Label>
-                            <Input
-                                id="razaoSocial"
-                                name="razaoSocial"
-                                value={formData.razaoSocial}
-                                onChange={handleChange}
-                                className="text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="cnpj">CNPJ:</Label>
-                            <Input
-                                name="cnpj"
-                                id="cnpj"
-                                value={formData.cnpj}
-                                onChange={(e) => {
-                                    const formatted = formatCNPJ(e.target.value)
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        cnpj: formatted,
-                                    }))
-                                }}
-                                className="text-sm"
-                                required
-                            />
-                        </div>
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="numeroEmpresa" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Número Empresa:
-                            </Label>
-                            <Input
-                                id="numeroEmpresa"
-                                name="numeroEmpresa"
-                                value={formData.numeroEmpresa}
-                                onChange={handleChange}
-                                className="text-sm"
-                            />
-                        </div>
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="estado" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Estado:
-                            </Label>
-                            <Input id="estado" name="estado" value={formData.estado} onChange={handleChange} className="text-sm" />
-                        </div>
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="cidade" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Cidade:
-                            </Label>
-                            <Input id="cidade" name="cidade" value={formData.cidade} onChange={handleChange} className="text-sm" />
-                        </div>
+        <>
+            <Card className="w-full h-full shadow-none border-0">
+                <CardHeader className="bg-gray-50 dark:bg-gray-800 pb-2">
+                    <div className="flex justify-between items-center">
+                        <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">Editar Órgão Contratante</CardTitle>
+                        <Button variant="ghost" size="icon" onClick={closeForm} className="h-8 w-8">
+                            <X className="h-4 w-4" />
+                        </Button>
                     </div>
-                </CardContent>
-                <CardFooter className="flex justify-end gap-2 pt-2 pb-4 mt-auto">
-                    <Button type="button" variant="outline" onClick={closeForm}>
-                        Cancelar
-                    </Button>
-                    <Button type="submit" className="bg-gray-800 hover:bg-gray-700 text-white" disabled={isSubmitting}>
-                        {isSubmitting ? "Salvando..." : "Salvar"}
-                    </Button>
-                </CardFooter>
-            </form>
-        </Card>
+                </CardHeader>
+                <form onSubmit={handleSubmit}>
+                    <CardContent className="pt-6 pb-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="nome" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    Nome:
+                                </Label>
+                                <Input id="nome" name="nome" value={formData.nome} onChange={handleChange} className="text-sm" required />
+                            </div>
+
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="nomeFantasia" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    Nome Fantasia:
+                                </Label>
+                                <Input
+                                    id="nomeFantasia"
+                                    name="nomeFantasia"
+                                    value={formData.nomeFantasia}
+                                    onChange={handleChange}
+                                    className="text-sm"
+                                />
+                            </div>
+
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="razaoSocial" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    Razão Social:
+                                </Label>
+                                <Input
+                                    id="razaoSocial"
+                                    name="razaoSocial"
+                                    value={formData.razaoSocial}
+                                    onChange={handleChange}
+                                    className="text-sm"
+                                />
+                            </div>
+
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="cnpj">CNPJ:</Label>
+                                <Input
+                                    name="cnpj"
+                                    id="cnpj"
+                                    value={formData.cnpj}
+                                    onChange={(e) => {
+                                        const formatted = formatCNPJ(e.target.value)
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            cnpj: formatted,
+                                        }))
+                                    }}
+                                    className="text-sm"
+                                    required
+                                />
+                            </div>
+
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="numeroEmpresa" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    Número Empresa:
+                                </Label>
+                                <Input
+                                    id="numeroEmpresa"
+                                    name="numeroEmpresa"
+                                    value={formData.numeroEmpresa}
+                                    onChange={handleChange}
+                                    className="text-sm"
+                                />
+                            </div>
+
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="estado" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    Estado:
+                                </Label>
+                                <Input id="estado" name="estado" value={formData.estado} onChange={handleChange} className="text-sm" />
+                            </div>
+
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="cidade" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    Cidade:
+                                </Label>
+                                <Input id="cidade" name="cidade" value={formData.cidade} onChange={handleChange} className="text-sm" />
+                            </div>
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-end gap-2 pt-2 pb-4 mt-auto">
+                        <Button type="button" variant="outline" onClick={closeForm}>
+                            Cancelar
+                        </Button>
+                        <Button type="submit" className="bg-gray-800 hover:bg-gray-700 text-white" disabled={isSubmitting || !hasChanges}>
+                            {isSubmitting ? "Salvando..." : "Salvar"}
+                        </Button>
+                    </CardFooter>
+                </form>
+            </Card>
+
+            <ConfirmationDialog
+                isOpen={showConfirmation}
+                onClose={() => setShowConfirmation(false)}
+                onConfirm={handleConfirmSave}
+                title="Confirmar alterações"
+                description="Tem certeza que deseja salvar as alterações feitas no órgão contratante?"
+                confirmText="Salvar alterações"
+                cancelText="Cancelar"
+            />
+
+        </>
     );
 }
 

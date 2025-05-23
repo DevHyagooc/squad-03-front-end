@@ -13,7 +13,7 @@ import Loading from "@/components/loading"
 import InfoOrgContratante from "@/components/infoDialog/InfoOrgContratante"
 import UpdateOrgContratante from "@/components/updateDialog/updateOrgContratante"
 
-interface OrgContratante {
+export interface OrgContratante {
   idOrgao: number;
   nome: string;
   nomeFantasia: string;
@@ -150,7 +150,7 @@ export default function OragosContratantesPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Pesquisar entregáveis..." />
+              <Input placeholder="Pesquisar empresas..." />
             </div>
             <Select>
               <SelectTrigger>
@@ -197,7 +197,7 @@ export default function OragosContratantesPage() {
                   <TableHead>Razão Social</TableHead>
                   <TableHead>Numero da Empresa</TableHead>
                   <TableHead>Estado</TableHead>
-                  <TableHead>Responsável</TableHead>
+                  <TableHead>Cidade</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
