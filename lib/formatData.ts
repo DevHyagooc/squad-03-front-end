@@ -46,6 +46,21 @@ export const formatDate = (value: string) => {
    }
 };
 
+export function formatDate2(value: string): string {
+  if (!value) return "";
+  // pega só a parte "YYYY-MM-DD"
+  const isoDate = value.substring(0, 10);
+  const [year, month, day] = isoDate.split("-");
+  return `${day}/${month}/${year}`;
+}
+
+// Função para formatar data BR
+export function formatDateBR(dateString: string): string {
+  const d = new Date(dateString);
+  // Garante que sempre use o formato dd/mm/aaaa
+  return d.toLocaleDateString("pt-BR");
+}
+
 // Função para formatar CNPJ
 export const formatCNPJ = (value: string) => {
    const cleaned = value.replace(/\D/g, '');

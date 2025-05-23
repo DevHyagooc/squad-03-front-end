@@ -13,7 +13,7 @@ import Loading from "@/components/loading"
 import InfoOrgContratante from "@/components/infoDialog/InfoOrgContratante"
 import UpdateOrgContratante from "@/components/updateDialog/updateOrgContratante"
 
-interface OrgContratante {
+export interface OrgContratante {
   idOrgao: number;
   nome: string;
   nomeFantasia: string;
