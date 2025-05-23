@@ -16,6 +16,7 @@ import Link from 'next/link'
 
 
 
+
 export function Header() {
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -53,8 +54,12 @@ export function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuItem>
-            <DropdownMenuItem>Configurações</DropdownMenuItem>
+            <Link href="/pageInterna/pagePerfil">
+            <DropdownMenuItem>
+              perfil
+            </DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem>configurações</DropdownMenuItem>
             <Link href="/pageLogin/login">
               <DropdownMenuItem>
                 Sair

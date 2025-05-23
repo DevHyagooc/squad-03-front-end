@@ -1,6 +1,6 @@
 import FormBody from "./formBody";
 
-export default function RegisterLogin() {
+export default function AlterarSenha() {
   return (
     <div className="h-full w-full flex flex-col sm:flex-row">
       <div className="hidden md:flex w-[65%] bg-stone-100 shadow-stone-500 items-center justify-center">

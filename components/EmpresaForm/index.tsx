@@ -19,7 +19,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       logradouro: "",
       numero: "",
       email: "",
-      inscricaoMunicipal: ""
+      inscricaoMunicipal: "",
+      nome: ""
     }
   });
 
@@ -285,6 +286,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
 
         <div className="flex flex-wrap w-full gap-4 pb-3 px-1 pl-2">
+        
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="cnpj">CNPJ:</FormLabel>
             <FormControl>
@@ -305,6 +307,64 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.cnpj && errors.cnpj.message}</FormMessage>
           </FormItem>
+
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="nome">Nome:</FormLabel>
+            <FormControl>
+              <Controller
+                name="nome"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="nome"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.nome && errors.nome.message}</FormMessage>
+          </FormItem>
+
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="numero">Número:</FormLabel>
+            <FormControl>
+              <Controller
+                name="numero"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="numero"
+                    type="text"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.numero && errors.numero.message}</FormMessage>
+          </FormItem>
+          
+          <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormLabel htmlFor="email">Email:</FormLabel>
+            <FormControl>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="email"
+                    type="email"
+                    className="w-52 mt-1 text-black"
+                    {...field}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage>{errors.email && errors.email.message}</FormMessage>
+          </FormItem>
+                    
         </div>
 
         <div className="flex justify-end gap-4">
