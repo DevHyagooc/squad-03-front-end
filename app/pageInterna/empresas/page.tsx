@@ -8,15 +8,18 @@ import { CalendarDays, FileText, Plus, Search, Download, X, Info, Pencil, Trash 
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
 import React, { useState, useEffect } from 'react';
-import { deleteOrgaoContratante, getOrgaoContratanteList } from "@/services/org_contratante";
+import { deleteOrgaoContratante, getOrgaoContratanteList, updateOrgaoContratante } from "@/services/org_contratante";
 import Loading from "@/components/loading"
 import InfoOrgContratante from "@/components/infoDialog/InfoOrgContratante"
+import UpdateOrgContratante from "@/components/updateDialog/updateOrgContratante"
 
 interface OrgContratante {
   idOrgao: number;
   nome: string;
   nomeFantasia: string;
   razaoSocial: string;
+  tipoempresa: string;
+  cnpj: string;
   numeroEmpresa: string;
   estado: string;
   cidade: string;
@@ -27,9 +30,9 @@ export default function OragosContratantesPage() {
   const [showForm, setShowForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
   const [listOrgContratantes, setListOrgContratantes] = useState<OrgContratante[]>([]);
   const [selectedOrgContratante, setSelectedOrgContratante] = useState<OrgContratante | null>(null)
-  const [editingOrgContratante, setEditingOrgContratante] = useState<OrgContratante | null>(null);
 
   const fetchListOrgContratante = async () => {
     setLoading(true);
@@ -49,6 +52,17 @@ export default function OragosContratantesPage() {
 
   const handleButtonClick = () => {
     setShowForm(true);
+  };
+
+  const handleUpdate = async (org: OrgContratante) => {
+    try {
+      await updateOrgaoContratante(org.idOrgao, org);
+      // fecha o dialog e refaz a lista
+      closeUpdateDialog();
+      fetchListOrgContratante();
+    } catch (err) {
+      console.error("Erro ao atualizar orgão", err);
+    }
   };
 
   const closeForm = () => {
@@ -75,6 +89,11 @@ export default function OragosContratantesPage() {
     setShowDeleteDialog(true); // Abre o diálogo de exclusão
   };
 
+  const openUpdateDialog = (orgContratante: OrgContratante) => {
+    setSelectedOrgContratante(orgContratante)
+    setShowUpdateDialog(true);
+  }
+
   const closeInfoDialog = () => {
     setShowInfoDialog(false); // Fecha o diálogo de informações
     setSelectedOrgContratante(null);
@@ -85,9 +104,9 @@ export default function OragosContratantesPage() {
     setSelectedOrgContratante(null);
   };
 
-  const openEditDialog = (orgContratante: OrgContratante) => {
-    setEditingOrgContratante(orgContratante)
-    setShowForm
+  const closeUpdateDialog = () => {
+    setShowUpdateDialog(false);
+    setSelectedOrgContratante(null);
   }
 
   return (
@@ -197,7 +216,7 @@ export default function OragosContratantesPage() {
                         <Button variant="ghost" size="icon" onClick={() => openInfoDialog(org)}>
                           <Info className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => openUpdateDialog(org)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(org)}>
@@ -237,6 +256,16 @@ export default function OragosContratantesPage() {
                 Cancelar
               </Button>
             </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog para exibir o formulário para edição das informações */}
+      {showUpdateDialog && selectedOrgContratante && (
+        <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl"></DialogTitle>
+            <UpdateOrgContratante closeForm={closeUpdateDialog} orgContratante={selectedOrgContratante} onSave={handleUpdate} />
           </DialogContent>
         </Dialog>
       )}

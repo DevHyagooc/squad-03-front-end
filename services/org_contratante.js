@@ -39,9 +39,9 @@ export const getOrgaoContratanteId = async (id) => {
     }
 };
 
-export const deleteOrgaoContratante = async (id_orgContratante) => {
+export const deleteOrgaoContratante = async (id) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id_orgContratante}`, {
+        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -58,14 +58,15 @@ export const deleteOrgaoContratante = async (id_orgContratante) => {
     }
 };
 
-export const editarOrgaoContratante = async (id_orgContratante) => {
+export const updateOrgaoContratante = async (id, org ) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id_orgContratante}`, {
+        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Basic ${auth}`
-            }
+            },
+            body: JSON.stringify(org)
         });
         if (!response.ok) {
             throw new Error('Erro ao atualizar orgão contratante!');

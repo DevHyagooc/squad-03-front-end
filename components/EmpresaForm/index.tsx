@@ -19,6 +19,7 @@ type FormData = {
   inscricaoMunicipal: string;
   razaoSocial: string;
   nomeFantasia: string;
+  tipoempresa: string;
   cep: string;
   estado: string;
   municipio: string;
@@ -30,6 +31,7 @@ type FormData = {
   telefone: string;
   representanteNome: string;
   representanteCpf: string;
+  emailRepresentante: string;
   representanteTelefone: string;
 };
 
@@ -40,6 +42,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       inscricaoMunicipal: "",
       razaoSocial: "",
       nomeFantasia: "",
+      tipoempresa: "",
       cep: "",
       estado: "",
       municipio: "",
@@ -51,6 +54,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       telefone: "",
       representanteNome: "",
       representanteCpf: "",
+      emailRepresentante: "",
       representanteTelefone: "",
     },
     mode: "onChange",
@@ -74,7 +78,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
     // Valida os campos do passo atual antes de avançar
     const fields = stepsFields[step];
     const isValidStep = await trigger(fields as any);
-    
+
     if (isValidStep && step < steps.length - 1) {
       setStep(step + 1);
     }
@@ -90,7 +94,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
     const digits = e.target.value.replace(/\D/g, "");
     const formattedCep = formatCEP(digits);
     setValue("cep", formattedCep, { shouldValidate: true });
-    
+
     if (digits.length === 8) {
       try {
         const local = await getLocal(digits);
@@ -120,7 +124,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
   // Campos requeridos para validação em cada step
   const stepsFields = [
-    ["cnpj", "razaoSocial"], // Step 0
+    ["cnpj", "razaoSocial", "tipoempresa"], // Step 0
     ["cep", "logradouro", "numero", "municipio", "estado"], // Step 1
     ["email", "telefone"], // Step 2
     ["representanteNome", "representanteCpf"], // Step 3
@@ -136,8 +140,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
         {/* Progress bar */}
         <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div 
-            className="bg-cyan-500 h-2.5 rounded-full transition-all duration-300" 
+          <div
+            className="bg-cyan-500 h-2.5 rounded-full transition-all duration-300"
             style={{ width: `${((step + 1) / 4) * 100}%` }}
           ></div>
         </div>
@@ -201,27 +205,27 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-           <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="tipoempresa">Tipo de Empresa:</FormLabel>
-            <FormControl>
-              <Controller
-                name="tipoempresa"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    id="tipoempresa"
-                    {...field}
-                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
-                  >
-                    <option value="Ativo">Pública</option>
-                    <option value="Cancelado">Privada</option>
-                   
-                  </select>
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.tipoempresa && errors.tipoempresa.message}</FormMessage>
-          </FormItem>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel htmlFor="tipoempresa">Tipo de Empresa:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="tipoempresa"
+                  control={control}
+                  render={({ field }) => (
+                    <select
+                      id="tipoempresa"
+                      {...field}
+                      className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                    >
+                      <option value="Ativo">Pública</option>
+                      <option value="Cancelado">Privada</option>
+
+                    </select>
+                  )}
+                />
+              </FormControl>
+              <FormMessage>{errors.tipoempresa && errors.tipoempresa.message}</FormMessage>
+            </FormItem>
           </div>
         )}
 
@@ -337,7 +341,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                 <Controller
                   name="email"
                   control={control}
-                  rules={{ 
+                  rules={{
                     required: "Email é obrigatório",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -358,8 +362,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                   control={control}
                   rules={{ required: "Telefone é obrigatório" }}
                   render={({ field }) => (
-                    <Input 
-                      {...field} 
+                    <Input
+                      {...field}
                       onChange={(e) => field.onChange(formatPhone(e.target.value))}
                     />
                   )}
@@ -394,8 +398,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                   control={control}
                   rules={{ required: "CPF é obrigatório" }}
                   render={({ field }) => (
-                    <Input 
-                      {...field} 
+                    <Input
+                      {...field}
                       onChange={(e) => field.onChange(formatCPF(e.target.value))}
                     />
                   )}
@@ -411,8 +415,8 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                   name="representanteTelefone"
                   control={control}
                   render={({ field }) => (
-                    <Input 
-                      {...field} 
+                    <Input
+                      {...field}
                       onChange={(e) => field.onChange(formatPhone(e.target.value))}
                     />
                   )}
@@ -421,13 +425,13 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormMessage />
             </FormItem>
 
-             <FormItem className="px-2 focus-within:text-cyan-500">
+            <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Email*</FormLabel>
               <FormControl>
                 <Controller
                   name="emailRepresentante"
                   control={control}
-                  rules={{ 
+                  rules={{
                     required: "Email é obrigatório",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -442,55 +446,55 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
           </div>
         )}
         {/* NAVEGAÇÃO */}
-        
-<div className="flex justify-between pt-6 border-t">
-  {step === 0 ? (
-    <Button 
-      type="button" 
-      variant="destructive" 
-      onClick={closeForm}
-      className="text-white bg-black"
-      
-    >
-      Cancelar
-    </Button>
-  ) : (
-    <Button 
-      type="button" 
-      variant="outline" 
-      onClick={handleBack}
-    >
-      Voltar
-    </Button>
-  )}
 
-  {step < steps.length - 1 ? (
-    <Button 
-      type="button" 
-      onClick={handleNext}
-      disabled={!isValid}
-      className="bg-cyan-500 hover:bg-cyan-700"
-    >
-      Próximo
-    </Button>
-  ) : (
-    <Button 
-      type="submit" 
-      disabled={isSubmitting}
-      className="bg-cyan-500 hover:bg-cyan-700"
-    >
-      {isSubmitting ? (
-        <>
-          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Salvando...
-        </>
-      ) : 'Salvar'}
-    </Button>
-  )}
-</div>
+        <div className="flex justify-between pt-6 border-t">
+          {step === 0 ? (
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={closeForm}
+              className="text-white bg-black"
+
+            >
+              Cancelar
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleBack}
+            >
+              Voltar
+            </Button>
+          )}
+
+          {step < steps.length - 1 ? (
+            <Button
+              type="button"
+              onClick={handleNext}
+              disabled={!isValid}
+              className="bg-cyan-500 hover:bg-cyan-700"
+            >
+              Próximo
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-cyan-500 hover:bg-cyan-700"
+            >
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Salvando...
+                </>
+              ) : 'Salvar'}
+            </Button>
+          )}
+        </div>
       </form>
     </FormProvider>
   );

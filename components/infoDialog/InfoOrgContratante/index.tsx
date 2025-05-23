@@ -8,6 +8,7 @@ interface OrgContratante {
     nome: string;
     nomeFantasia: string;
     razaoSocial: string;
+    cnpj: string;
     numeroEmpresa: string;
     estado: string;
     cidade: string;
@@ -33,47 +34,40 @@ const InfoOrgContratante: React.FC<FormOrgContratantePorps> = ({ closeForm, orgC
         </div>
       </CardHeader>
       <CardContent className="pt-6 pb-2">
-        {/* <h3 className="text-md font-semibold mb-4 text-gray-700 dark:text-gray-300">Informações do Colaborador</h3> */}
-
-        <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-2">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Nome:</span>
-            <span className="text-sm col-span-2 font-medium">{orgContratante.nome}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nome:</span>
+            <span className="text-sm font-medium">{orgContratante.nome}</span>
           </div>
 
-          <Separator />
-
-          <div className="grid grid-cols-3 gap-2">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Nome Fantasia:</span>
-            <span className="text-sm col-span-2">{orgContratante.nomeFantasia}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nome Fantasia:</span>
+            <span className="text-sm">{orgContratante.nomeFantasia}</span>
           </div>
 
-          <Separator />
-
-          <div className="grid grid-cols-3 gap-2">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Razão Social:</span>
-            <span className="text-sm col-span-2">{orgContratante.razaoSocial}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Razão Social:</span>
+            <span className="text-sm">{orgContratante.razaoSocial}</span>
           </div>
 
-          <Separator />
-
-          <div className="grid grid-cols-3 gap-2">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Número Empresa:</span>
-            <span className="text-sm col-span-2">{orgContratante.numeroEmpresa}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">CNPJ:</span>
+            <span className="text-sm">{orgContratante.cnpj}</span>
           </div>
 
-          <Separator />
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Número Empresa:</span>
+            <span className="text-sm">{orgContratante.numeroEmpresa}</span>
+          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Estado:</span>
-              <span className="text-sm">{orgContratante.estado}</span>
-            </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Estado:</span>
+            <span className="text-sm">{orgContratante.estado}</span>
+          </div>
 
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Cidade:</span>
-              <span className="text-sm">{orgContratante.cidade}</span>
-            </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Cidade:</span>
+            <span className="text-sm">{orgContratante.cidade}</span>
           </div>
         </div>
       </CardContent>
