@@ -10,16 +10,16 @@ import FormEmpresa from "@/components/EmpresaForm"
 import React, { useState, useEffect } from 'react';
 import { deleteOrgaoContratante, getOrgaoContratanteList } from "@/services/org_contratante";
 import Loading from "@/components/loading"
-import InfoOrgContratante from "@/components/info/InfoOrgContratante"
+import InfoOrgContratante from "@/components/infoDialog/InfoOrgContratante"
 
 interface OrgContratante {
   idOrgao: number;
-    nome: string;
-    nomeFantasia: string;
-    razaoSocial: string;
-    numeroEmpresa: string;
-    estado: string;
-    cidade: string;
+  nome: string;
+  nomeFantasia: string;
+  razaoSocial: string;
+  numeroEmpresa: string;
+  estado: string;
+  cidade: string;
 }
 
 export default function OragosContratantesPage() {
@@ -29,7 +29,7 @@ export default function OragosContratantesPage() {
   const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
   const [listOrgContratantes, setListOrgContratantes] = useState<OrgContratante[]>([]);
   const [selectedOrgContratante, setSelectedOrgContratante] = useState<OrgContratante | null>(null)
-  const [editingOrgContratante, setEditingOrgContratante] = useState<OrgContratante | null>(null); 
+  const [editingOrgContratante, setEditingOrgContratante] = useState<OrgContratante | null>(null);
 
   const fetchListOrgContratante = async () => {
     setLoading(true);
@@ -52,16 +52,16 @@ export default function OragosContratantesPage() {
   };
 
   const closeForm = () => {
-    setShowForm(false); 
+    setShowForm(false);
     console.log("Formulário fechado");
     fetchListOrgContratante();
   };
 
   const confirmDelete = (id: any) => {
-      deleteOrgaoContratante(id)
-      setShowDeleteDialog(false);
-      fetchListOrgContratante();
-      fetchListOrgContratante();
+    deleteOrgaoContratante(id)
+    setShowDeleteDialog(false);
+    fetchListOrgContratante();
+    fetchListOrgContratante();
   };
 
   const openInfoDialog = (orgContratante: OrgContratante) => {

@@ -24,7 +24,7 @@ export const postColaborador = async (colaborador) => {
       }
       return response.json();
    } catch (error) {
-      console.error('Erro na requisição GET:', error);
+      console.error('Erro na requisição POST:', error);
       throw error;
    }
 };
@@ -46,6 +46,7 @@ export const getColaboradorList = async () => {
       throw error;
    }
 };
+
 export const getColaboradorId = async (id) => {
    try {
       const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
@@ -60,6 +61,32 @@ export const getColaboradorId = async (id) => {
       return response.json();
    } catch (error) {
       console.error('Erro na requisição GET:', error);
+      throw error;
+   }
+};
+
+export const putColaborador = async (id, colaborador) => {
+   try {
+      const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
+         method: "PUT",
+         headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`
+         },
+         body: JSON.stringify({
+            nome: colaborador.nome,
+            email: colaborador.email,
+            cpf: colaborador.cpf,
+            cargo: colaborador.cargo,
+            telefone: colaborador.telefone
+         })
+      });
+      if (!response.ok) {
+         throw new Error('Erro ao editar colaborador!');
+      }
+      return response.json();
+   } catch (error) {
+      console.error('Erro na requisição PUT:', error);
       throw error;
    }
 };

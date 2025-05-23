@@ -8,9 +8,10 @@ import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } f
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
 import React, { useEffect, useState } from 'react';
-import { deleteColaborador, getColaboradorList } from "@/services/colaboradores";
+import { deleteColaborador, getColaboradorList, putColaborador } from "@/services/colaboradores";
 import Loading from "@/components/loading/index";
-import InfoColab from "@/components/info/InfoColaborador"
+import InfoColab from "@/components/infoDialog/InfoColaborador"
+import UpdateColab from "@/components/updateDialog/updateColaborador"
 
 interface Colaborador {
   idFuncionario: string;
@@ -30,6 +31,8 @@ export default function ColaboradoresPage() {
   // Estados separados para controle dos diálogos
   const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
+  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
+  const [showConfirmUpdateDialog, setShowConfirmUpdateDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
   const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false); // Controle do diálogo de informações
 
   const fetchListColaboradores = async () => {
@@ -48,6 +51,18 @@ export default function ColaboradoresPage() {
     setShowForm(true);
   };
 
+  const handleUpdate = async (colaborador: Colaborador) => {
+    try {
+      await putColaborador(colaborador.idFuncionario, colaborador);
+      // fecha o dialog e refaz a lista
+      closeUpdateDialog();
+      fetchListColaboradores();
+      fetchListColaboradores();
+    } catch (err) {
+      console.error("Erro ao atualizar orgão", err);
+    }
+  };
+
   const closeForm = () => {
     setShowForm(false);
   };
@@ -56,9 +71,17 @@ export default function ColaboradoresPage() {
     setShowForm(false);
     fetchListColaboradores();
   };
+
   const confirmDelete = (id: any) => {
     deleteColaborador(id)
     setShowDeleteDialog(false);
+    fetchListColaboradores();
+    fetchListColaboradores();
+  };
+
+  const confirmUpdate = (id: any, colaborador: any) => {
+    putColaborador(id, colaborador)
+    setShowUpdateDialog(false);
     fetchListColaboradores();
     fetchListColaboradores();
   };
@@ -80,6 +103,16 @@ export default function ColaboradoresPage() {
     setShowDeleteDialog(true); // Abre o diálogo de exclusão
   };
 
+  const openUpdateDialog = (colaborador: Colaborador) => {
+    setSelectedColaborador(colaborador);
+    setShowUpdateDialog(true); // Abre o diálogo de exclusão
+  };
+
+  const openConfirmUpdateDialog = (colaborador: Colaborador) => {
+    setSelectedColaborador(colaborador);
+    setShowConfirmUpdateDialog(true); // Abre o diálogo de exclusão
+  };
+
   const closeInfoDialog = () => {
     setShowInfoDialog(false); // Fecha o diálogo de informações
     setSelectedColaborador(null);
@@ -87,6 +120,16 @@ export default function ColaboradoresPage() {
 
   const closeDeleteDialog = () => {
     setShowDeleteDialog(false); // Fecha o diálogo de exclusão
+    setSelectedColaborador(null);
+  };
+
+  const closeUpdateDialog = () => {
+    setShowUpdateDialog(false); // Fecha o diálogo de exclusão
+    setSelectedColaborador(null);
+  };
+
+  const closeConfirmUpdateDialog = () => {
+    setShowConfirmUpdateDialog(false); // Fecha o diálogo de exclusão
     setSelectedColaborador(null);
   };
 
@@ -177,7 +220,7 @@ export default function ColaboradoresPage() {
                         <Button variant="ghost" size="icon" onClick={() => openInfoDialog(colaborador)}>
                           <Info className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => openUpdateDialog(colaborador)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(colaborador)}>
@@ -203,7 +246,34 @@ export default function ColaboradoresPage() {
         </Dialog>
       )}
 
+      {/* Dialog para exibir as informações do colaborador */}
+      {showUpdateDialog && selectedColaborador && (
+        <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl"></DialogTitle>
+            <UpdateColab closeForm={closeUpdateDialog} colaborador={selectedColaborador} onSave={handleUpdate} />
+          </DialogContent>
+        </Dialog>
+      )}
+
       {/* Dialog para exibir a confirmação de exclusão do colaborador */}
+      {showConfirmUpdateDialog && selectedColaborador && (
+        <Dialog open={showConfirmUpdateDialog} onOpenChange={() => closeConfirmUpdateDialog()}>
+          <DialogContent className="max-w-sm text-center">
+            <DialogTitle className="text-2xl">Confirmar Alteração?</DialogTitle>
+            <p>Você confirma a alteração dos dados do colaborador {selectedColaborador.nome}?</p>
+            <div className="flex gap-4">
+              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmUpdate(selectedColaborador.idFuncionario, selectedColaborador)}>
+                Confirmar
+              </Button>
+              <Button className='mr-auto ml-2' variant="outline" onClick={closeConfirmUpdateDialog}>
+                Cancelar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
       {showDeleteDialog && selectedColaborador && (
         <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
           <DialogContent className="max-w-sm text-center">
@@ -220,6 +290,7 @@ export default function ColaboradoresPage() {
           </DialogContent>
         </Dialog>
       )}
+
     </div>
   );
 }

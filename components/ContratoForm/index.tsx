@@ -50,27 +50,6 @@ const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.prazo && errors.prazo.message}</FormMessage>
           </FormItem>
-            <FormItem className="px-2 focus-within:text-cyan-500">
-            <FormLabel htmlFor="tipoempresa">Tipo de Empresa:</FormLabel>
-            <FormControl>
-              <Controller
-                name="tipoempresa"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    id="tipoempresa"
-                    {...field}
-                    className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
-                  >
-                    <option value="Ativo">Pública</option>
-                    <option value="Cancelado">Privada</option>
-                   
-                  </select>
-                )}
-              />
-            </FormControl>
-            <FormMessage>{errors.tipoempresa && errors.tipoempresa.message}</FormMessage>
-          </FormItem>
           {/* Valor do contrato */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="valorContrato">Valor do contrato:</FormLabel>
