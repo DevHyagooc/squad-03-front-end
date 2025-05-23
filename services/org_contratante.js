@@ -58,7 +58,7 @@ export const deleteOrgaoContratante = async (id) => {
     }
 };
 
-export const updateOrgaoContratante = async (id, org ) => {
+export const updateOrgaoContratante = async (id, org) => {
     try {
         const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id}`, {
             method: 'PUT',
@@ -80,7 +80,7 @@ export const updateOrgaoContratante = async (id, org ) => {
 
 export const postOrgaoContratante = async (org) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante` ,{
+        const response = await fetch(`${BASE_URL}/api/orgao-contratante`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,10 +90,27 @@ export const postOrgaoContratante = async (org) => {
                 nome: org.nome,
                 nomeFantasia: org.nomeFantasia,
                 razaoSocial: org.razaoSocial,
-                // cnpj: org.cnpj,
+                cnpj: org.cnpj,
                 numeroEmpresa: org.numeroEmpresa,
                 estado: org.estado,
-                cidade: org.cidade
+                cidade: org.cidade,
+                inscricaoMunicipal: org.inscricaoMunicipal,
+                razaoSocial: org.razaoSocial,
+                nomeFantasia: org.nomeFantasia,
+                tipoEmpresa: org.tipoEmpresa,
+                cep: org.cep,
+                estado: org.estado,
+                municipio: org.municipio,
+                bairro: org.bairro,
+                logradouro: org.logradouro,
+                numero: org.numero,
+                complemento: org.complemento,
+                email: org.email,
+                telefone: org.telefone,
+                representanteNome: org.representanteNome,
+                representanteCpf: org.representanteCpf,
+                emailRepresentante: org.emailRepresentante,
+                representanteTelefone: org.representanteTelefone
             })
         });
         if (!response.ok) {

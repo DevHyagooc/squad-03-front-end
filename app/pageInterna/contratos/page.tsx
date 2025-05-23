@@ -136,7 +136,7 @@ export default function ContratosPage() {
               <TableBody>
                 {listContratos.map((contrato) => (
                   <TableRow key={contrato.idContrato}>
-                    <TableCell>{contrato.idContrato}</TableCell>
+                    <TableCell>CON-{contrato.idContrato}</TableCell>
                     <TableCell>{contrato.orgaoContratante.nome}</TableCell>
                     <TableCell>{formatDate2(contrato.criadoEm)}</TableCell>
                     <TableCell>{formatDate2(contrato.prazo)}</TableCell>
