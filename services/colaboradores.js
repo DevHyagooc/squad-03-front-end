@@ -24,7 +24,7 @@ export const postColaborador = async (colaborador) => {
       }
       return response.json();
    } catch (error) {
-      console.error('Erro na requisição GET:', error);
+      console.error('Erro na requisição POST:', error);
       throw error;
    }
 };
@@ -81,4 +81,24 @@ export const deleteColaborador = async (id_colaborador) => {
       console.error('Erro na requisição DELETE:', error);
       throw error;
    }
+};
+
+export const updateColaborador = async (id, colaborador ) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            },
+            body: JSON.stringify(colaborador)
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar orgão contratante!');
+        }
+        return 'Orgão editado!';
+    } catch (error) {
+        console.error('Erro na requisição PUT', error)
+        throw error;
+    }
 };
