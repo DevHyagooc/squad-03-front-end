@@ -38,7 +38,7 @@ export default function OragosContratantesPage() {
     setLoading(true);
     try {
       const data = await getOrgaoContratanteList();
-      setListOrgContratantes(data);
+      setListOrgContratantes(data.reverse());
     } catch (err) {
       console.error("Erro ao buscar órgaos contratantes", err)
     } finally {
@@ -195,7 +195,6 @@ export default function OragosContratantesPage() {
                   <TableHead>Nome da Empresa</TableHead>
                   <TableHead>Nome Fantasia</TableHead>
                   <TableHead>Razão Social</TableHead>
-                  <TableHead>Numero da Empresa</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Cidade</TableHead>
                   <TableHead>Ações</TableHead>
@@ -204,11 +203,10 @@ export default function OragosContratantesPage() {
               <TableBody>
                 {listOrgContratantes.map(org => (
                   <TableRow key={org.idOrgao}>
-                    <TableCell>{org.idOrgao}</TableCell>
+                    <TableCell>{`EM-${org.idOrgao}`}</TableCell>
                     <TableCell>{org.nome}</TableCell>
                     <TableCell>{org.nomeFantasia}</TableCell>
                     <TableCell>{org.razaoSocial}</TableCell>
-                    <TableCell>{org.numeroEmpresa}</TableCell>
                     <TableCell>{org.estado}</TableCell>
                     <TableCell>{org.cidade}</TableCell>
                     <TableCell>
