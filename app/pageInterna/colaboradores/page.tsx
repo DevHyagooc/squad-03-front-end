@@ -8,7 +8,7 @@ import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } f
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
 import React, { useEffect, useState } from 'react';
-import { deleteColaborador, getColaboradorList, putColaborador } from "@/services/colaboradores";
+import { deleteColaborador, getColaboradorId, getColaboradorList, putColaborador } from "@/services/colaboradores";
 import Loading from "@/components/loading/index";
 import InfoColab from "@/components/infoDialog/InfoColaborador"
 import UpdateColab from "@/components/updateDialog/updateColaborador"
@@ -94,6 +94,7 @@ export default function ColaboradoresPage() {
   // Função para abrir o Dialog de informações do colaborador
   const openInfoDialog = (colaborador: Colaborador) => {
     setSelectedColaborador(colaborador);
+    fetchListColaboradores();
     setShowInfoDialog(true); // Abre o diálogo de informações
   };
 

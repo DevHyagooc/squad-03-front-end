@@ -1,112 +1,136 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarDays, FileText, Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
+import {  Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
 import React, { useState, useEffect } from 'react';
-import { deleteOrgaoContratante, getOrgaoContratanteList, updateOrgaoContratante } from "@/services/org_contratante";
+import { deleteEmpresa, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
 import Loading from "@/components/loading"
-import InfoOrgContratante from "@/components/infoDialog/InfoOrgContratante"
-import UpdateOrgContratante from "@/components/updateDialog/updateOrgContratante"
+import UpdateEmpresa from "@/components/updateDialog/updateEmpresa"
+import InfoEmpresa from "@/components/infoDialog/infoEmpresa"
 
-export interface OrgContratante {
+export interface Empresa {
   idOrgao: number;
-  nome: string;
   nomeFantasia: string;
   razaoSocial: string;
-  tipoempresa: string;
   cnpj: string;
   numeroEmpresa: string;
   estado: string;
   cidade: string;
+  inscricaoMunicipal: string;
+  tipoEmpresa: string;
+  cep: string;
+  bairro: string;
+  logradouro: string;
+  complemento: string;
+  email: string;
+  telefone: string;
+  representante: Representante;
 }
 
-export default function OragosContratantesPage() {
+export interface Representante {
+  id: number;
+  nome: string;
+  cpf: string;
+  email: string;
+  telefone: string;
+}
+
+export default function EmpresasPage() {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
-  const [listOrgContratantes, setListOrgContratantes] = useState<OrgContratante[]>([]);
-  const [selectedOrgContratante, setSelectedOrgContratante] = useState<OrgContratante | null>(null)
+  const [listEmpresas, setListEmpresas] = useState<Empresa[]>([]);
+  const [selectedEmpresas, setSelectedEmpresas] = useState<Empresa | null>(null)
 
-  const fetchListOrgContratante = async () => {
+  const fetchListEmpresas = async () => {
     setLoading(true);
     try {
-      const data = await getOrgaoContratanteList();
-      setListOrgContratantes(data);
+      const data = await getEmpresaList();
+      setListEmpresas(data);
     } catch (err) {
-      console.error("Erro ao buscar órgaos contratantes", err)
+      console.error("Erro ao buscar empresas", err)
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchListOrgContratante();
+    fetchListEmpresas();
   }, []);
 
   const handleButtonClick = () => {
     setShowForm(true);
   };
 
-  const handleUpdate = async (org: OrgContratante) => {
+  const handleCreateEmpresa = async (empresa: any) => {
     try {
-      await updateOrgaoContratante(org.idOrgao, org);
+      await postEmpresa(empresa);       // chama a API de criação
+      await fetchListEmpresas();       // recarrega a lista
+    } catch (err) {
+      console.error("Erro ao criar empresa", err);
+    }
+  };
+
+  const handleUpdate = async (emp: Empresa) => {
+    try {
+      await updateEmpresa(emp.idOrgao, emp);
       // fecha o dialog e refaz a lista
       closeUpdateDialog();
-      fetchListOrgContratante();
+      fetchListEmpresas();
     } catch (err) {
-      console.error("Erro ao atualizar orgão", err);
+      console.error("Erro ao atualizar empresa", err);
     }
   };
 
   const closeForm = () => {
     setShowForm(false);
     console.log("Formulário fechado");
-    fetchListOrgContratante();
+    fetchListEmpresas();
   };
 
   const confirmDelete = (id: any) => {
-    deleteOrgaoContratante(id)
+    deleteEmpresa(id)
     setShowDeleteDialog(false);
-    fetchListOrgContratante();
-    fetchListOrgContratante();
+    fetchListEmpresas();
   };
 
-  const openInfoDialog = (orgContratante: OrgContratante) => {
-    setSelectedOrgContratante(orgContratante);
+  const openInfoDialog = (empresa: Empresa) => {
+    setSelectedEmpresas(empresa);
+    fetchListEmpresas();
     setShowInfoDialog(true); // Abre o diálogo de informações
   };
 
   // Função para abrir o Dialog de exclusão
-  const openDeleteDialog = (orgContratante: OrgContratante) => {
-    setSelectedOrgContratante(orgContratante);
+  const openDeleteDialog = (empresa: Empresa) => {
+    setSelectedEmpresas(empresa);
     setShowDeleteDialog(true); // Abre o diálogo de exclusão
   };
 
-  const openUpdateDialog = (orgContratante: OrgContratante) => {
-    setSelectedOrgContratante(orgContratante)
+  const openUpdateDialog = (empresa: Empresa) => {
+    setSelectedEmpresas(empresa)
     setShowUpdateDialog(true);
   }
 
   const closeInfoDialog = () => {
     setShowInfoDialog(false); // Fecha o diálogo de informações
-    setSelectedOrgContratante(null);
+    setSelectedEmpresas(null);
   };
 
   const closeDeleteDialog = () => {
     setShowDeleteDialog(false); // Fecha o diálogo de exclusão
-    setSelectedOrgContratante(null);
+    setSelectedEmpresas(null);
   };
 
   const closeUpdateDialog = () => {
     setShowUpdateDialog(false);
-    setSelectedOrgContratante(null);
+    setSelectedEmpresas(null);
   }
 
   return (
@@ -139,7 +163,10 @@ export default function OragosContratantesPage() {
             </div>
 
             {/* Seu formulário */}
-            <FormEmpresa closeForm={closeForm} />
+            <FormEmpresa 
+              closeForm={() => setShowForm(false)}
+                onSubmit={handleCreateEmpresa}
+            />
 
           </DialogContent>
         </Dialog>
@@ -194,32 +221,32 @@ export default function OragosContratantesPage() {
                   <TableHead>ID</TableHead>
                   <TableHead>Nome da Empresa</TableHead>
                   <TableHead>Nome Fantasia</TableHead>
-                  <TableHead>Razão Social</TableHead>
-                  <TableHead>Numero da Empresa</TableHead>
+                  {/* <TableHead>Razão Social</TableHead> */}
+                  {/* <TableHead>Numero da Empresa</TableHead> */}
                   <TableHead>Estado</TableHead>
-                  <TableHead>Cidade</TableHead>
+                  {/* <TableHead>Cidade</TableHead> */}
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {listOrgContratantes.map(org => (
-                  <TableRow key={org.idOrgao}>
-                    <TableCell>{org.idOrgao}</TableCell>
-                    <TableCell>{org.nome}</TableCell>
-                    <TableCell>{org.nomeFantasia}</TableCell>
-                    <TableCell>{org.razaoSocial}</TableCell>
-                    <TableCell>{org.numeroEmpresa}</TableCell>
-                    <TableCell>{org.estado}</TableCell>
-                    <TableCell>{org.cidade}</TableCell>
+                {listEmpresas.map(emp => (
+                  <TableRow key={emp.idOrgao}>
+                    <TableCell>EMP-{emp.idOrgao}</TableCell>
+                    <TableCell>{emp.razaoSocial}</TableCell>
+                    <TableCell>{emp.nomeFantasia}</TableCell>
+                    {/* <TableCell>{emp.razaoSocial}</TableCell> */}
+                    {/* <TableCell>{emp.numeroEmpresa}</TableCell> */}
+                    <TableCell>{emp.estado}</TableCell>
+                    {/* <TableCell>{emp.cidade}</TableCell> */}
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(org)}>
+                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(emp)}>
                           <Info className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => openUpdateDialog(org)}>
+                        <Button variant="ghost" size="icon" onClick={() => openUpdateDialog(emp)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(org)}>
+                        <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(emp)}>
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
@@ -232,24 +259,24 @@ export default function OragosContratantesPage() {
         </CardContent>
       </Card>
 
-      {/* Dialog para exibir as informações do colaborador */}
-      {showInfoDialog && selectedOrgContratante && (
+      {/* Dialog para exibir as informações da empresa */}
+      {showInfoDialog && selectedEmpresas && (
         <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
           <DialogContent>
             <DialogTitle className="text-2xl"></DialogTitle>
-            <InfoOrgContratante closeForm={closeInfoDialog} orgContratante={selectedOrgContratante} />
+            <InfoEmpresa closeForm={closeInfoDialog} empresa={selectedEmpresas} />
           </DialogContent>
         </Dialog>
       )}
 
-      {/* Dialog para exibir a confirmação de exclusão do colaborador */}
-      {showDeleteDialog && selectedOrgContratante && (
+      {/* Dialog para exibir a confirmação de exclusão da empresa */}
+      {showDeleteDialog && selectedEmpresas && (
         <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
           <DialogContent className="max-w-sm text-center">
             <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
-            <p>Você confirma a exclusão do orgão contratante {selectedOrgContratante.nome}?</p>
+            <p>Você confirma a exclusão do orgão contratante {selectedEmpresas.razaoSocial}?</p>
             <div className="flex gap-4">
-              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedOrgContratante.idOrgao)}>
+              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedEmpresas.idOrgao)}>
                 Confirmar
               </Button>
               <Button className='mr-auto ml-2' variant="outline" onClick={closeDeleteDialog}>
@@ -261,11 +288,11 @@ export default function OragosContratantesPage() {
       )}
 
       {/* Dialog para exibir o formulário para edição das informações */}
-      {showUpdateDialog && selectedOrgContratante && (
+      {showUpdateDialog && selectedEmpresas && (
         <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
           <DialogContent>
             <DialogTitle className="text-2xl"></DialogTitle>
-            <UpdateOrgContratante closeForm={closeUpdateDialog} orgContratante={selectedOrgContratante} onSave={handleUpdate} />
+            <UpdateEmpresa closeForm={closeUpdateDialog} empresa={selectedEmpresas} onSave={handleUpdate} />
           </DialogContent>
         </Dialog>
       )}

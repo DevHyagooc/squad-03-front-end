@@ -3,16 +3,16 @@ const user = 'admin'
 const password = 'admin123'
 const auth = btoa(`${user}:${password}`);
 
-export const getOrgaoContratanteList = async () => {
+export const getEmpresaList = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante`, {
+        const response = await fetch(`${BASE_URL}/api/empresa`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Basic ${auth}`
             }
         });
         if (!response.ok) {
-            throw new Error('Erro ao obter lista de orgaos contratantes')
+            throw new Error('Erro ao obter lista de empresas')
         }
         return response.json();
     } catch (error) {
@@ -21,9 +21,9 @@ export const getOrgaoContratanteList = async () => {
     }
 };
 
-export const getOrgaoContratanteId = async (id) => {
+export const getEmpresaId = async (id) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/empresa/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Basic ${auth}`
@@ -39,9 +39,9 @@ export const getOrgaoContratanteId = async (id) => {
     }
 };
 
-export const deleteOrgaoContratante = async (id) => {
+export const deleteEmpresa = async (id) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/empresa/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -58,15 +58,15 @@ export const deleteOrgaoContratante = async (id) => {
     }
 };
 
-export const updateOrgaoContratante = async (id, org) => {
+export const updateEmpresa = async (id, emp) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/empresa/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Basic ${auth}`
             },
-            body: JSON.stringify(org)
+            body: JSON.stringify(emp)
         });
         if (!response.ok) {
             throw new Error('Erro ao atualizar orgão contratante!');
@@ -78,39 +78,32 @@ export const updateOrgaoContratante = async (id, org) => {
     }
 };
 
-export const postOrgaoContratante = async (org) => {
+export const postEmpresa = async (emp) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orgao-contratante`, {
+        const response = await fetch(`${BASE_URL}/api/empresa`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Basic ${auth}`
             },
             body: JSON.stringify({
-                nome: org.nome,
-                nomeFantasia: org.nomeFantasia,
-                razaoSocial: org.razaoSocial,
-                cnpj: org.cnpj,
-                numeroEmpresa: org.numeroEmpresa,
-                estado: org.estado,
-                cidade: org.cidade,
-                inscricaoMunicipal: org.inscricaoMunicipal,
-                razaoSocial: org.razaoSocial,
-                nomeFantasia: org.nomeFantasia,
-                tipoEmpresa: org.tipoEmpresa,
-                cep: org.cep,
-                estado: org.estado,
-                municipio: org.municipio,
-                bairro: org.bairro,
-                logradouro: org.logradouro,
-                numero: org.numero,
-                complemento: org.complemento,
-                email: org.email,
-                telefone: org.telefone,
-                representanteNome: org.representanteNome,
-                representanteCpf: org.representanteCpf,
-                emailRepresentante: org.emailRepresentante,
-                representanteTelefone: org.representanteTelefone
+                idOrgao: emp.idOrgao,
+                nomeFantasia: emp.nomeFantasia,
+                razaoSocial: emp.razaoSocial,
+                cnpj: emp.cnpj,
+                numeroEmpresa: emp.numeroEmpresa,
+                estado: emp.estado,
+                cidade: emp.cidade,
+                inscricaoMunicipal: emp.inscricaoMunicipal,
+                tipoEmpresa: emp.tipoEmpresa,
+                cep: emp.cep,
+                bairro: emp.bairro,
+                logradouro: emp.logradouro,
+                numero: emp.numero,
+                complemento: emp.complemento,
+                email: emp.email,
+                telefone: emp.telefone,
+                representantes: emp.representantes,
             })
         });
         if (!response.ok) {
