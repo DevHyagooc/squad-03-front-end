@@ -100,6 +100,7 @@ export default function EmpresasPage() {
     deleteEmpresa(id)
     setShowDeleteDialog(false);
     fetchListEmpresas();
+    fetchListEmpresas();
   };
 
   const openInfoDialog = (empresa: Empresa) => {

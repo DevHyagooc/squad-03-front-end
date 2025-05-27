@@ -9,7 +9,7 @@ interface Colaborador {
    cargo: string;
    telefone: string;
    email: string;
-   nascimento: string;
+   dataNascimento: string;
 }
 interface FormColabProps {
    closeForm: () => void;
@@ -54,7 +54,7 @@ const InfoColab: React.FC<FormColabProps> = ({ closeForm, colaborador }) => {
 
           <div className="flex flex-col col-span-1 md:col-span-2">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Data de Nascimento:</span>
-            <span className="text-sm">{colaborador.nascimento || "Não informado"}</span>
+            <span className="text-sm">{colaborador.dataNascimento || "Não informado"}</span>
           </div>
         </div>
       </CardContent>

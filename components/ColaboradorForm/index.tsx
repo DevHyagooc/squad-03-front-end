@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho esteja correto
 import { formatCPF, formatPhone, formatDate } from "@/lib/formatData";
 import { postColaborador } from "@/services/colaboradores";
+import { formatPhoneBr } from "@/lib/formatePhoneBr";
 
 interface FormColabProps {
    closeForm: () => void;
@@ -18,7 +19,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
          cargo: "",
          email: "",
          telefone: "",
-         nascimento: "",
+         dataNascimento: "",
       },
    });
 
@@ -139,10 +140,14 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
                            <Input
                               id="telefone"
                               type="text"
-                              placeholder="Digite aqui o número"
+                              // passa o valor formatado ou string vazia
+                              value={field.value || ""}
+                              // no onChange: formata e dispara o hook
+                              onChange={e => field.onChange(formatPhoneBr(e.target.value))}
+                              // propaga o blur para o touched state
+                              onBlur={field.onBlur}
+                              placeholder="(xx) x xxxx-xxxx"
                               className="w-52 mt-1 text-black"
-                              value={field.value}
-                              onChange={(e) => field.onChange(formatPhone(e.target.value))}
                            />
                         )}
                      />
@@ -151,14 +156,14 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
                </FormItem>
 
                <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="nascimento">Data de Nascimento:</FormLabel>
+                  <FormLabel htmlFor="dataNascimento">Data de Nascimento:</FormLabel>
                   <FormControl>
                      <Controller
-                        name="nascimento"
+                        name="dataNascimento"
                         control={control}
                         render={({ field }) => (
                            <Input
-                              id="nascimento"
+                              id="dataNascimento"
                               type="text"
                               placeholder="dd/mm/aaaa"
                               className="w-52 mt-1 text-black"

@@ -16,7 +16,8 @@ export const postColaborador = async (colaborador) => {
             email: colaborador.email,
             cpf: colaborador.cpf,
             cargo: colaborador.cargo,
-            telefone: colaborador.telefone
+            telefone: colaborador.telefone,
+            dataNascimento: colaborador.dataNascimento
          })
       });
       if (!response.ok) {
@@ -78,7 +79,8 @@ export const putColaborador = async (id, colaborador) => {
             email: colaborador.email,
             cpf: colaborador.cpf,
             cargo: colaborador.cargo,
-            telefone: colaborador.telefone
+            telefone: colaborador.telefone,
+            dataNascimento: colaborador.dataNascimento
          })
       });
       if (!response.ok) {

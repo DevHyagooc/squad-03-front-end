@@ -13,7 +13,7 @@ export interface Colaborador {
   cargo: string;
   telefone: string;
   email: string;
-  nascimento: string;
+  dataNascimento: string;
 }
 
 export interface UpdateColaboradorProps {
@@ -138,7 +138,7 @@ const UpdateColaborador: React.FC<UpdateColaboradorProps> = ({ closeForm, colabo
                 <Input
                   name="nascimento"
                   id="nascimento"
-                  value={formData.nascimento}
+                  value={formData.dataNascimento}
                   onChange={(e) => {
                     const formatted = formatDate(e.target.value)
                     setFormData((prev) => ({
