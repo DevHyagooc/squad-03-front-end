@@ -26,6 +26,7 @@ export interface Empresa {
   cep: string;
   bairro: string;
   logradouro: string;
+  numero: string;
   complemento: string;
   email: string;
   telefone: string;
