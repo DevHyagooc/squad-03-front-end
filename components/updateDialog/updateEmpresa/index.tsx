@@ -10,27 +10,28 @@ import { Label } from "@/components/ui/label"
 import { X } from "lucide-react"
 import { formatCNPJ } from "@/lib/formatData"
 import ConfirmationDialog from "@/components/confirmDialog"
+import { Empresa } from "@/app/pageInterna/empresas/page"
 
-interface OrgContratante {
-    idOrgao: number
-    nome: string
-    nomeFantasia: string
-    razaoSocial: string
-    tipoempresa: string
-    cnpj: string
-    numeroEmpresa: string
-    estado: string
-    cidade: string
-}
+// interface Empresa {
+//     idOrgao: number
+//     nome: string
+//     nomeFantasia: string
+//     razaoSocial: string
+//     tipoempresa: string
+//     cnpj: string
+//     numeroEmpresa: string
+//     estado: string
+//     cidade: string
+// }
 
-interface UpdateOrgContratanteProps {
+interface UpdateEmpresaProps {
     closeForm: () => void
-    orgContratante: OrgContratante
-    onSave: (orgContratante: OrgContratante) => void
+    empresa: Empresa
+    onSave: (empresa: Empresa) => void
 }
 
-const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, orgContratante: initialData, onSave }) => {
-    const [formData, setFormData] = useState<OrgContratante>(initialData)
+const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({ closeForm, empresa: initialData, onSave }) => {
+    const [formData, setFormData] = useState<Empresa>(initialData)
     const [showConfirmation, setShowConfirmation] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -67,7 +68,7 @@ const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, 
             <Card className="w-full h-full shadow-none border-0">
                 <CardHeader className="bg-gray-50 dark:bg-gray-800 pb-2">
                     <div className="flex justify-between items-center">
-                        <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">Editar Órgão Contratante</CardTitle>
+                        <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">Editar Empresa</CardTitle>
                         <Button variant="ghost" size="icon" onClick={closeForm} className="h-8 w-8">
                             <X className="h-4 w-4" />
                         </Button>
@@ -80,7 +81,7 @@ const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, 
                                 <Label htmlFor="nome" className="text-sm font-medium text-gray-500 dark:text-gray-400">
                                     Nome:
                                 </Label>
-                                <Input id="nome" name="nome" value={formData.nome} onChange={handleChange} className="text-sm" required />
+                                <Input id="nome" name="nome" value={formData.razaoSocial} onChange={handleChange} className="text-sm" required />
                             </div>
 
                             <div className="flex flex-col space-y-1.5">
@@ -180,4 +181,4 @@ const UpdateOrgContratante: React.FC<UpdateOrgContratanteProps> = ({ closeForm, 
     );
 }
 
-export default UpdateOrgContratante
+export default UpdateEmpresa

@@ -1,6 +1,6 @@
 // src/components/FormEmpresa.tsx
 import { useState } from "react";
-import { FormProvider, useForm, Controller } from "react-hook-form";
+import { FormProvider, useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -11,18 +11,24 @@ import {
 } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";
 import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
+import { formatPhoneBr } from "@/lib/formatePhoneBr";
 
-const steps = ["Empresa", "Endereço", "Contato", "Representante"];
+interface FormEmpresaProps {
+  closeForm: () => void;
+  onSubmit?: (empresa: any) => void;
+}
+
+const steps = ["Empresa", "Endereço", "Contato Empresa", "Representante"];
 
 type FormData = {
   cnpj: string;
   inscricaoMunicipal: string;
   razaoSocial: string;
   nomeFantasia: string;
-  tipoempresa: string;
+  tipoEmpresa: string;
   cep: string;
   estado: string;
-  municipio: string;
+  cidade: string;
   bairro: string;
   logradouro: string;
   numero: string;
@@ -35,17 +41,17 @@ type FormData = {
   representanteTelefone: string;
 };
 
-const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
+const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
   const methods = useForm<FormData>({
     defaultValues: {
       cnpj: "",
       inscricaoMunicipal: "",
       razaoSocial: "",
       nomeFantasia: "",
-      tipoempresa: "",
+      tipoEmpresa: "",
       cep: "",
       estado: "",
-      municipio: "",
+      cidade: "",
       bairro: "",
       logradouro: "",
       numero: "",
@@ -74,6 +80,41 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
   const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleFormSubmit: SubmitHandler<any> = (empresa) => {
+
+    const payload = {
+      // campos “chave-valor” 1:1
+      razaoSocial: empresa.razaoSocial,
+      nomeFantasia: empresa.nomeFantasia,
+      cnpj: empresa.cnpj,
+      inscricaoMunicipal: empresa.inscricaoMunicipal,
+      tipoEmpresa: empresa.tipoEmpresa,       // rename aqui
+      cep: empresa.cep,
+      bairro: empresa.bairro,
+      logradouro: empresa.logradouro,
+      numero: empresa.numero,
+      complemento: empresa.complemento,
+      estado: empresa.estado,
+      cidade: empresa.cidade,         // seu post usa “cidade”
+      email: empresa.email,
+      telefone: empresa.telefone,
+
+      // monta o array de representantes
+      representantes: [
+        {
+          nome: empresa.representanteNome,
+          cpf: empresa.representanteCpf,
+          email: empresa.emailRepresentante,
+          telefone: empresa.representanteTelefone,
+        }
+      ]
+    };
+
+
+    if (onSubmit) onSubmit(payload);
+    closeForm();
+  }
+
   const handleNext = async () => {
     // Valida os campos do passo atual antes de avançar
     const fields = stepsFields[step];
@@ -99,7 +140,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       try {
         const local = await getLocal(digits);
         setValue("estado", local.uf, { shouldValidate: true });
-        setValue("municipio", local.localidade, { shouldValidate: true });
+        setValue("cidade", local.localidade, { shouldValidate: true });
         setValue("bairro", local.bairro, { shouldValidate: true });
         setValue("logradouro", local.logradouro, { shouldValidate: true });
       } catch (err) {
@@ -108,23 +149,22 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
     }
   };
 
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-    try {
-      console.log("Dados enviados:", data);
-      // Simula uma requisição API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      closeForm();
-    } catch (error) {
-      console.error("Erro ao salvar:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // const onSubmit = async (data: FormData) => {
+  //   setIsSubmitting(true);
+  //   try {
+  //     const data = await postEmpresa(data)
+  //     console.log("Dados enviados:", data);
+  //     closeForm();
+  //   } catch (error) {
+  //     console.error("Erro ao salvar:", error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   // Campos requeridos para validação em cada step
   const stepsFields = [
-    ["cnpj", "razaoSocial", "tipoempresa"], // Step 0
+    ["cnpj", "razaoSocial", "tipoEmpresa"], // Step 0
     ["cep", "logradouro", "numero", "municipio", "estado"], // Step 1
     ["email", "telefone"], // Step 2
     ["representanteNome", "representanteCpf"], // Step 3
@@ -132,7 +172,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">{steps[step]}</h2>
           <span className="text-sm text-gray-500">Passo {step + 1} de {steps.length}</span>
@@ -206,25 +246,28 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel htmlFor="tipoempresa">Tipo de Empresa:</FormLabel>
+              <FormLabel htmlFor="tipoEmpresa">Tipo de Empresa:</FormLabel>
               <FormControl>
                 <Controller
-                  name="tipoempresa"
+                  name="tipoEmpresa"
                   control={control}
+                  defaultValue=""
+                  rules={{ required: "Tipo de empresa é obrigatório" }}
                   render={({ field }) => (
                     <select
-                      id="tipoempresa"
+                      id="tipoEmpresa"
                       {...field}
                       className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
                     >
-                      <option value="Ativo">Pública</option>
-                      <option value="Cancelado">Privada</option>
+                      <option value="">Selecione...</option>
+                      <option value="Pública">Pública</option>
+                      <option value="Privada">Privada</option>
 
                     </select>
                   )}
                 />
               </FormControl>
-              <FormMessage>{errors.tipoempresa && errors.tipoempresa.message}</FormMessage>
+              <FormMessage>{errors.tipoEmpresa && errors.tipoEmpresa.message}</FormMessage>
             </FormItem>
           </div>
         )}
@@ -308,7 +351,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
               <FormLabel>Município*</FormLabel>
               <FormControl>
                 <Controller
-                  name="municipio"
+                  name="cidade"
                   control={control}
                   rules={{ required: "Município é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
@@ -363,8 +406,13 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                   rules={{ required: "Telefone é obrigatório" }}
                   render={({ field }) => (
                     <Input
-                      {...field}
-                      onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                      // passa o valor formatado
+                      value={field.value || ""}
+                      // no onChange: formata e dispara o hook
+                      onChange={e => field.onChange(formatPhoneBr(e.target.value))}
+                      // propaga o blur para o touched state
+                      onBlur={field.onBlur}
+                      placeholder="(xx) x xxxx-xxxx"
                     />
                   )}
                 />

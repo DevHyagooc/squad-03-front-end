@@ -21,7 +21,7 @@ export const getContratoList = async () => {
     }
 };
 
-export const getContratoId = async () => {
+export const getContratoId = async (id) => {
     try {
         const response = await fetch(`${BASE_URL}/api/contrato/${id}`, {
             headers: {

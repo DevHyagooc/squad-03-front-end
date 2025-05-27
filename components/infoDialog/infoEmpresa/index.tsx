@@ -2,31 +2,32 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "../../ui/button";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { X } from "lucide-react";
+import { Empresa } from "@/app/pageInterna/empresas/page";
 
-interface OrgContratante {
-  idOrgao: number;
-    nome: string;
-    nomeFantasia: string;
-    razaoSocial: string;
-    cnpj: string;
-    numeroEmpresa: string;
-    estado: string;
-    cidade: string;
-}
+// interface Empresa {
+//   idOrgao: number;
+//     nome: string;
+//     nomeFantasia: string;
+//     razaoSocial: string;
+//     cnpj: string;
+//     numeroEmpresa: string;
+//     estado: string;
+//     cidade: string;
+// }
 
-interface FormOrgContratantePorps {
+interface FormEmpresaPorps {
     closeForm: () => void;
-    orgContratante: OrgContratante
+    empresa: Empresa
 }
 
-const InfoOrgContratante: React.FC<FormOrgContratantePorps> = ({ closeForm, orgContratante }) => {
+const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
     
     return (
     <Card className="w-full h-full shadow-none border-0">
       <CardHeader className="bg-gray-50 dark:bg-gray-800 pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
-            Informações do Órgão Contratante
+            Informações da Empresa
           </CardTitle>
           <Button variant="ghost" size="icon" onClick={closeForm} className="h-8 w-8">
             <X className="h-4 w-4" />
@@ -37,37 +38,42 @@ const InfoOrgContratante: React.FC<FormOrgContratantePorps> = ({ closeForm, orgC
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nome:</span>
-            <span className="text-sm font-medium">{orgContratante.nome}</span>
+            <span className="text-sm font-medium">{empresa.razaoSocial}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nome Fantasia:</span>
-            <span className="text-sm">{orgContratante.nomeFantasia}</span>
+            <span className="text-sm">{empresa.nomeFantasia}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Razão Social:</span>
-            <span className="text-sm">{orgContratante.razaoSocial}</span>
+            <span className="text-sm">{empresa.razaoSocial}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">CNPJ:</span>
-            <span className="text-sm">{orgContratante.cnpj}</span>
+            <span className="text-sm">{empresa.cnpj}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Número Empresa:</span>
-            <span className="text-sm">{orgContratante.numeroEmpresa}</span>
+            <span className="text-sm">{empresa.numeroEmpresa}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Estado:</span>
-            <span className="text-sm">{orgContratante.estado}</span>
+            <span className="text-sm">{empresa.estado}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Cidade:</span>
-            <span className="text-sm">{orgContratante.cidade}</span>
+            <span className="text-sm">{empresa.cidade}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Representante:</span>
+            <span className="text-sm">{empresa.cnpj}</span>
           </div>
         </div>
       </CardContent>
@@ -80,4 +86,4 @@ const InfoOrgContratante: React.FC<FormOrgContratantePorps> = ({ closeForm, orgC
   );
 }
 
-export default InfoOrgContratante;
+export default InfoEmpresa;
