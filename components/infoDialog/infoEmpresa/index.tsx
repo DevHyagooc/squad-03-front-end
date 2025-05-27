@@ -47,8 +47,8 @@ const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
           </div>
 
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Razão Social:</span>
-            <span className="text-sm">{empresa.razaoSocial}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Tipo Empresa:</span>
+            <span className="text-sm">{empresa.tipoEmpresa}</span>
           </div>
 
           <div className="flex flex-col">
@@ -57,13 +57,28 @@ const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
           </div>
 
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Número Empresa:</span>
-            <span className="text-sm">{empresa.numeroEmpresa}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Inscrição Municipal:</span>
+            <span className="text-sm">{empresa.inscricaoMunicipal}</span>
           </div>
 
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Estado:</span>
-            <span className="text-sm">{empresa.estado}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Logradouro:</span>
+            <span className="text-sm">{empresa.logradouro}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Número:</span>
+            <span className="text-sm">{empresa.numero}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Complemento:</span>
+            <span className="text-sm">{empresa.complemento}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Bairro:</span>
+            <span className="text-sm">{empresa.bairro}</span>
           </div>
 
           <div className="flex flex-col">
@@ -72,8 +87,23 @@ const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
           </div>
 
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Representante:</span>
-            <span className="text-sm">{empresa.cnpj}</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Estado:</span>
+            <span className="text-sm">{empresa.estado}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">CEP:</span>
+            <span className="text-sm">{empresa.cep}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Telefone:</span>
+            <span className="text-sm">{empresa.telefone}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email:</span>
+            <span className="text-sm">{empresa.email}</span>
           </div>
         </div>
       </CardContent>
