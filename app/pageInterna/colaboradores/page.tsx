@@ -19,7 +19,7 @@ export interface Colaborador {
   cargo: string;
   telefone: string;
   email: string;
-  nascimento: string;
+  dataNascimento: string;
 }
 
 export default function ColaboradoresPage() {
