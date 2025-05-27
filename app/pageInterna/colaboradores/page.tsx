@@ -39,7 +39,7 @@ export default function ColaboradoresPage() {
     setLoading(true);  // Ativa o loading
     try {
       const colaboradoresData = await getColaboradorList();
-      setListColaboradores(colaboradoresData);
+      setListColaboradores(colaboradoresData.reverse());
     } catch (error) {
       console.error("Erro ao buscar colaboradores:", error);
     } finally {
@@ -107,11 +107,6 @@ export default function ColaboradoresPage() {
   const openUpdateDialog = (colaborador: Colaborador) => {
     setSelectedColaborador(colaborador);
     setShowUpdateDialog(true); // Abre o diálogo de exclusão
-  };
-
-  const openConfirmUpdateDialog = (colaborador: Colaborador) => {
-    setSelectedColaborador(colaborador);
-    setShowConfirmUpdateDialog(true); // Abre o diálogo de exclusão
   };
 
   const closeInfoDialog = () => {
@@ -211,7 +206,7 @@ export default function ColaboradoresPage() {
               <TableBody>
                 {listColaboradores.map((colaborador) => (
                   <TableRow key={colaborador.idFuncionario}>
-                    <TableCell>{`CO-${colaborador.idFuncionario}`}</TableCell>
+                    <TableCell>{`CL-${colaborador.idFuncionario}`}</TableCell>
                     <TableCell className="max-w-[150px] truncate">{colaborador.nome}</TableCell>
                     <TableCell>{colaborador.cargo}</TableCell>
                     <TableCell>{colaborador.telefone}</TableCell>
