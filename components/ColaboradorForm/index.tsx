@@ -5,6 +5,9 @@ import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/f
 import { formatCPF, formatPhone, formatDate } from "@/lib/formatData";
 import { postColaborador } from "@/services/colaboradores";
 import { formatPhoneBr } from "@/lib/formatePhoneBr";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import 'react-phone-number-input';
 
 interface FormColabProps {
    closeForm: () => void;
@@ -137,18 +140,19 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
                         control={control}
                         rules={{ required: "Telefone é obrigatório" }}
                         render={({ field }) => (
-                           <Input
-                              id="telefone"
-                              type="text"
-                              // passa o valor formatado ou string vazia
-                              value={field.value || ""}
-                              // no onChange: formata e dispara o hook
-                              onChange={e => field.onChange(formatPhoneBr(e.target.value))}
-                              // propaga o blur para o touched state
-                              onBlur={field.onBlur}
-                              placeholder="(xx) x xxxx-xxxx"
-                              className="w-52 mt-1 text-black"
-                           />
+                           <div className="mt-1">
+                              <PhoneInput
+                                 international
+                                 defaultCountry="BR"
+                                 value={field.value || ""}
+                                 onChange={(phone) => field.onChange(phone)}
+                                 onBlur={field.onBlur}
+                                 placeholder="(xx) x xxxx-xxxx"
+                                 className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"
+                                    } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
+                                 id="telefone"
+                              />
+                           </div>
                         )}
                      />
                   </FormControl>

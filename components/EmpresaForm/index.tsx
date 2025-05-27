@@ -12,6 +12,9 @@ import {
 import { getLocal } from "@/services/cep";
 import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
 import { formatPhoneBr } from "@/lib/formatePhoneBr";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import 'react-phone-number-input';
 
 interface FormEmpresaProps {
   closeForm: () => void;
@@ -398,26 +401,35 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel>Telefone*</FormLabel>
+              <FormLabel htmlFor="telefone">Telefone*</FormLabel>
               <FormControl>
                 <Controller
                   name="telefone"
                   control={control}
                   rules={{ required: "Telefone é obrigatório" }}
                   render={({ field }) => (
-                    <Input
-                      // passa o valor formatado
-                      value={field.value || ""}
-                      // no onChange: formata e dispara o hook
-                      onChange={e => field.onChange(formatPhoneBr(e.target.value))}
-                      // propaga o blur para o touched state
-                      onBlur={field.onBlur}
-                      placeholder="(xx) x xxxx-xxxx"
-                    />
+                    <div className="mt-1">
+                      <PhoneInput
+                        international
+                        defaultCountry="BR"
+                        id="telefone"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder="(xx) x xxxx-xxxx"
+                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"}
+                          bg-background text-sm
+                          ring-offset-background
+                          focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2
+                        `}
+                      />
+                    </div>
                   )}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage>
+                {errors.telefone && errors.telefone.message}
+              </FormMessage>
             </FormItem>
           </div>
         )}
@@ -457,20 +469,35 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel>Telefone</FormLabel>
+              <FormLabel htmlFor="representanteTelefone">Telefone*</FormLabel>
               <FormControl>
                 <Controller
                   name="representanteTelefone"
                   control={control}
+                  rules={{ required: "Telefone é obrigatório" }}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      onChange={(e) => field.onChange(formatPhone(e.target.value))}
-                    />
+                    <div className="mt-1">
+                      <PhoneInput
+                        international
+                        defaultCountry="BR"
+                        id="telefone"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder="(xx) x xxxx-xxxx"
+                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"}
+                          bg-background text-sm
+                          ring-offset-background
+                          focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2
+                        `}
+                      />
+                    </div>
                   )}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage>
+                {errors.telefone && errors.telefone.message}
+              </FormMessage>
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
