@@ -105,6 +105,21 @@ const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email:</span>
             <span className="text-sm">{empresa.email}</span>
           </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Representante:</span>
+            <span className="text-sm">{empresa.representante?.nome}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email epresentante:</span>
+            <span className="text-sm">{empresa.representante?.email}</span>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Telefone Representante:</span>
+            <span className="text-sm">{empresa.representante?.telefone}</span>
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-end pt-2 pb-4 mt-auto">

@@ -10,7 +10,7 @@ import Link from "next/link"
 import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
 import { StringToBoolean } from "class-variance-authority/types"
-import { OrgContratante } from "../empresas/page"
+import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
 import { getContratoList } from "@/services/contrato"
@@ -22,7 +22,7 @@ interface Contrato {
   valor: number;
   status: StatusContrato;
   criadoEm: string;
-  orgaoContratante: OrgContratante;
+  empresa: Empresa;
   responsavel: Colaborador;
 }
 
@@ -137,7 +137,7 @@ export default function ContratosPage() {
                 {listContratos.map((contrato) => (
                   <TableRow key={contrato.idContrato}>
                     <TableCell>CT-{contrato.idContrato}</TableCell>
-                    <TableCell>{contrato.orgaoContratante.nome}</TableCell>
+                    <TableCell>{contrato.empresa.razaoSocial}</TableCell>
                     <TableCell>{formatDate2(contrato.criadoEm)}</TableCell>
                     <TableCell>{formatDate2(contrato.prazo)}</TableCell>
                     <TableCell>
