@@ -411,7 +411,7 @@ const FormEmpresa: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                   name="representanteTelefone"
                   control={control}
                   render={({ field }) => (
-                    <Input 
+                    <Input  
                       {...field} 
                       onChange={(e) => field.onChange(formatPhone(e.target.value))}
                     />
