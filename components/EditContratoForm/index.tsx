@@ -30,6 +30,7 @@ import { Contrato } from '@/app/pageInterna/contratos/[id]/page'
    dataFim: string
    termosDePagamento: string
    valorContrato: number
+   valorTotalPago: number
    autoRenovacao: boolean
    diasParaCancelamento: number
    motivoCancelamento: string
@@ -68,6 +69,7 @@ export function EditarContratoDialog({
         descricao: contrato.descricao,
         termosDePagamento: contrato.termosDePagamento,
         valorContrato: contrato.valorContrato,
+        valorTotalPago: contrato.valorTotalPago,
         autoRenovacao: contrato.autoRenovacao,
         diasParaCancelamento: contrato.diasParaCancelamento,
         motivoCancelamento: contrato.motivoCancelamento,
@@ -284,6 +286,18 @@ export function EditarContratoDialog({
                   step="0.01"
                   value={formData.valorContrato || ''}
                   onChange={(e) => handleInputChange('valorContrato', Number(e.target.value))}
+                  placeholder="Ex: 50000.00"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="valorTotalPago">Valor Total Pago (R$)</Label>
+                <Input
+                  id="valorTotalPago"
+                  type="number"
+                  step="0.01"
+                  value={formData.valorTotalPago || ''}
+                  onChange={(e) => handleInputChange('valorTotalPago', Number(e.target.value))}
                   placeholder="Ex: 50000.00"
                 />
               </div>
