@@ -4,21 +4,21 @@ import { X, User, Briefcase, Phone, Mail, Calendar } from "lucide-react";
 import { Button } from "../../ui/button";
 
 interface Colaborador {
-   idFuncionario: string;
-   nome: string;
-   cargo: string;
-   telefone: string;
-   email: string;
-   dataNascimento: string;
+  idFuncionario: string;
+  nome: string;
+  cargo: string;
+  telefone: string;
+  email: string;
+  dataNascimento: string;
 }
 interface FormColabProps {
-   closeForm: () => void;
-   colaborador: Colaborador
+  closeForm: () => void;
+  colaborador: Colaborador
 }
 
 const InfoColab: React.FC<FormColabProps> = ({ closeForm, colaborador }) => {
 
-   return (
+  return (
     <Card className="w-full h-full shadow-none border-0">
       <CardHeader className="bg-gray-50 dark:bg-gray-800 pb-2">
         <div className="flex justify-between items-center">
