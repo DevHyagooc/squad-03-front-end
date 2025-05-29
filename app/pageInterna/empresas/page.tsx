@@ -109,7 +109,6 @@ export default function EmpresasPage() {
     setLoadingDetailEmpresa(true);
     setShowInfoDialog(true);
     try {
-      // supondo que você tenha um serviço getEmpresaById
       const data = await getEmpresaId(emp.idOrgao);
       setEmpresaDetail(data);
     } catch (err) {
@@ -275,7 +274,7 @@ export default function EmpresasPage() {
       {showInfoDialog && (
         <Dialog open onOpenChange={closeInfoDialog}>
           <DialogContent>
-            <DialogTitle className="text-2xl">Informações da Empresa</DialogTitle>
+            <DialogTitle className="text-2xl"></DialogTitle>
 
             {loadingDetailEmpresa ? (
               <div className="flex justify-center py-8">

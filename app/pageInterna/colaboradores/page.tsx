@@ -95,9 +95,9 @@ export default function ColaboradoresPage() {
 
   // Função para abrir o Dialog de informações do colaborador
   const openInfoDialog = async (colab: Colaborador) => {
-    setLoadingDetail(true);  // Ativa o loading
+    setLoadingDetail(true);
+    setShowInfoDialog(true);
     try {
-      setShowInfoDialog(true);
       const data = await getColaboradorId(colab.idFuncionario);
       setColaboradorDetail(data);
     } catch (error) {
@@ -242,17 +242,26 @@ export default function ColaboradoresPage() {
       </Card>
 
       {/* Dialog para exibir as informações do colaborador */}
-        { showInfoDialog && colaboradorDetail && (
-          <Dialog open onOpenChange={closeInfoDialog}>
-            <DialogContent>
-              <DialogTitle className="text-2xl"></DialogTitle>
-              <InfoColab
-                closeForm={closeInfoDialog}
-                colaborador={colaboradorDetail}      // só exibição
-              />
-            </DialogContent>
-          </Dialog>
-        )}
+      {showInfoDialog && (
+        <Dialog open onOpenChange={closeInfoDialog}>
+          <DialogContent>
+            <DialogTitle className="text-2xl"></DialogTitle>
+
+            {loadingDetail ? (
+              <div className="flex justify-center py-8">
+                <Loading />
+              </div>
+            ) : (
+              colaboradorDetail && (
+                < InfoColab
+                  closeForm={closeInfoDialog}
+                  colaborador={colaboradorDetail}      // só exibição
+                />
+              )
+            )}
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Dialog para exibir as informações do colaborador */}
       {showUpdateDialog && selectedColaborador && (
