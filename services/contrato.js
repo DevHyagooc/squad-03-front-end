@@ -41,7 +41,7 @@ export const getContratoId = async (id) => {
 
 export const updateContrato = async (id, contrato) => {
     try {
-        const response = await fetch(`http://localhost:8080/api/contrato/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/contrato/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
