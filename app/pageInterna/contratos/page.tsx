@@ -9,7 +9,6 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
-import { StringToBoolean } from "class-variance-authority/types"
 import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
