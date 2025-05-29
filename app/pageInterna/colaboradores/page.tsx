@@ -27,6 +27,8 @@ export default function ColaboradoresPage() {
   const [listColaboradores, setListColaboradores] = useState<Colaborador[]>([]);
   const [loading, setLoading] = useState(false);
   const [colaborador, setColaborador] = useState<Colaborador | null>(null);
+  const [colaboradorDetail, setColaboradorDetail] = useState<Colaborador | null>(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
 
   // Estados separados para controle dos diálogos
   const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
@@ -92,10 +94,17 @@ export default function ColaboradoresPage() {
   }, []);
 
   // Função para abrir o Dialog de informações do colaborador
-  const openInfoDialog = (colaborador: Colaborador) => {
-    setSelectedColaborador(colaborador);
-    fetchListColaboradores();
-    setShowInfoDialog(true); // Abre o diálogo de informações
+  const openInfoDialog = async (colab: Colaborador) => {
+    setLoadingDetail(true);  // Ativa o loading
+    try {
+      setShowInfoDialog(true);
+      const data = await getColaboradorId(colab.idFuncionario);
+      setColaboradorDetail(data);
+    } catch (error) {
+      console.error("Erro ao buscar detalhes:", error);
+    } finally {
+      setLoadingDetail(false);  // Desativa o loading
+    }
   };
 
   // Função para abrir o Dialog de exclusão
@@ -233,14 +242,17 @@ export default function ColaboradoresPage() {
       </Card>
 
       {/* Dialog para exibir as informações do colaborador */}
-      {showInfoDialog && selectedColaborador && (
-        <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
-          <DialogContent>
-            <DialogTitle className="text-2xl"></DialogTitle>
-            <InfoColab closeForm={closeInfoDialog} colaborador={selectedColaborador} />
-          </DialogContent>
-        </Dialog>
-      )}
+        { showInfoDialog && colaboradorDetail && (
+          <Dialog open onOpenChange={closeInfoDialog}>
+            <DialogContent>
+              <DialogTitle className="text-2xl"></DialogTitle>
+              <InfoColab
+                closeForm={closeInfoDialog}
+                colaborador={colaboradorDetail}      // só exibição
+              />
+            </DialogContent>
+          </Dialog>
+        )}
 
       {/* Dialog para exibir as informações do colaborador */}
       {showUpdateDialog && selectedColaborador && (

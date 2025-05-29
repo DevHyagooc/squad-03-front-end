@@ -16,7 +16,7 @@ interface FormColabProps {
    colaborador: Colaborador
 }
 
-const InfoColab: React.FC<FormColabProps> = ({ closeForm, colaborador }) => {
+const InfoColab: React.FC<FormColabProps> = ({ colaborador, closeForm }) => {
 
    return (
     <Card className="w-full h-full shadow-none border-0">
