@@ -1,3 +1,6 @@
+"use client"
+
+import { useState, use } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -15,17 +18,10 @@ import {
   FileCheck,
 } from "lucide-react"
 import Link from "next/link"
+import { getContratoId } from "@/services/contrato"
+import { EditarContratoDialog } from "@/components/EditContratoForm/index"
 
-// Definição do tipo de dados do contrato
-interface Representante {
-  id: number
-  nome: string
-  cpf: string
-  email: string
-  telefone: string
-}
-
-interface Empresa {
+export interface Empresa {
   idOrgao: number
   nomeFantasia: string
   razaoSocial: string
@@ -45,7 +41,15 @@ interface Empresa {
   representantes: Representante[]
 }
 
-interface Responsavel {
+export interface Representante {
+  id: number;
+  nome: string;
+  cpf: string;
+  email: string;
+  telefone: string;
+}
+
+export interface Responsavel {
   idFuncionario: number
   nome: string
   email: string
@@ -55,7 +59,7 @@ interface Responsavel {
   dataNascimento: string
 }
 
-interface Contrato {
+export interface Contrato {
   idContrato: number
   numeroContrato: string
   descricao: string
@@ -80,75 +84,41 @@ interface Contrato {
   responsavel: Responsavel
 }
 
-// Função para buscar os dados do contrato (simulada)
-async function getContrato(id: string): Promise<Contrato> {
-  // Em um ambiente real, aqui seria feita uma chamada à API
-  // Retornando o payload fornecido como exemplo
-  return {
-    idContrato: 1,
-    numeroContrato: "CT-2025-0427",
-    descricao: "Serviços de desenvolvimento de software customizado",
-    dataInicio: "2025-06-01",
-    dataFim: "2026-05-31",
-    termosDePagamento: "45",
-    valorContrato: 250000.5,
-    valorTotalPago: 0.0,
-    valorTotalPendente: 250000.5,
-    autoRenovacao: true,
-    diasParaCancelamento: 60,
-    motivoCancelamento: "Necessidade de atualização de escopo",
-    criadoEm: "2025-05-28T14:18:59.08376",
-    atualizadoEm: "2025-05-28T14:18:59.08376",
-    criadoPor: null,
-    atualizadoPor: null,
-    statusContrato: "ATIVO",
-    tipoContrato: "Desenvolvimento",
-    tags: "TI",
-    documentUrl: null,
-    empresa: {
-      idOrgao: 11,
-      nomeFantasia: "Hospital Municipal de Porto Alegre",
-      razaoSocial: "Fundação Hospitalar de Porto Alegre",
-      cnpj: "35.374.845/0001-21",
-      numeroEmpresa: null,
-      estado: "RS",
-      cidade: "Porto Alegre",
-      inscricaoMunicipal: "345678",
-      tipoEmpresa: "Pública",
-      cep: "90020-150",
-      bairro: "Centro Histórico",
-      logradouro: "Avenida Otávio Rocha",
-      numero: "1500",
-      complemento: "Prédio Anexo",
-      email: "contato@hospitalpoa.rs.gov.br",
-      telefone: "(51) 9 5555-4444",
-      representantes: [
-        {
-          id: 3,
-          nome: "Fernanda Costa",
-          cpf: "333.444.555-66",
-          email: "fernanda.costa@hospitalpoa.rs.gov.br",
-          telefone: "(51) 93 33322-22",
-        },
-      ],
-    },
-    responsavel: {
-      idFuncionario: 1,
-      nome: "Isaías Oliveira",
-      email: "isaiasoliver.dev@gmail.com",
-      cpf: "123.456.789-00",
-      cargo: "Desenvolvedor Back-end",
-      telefone: "(79) 99 90333-43",
-      dataNascimento: "12/11/2005",
-    },
+export default function ContratoDetalhesPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params)
+  const [contrato, setContrato] = useState<Contrato | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  // Carrega os dados do contrato
+  useState(() => {
+    const fetchContrato = async () => {
+      try {
+        const data = await getContratoId(resolvedParams.id)
+        setContrato(data)
+      } catch (error) {
+        console.error("Erro ao carregar contrato:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchContrato()
+  })
+
+  // Recarrega os dados do contrato após atualização
+  const handleContratoUpdated = async () => {
+    setIsLoading(true)
+    try {
+      const data = await getContratoId(resolvedParams.id)
+      setContrato(data)
+    } catch (error) {
+      console.error("Erro ao recarregar contrato:", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
-}
 
-export default async function ContratoDetalhesPage({ params }: { params: { id: string } }) {
-  // Buscar dados do contrato
-  const contrato = await getContrato(params.id)
-
-  // Função para obter a cor do status
   const getStatusColor = (status: string) => {
     switch (status.toUpperCase()) {
       case "ATIVO":
@@ -164,6 +134,30 @@ export default async function ContratoDetalhesPage({ params }: { params: { id: s
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Carregando dados do contrato...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!contrato) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-lg font-medium">Contrato não encontrado</p>
+          <Link href="/contratos">
+            <Button className="mt-4">Voltar para contratos</Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 p-8">
       <div className="flex items-center justify-between">
@@ -172,7 +166,7 @@ export default async function ContratoDetalhesPage({ params }: { params: { id: s
           <p className="text-muted-foreground">Contrato: {contrato.numeroContrato}</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </Button>
@@ -186,6 +180,16 @@ export default async function ContratoDetalhesPage({ params }: { params: { id: s
           </Button>
         </div>
       </div>
+
+      {/* Diálogo de edição */}
+      {contrato && (
+        <EditarContratoDialog
+          contrato={contrato}
+          isOpen={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          onContratoUpdated={handleContratoUpdated}
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <Card>
@@ -450,12 +454,13 @@ export default async function ContratoDetalhesPage({ params }: { params: { id: s
                       <TableCell>{deliverable.date}</TableCell>
                       <TableCell>
                         <div
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${deliverable.status === "Concluído"
-                            ? "bg-green-100 text-green-800"
-                            : deliverable.status === "Em andamento"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
-                            }`}
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            deliverable.status === "Concluído"
+                              ? "bg-green-100 text-green-800"
+                              : deliverable.status === "Em andamento"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                          }`}
                         >
                           {deliverable.status}
                         </div>

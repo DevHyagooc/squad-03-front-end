@@ -38,3 +38,23 @@ export const getContratoId = async (id) => {
         throw error;
     }
 };
+
+export const updateContrato = async (id, contrato) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/contrato/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            },
+            body: JSON.stringify(contrato)
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar contrato!');
+        }
+        return 'Orgão editado!';
+    } catch (error) {
+        console.error('Erro na requisição PUT', error)
+        throw error;
+    }
+};
