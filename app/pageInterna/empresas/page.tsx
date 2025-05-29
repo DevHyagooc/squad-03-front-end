@@ -4,11 +4,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {  Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
+import { Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
 import React, { useState, useEffect } from 'react';
-import { deleteEmpresa, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
+import { deleteEmpresa, getEmpresaId, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
 import Loading from "@/components/loading"
 import UpdateEmpresa from "@/components/updateDialog/updateEmpresa"
 import InfoEmpresa from "@/components/infoDialog/infoEmpresa"
@@ -49,6 +49,8 @@ export default function EmpresasPage() {
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
   const [listEmpresas, setListEmpresas] = useState<Empresa[]>([]);
   const [selectedEmpresas, setSelectedEmpresas] = useState<Empresa | null>(null)
+  const [empresaDetail, setEmpresaDetail] = useState<Empresa | null>(null);
+  const [loadingDetailEmpresa, setLoadingDetailEmpresa] = useState(false);
 
   const fetchListEmpresas = async () => {
     setLoading(true);
@@ -103,10 +105,17 @@ export default function EmpresasPage() {
     fetchListEmpresas();
   };
 
-  const openInfoDialog = (empresa: Empresa) => {
-    setSelectedEmpresas(empresa);
-    fetchListEmpresas();
-    setShowInfoDialog(true); // Abre o diálogo de informações
+  const openInfoDialog = async (emp: Empresa) => {
+    setLoadingDetailEmpresa(true);
+    setShowInfoDialog(true);
+    try {
+      const data = await getEmpresaId(emp.idOrgao);
+      setEmpresaDetail(data);
+    } catch (err) {
+      console.error("Erro ao buscar detalhes da empresa:", err);
+    } finally {
+      setLoadingDetailEmpresa(false);
+    }
   };
 
   // Função para abrir o Dialog de exclusão
@@ -165,9 +174,9 @@ export default function EmpresasPage() {
             </div>
 
             {/* Seu formulário */}
-            <FormEmpresa 
+            <FormEmpresa
               closeForm={() => setShowForm(false)}
-                onSubmit={handleCreateEmpresa}
+              onSubmit={handleCreateEmpresa}
             />
 
           </DialogContent>
@@ -262,11 +271,24 @@ export default function EmpresasPage() {
       </Card>
 
       {/* Dialog para exibir as informações da empresa */}
-      {showInfoDialog && selectedEmpresas && (
-        <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
+      {showInfoDialog && (
+        <Dialog open onOpenChange={closeInfoDialog}>
           <DialogContent>
             <DialogTitle className="text-2xl"></DialogTitle>
-            <InfoEmpresa closeForm={closeInfoDialog} empresa={selectedEmpresas} />
+
+            {loadingDetailEmpresa ? (
+              <div className="flex justify-center py-8">
+                <Loading />
+              </div>
+            ) : (
+              empresaDetail && (
+                <InfoEmpresa
+                  closeForm={closeInfoDialog}
+                  empresa={empresaDetail}
+                />
+              )
+            )}
+
           </DialogContent>
         </Dialog>
       )}
