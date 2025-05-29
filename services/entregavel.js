@@ -50,7 +50,7 @@ export const postEntregavel = async (ent) => {
                 'Authorization': `Basic ${auth}`
             },
             body: JSON.stringify({
-                // nome: ent.nome,
+                titulo: ent.titulo,
                 descricao: ent.descricao,
                 prazoEntrega: ent.prazoEntrega,
                 status: ent.status,
