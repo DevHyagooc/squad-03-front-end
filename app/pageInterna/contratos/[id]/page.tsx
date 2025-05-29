@@ -87,7 +87,7 @@ export interface Contrato {
 export default function ContratoDetalhesPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params)
   const [contrato, setContrato] = useState<Contrato | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [Loading, setLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   // Carrega os dados do contrato
@@ -99,7 +99,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
       } catch (error) {
         console.error("Erro ao carregar contrato:", error)
       } finally {
-        setIsLoading(false)
+        setLoading(false)
       }
     }
 
@@ -108,14 +108,14 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
 
   // Recarrega os dados do contrato após atualização
   const handleContratoUpdated = async () => {
-    setIsLoading(true)
+    setLoading(true)
     try {
       const data = await getContratoId(resolvedParams.id)
       setContrato(data)
     } catch (error) {
       console.error("Erro ao recarregar contrato:", error)
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
@@ -134,13 +134,13 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
     }
   }
 
-  if (isLoading) {
+  if (Loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Carregando dados do contrato...</p>
-        </div>
+      <div className=" inset-0 flex items-center justify-center pointer-events-none z-50 bg-white/40 backdrop-blur-sm">
+         <div className="relative w-12 h-12">
+            <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
+            <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
+         </div>
       </div>
     )
   }
@@ -454,13 +454,12 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                       <TableCell>{deliverable.date}</TableCell>
                       <TableCell>
                         <div
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            deliverable.status === "Concluído"
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${deliverable.status === "Concluído"
                               ? "bg-green-100 text-green-800"
                               : deliverable.status === "Em andamento"
                                 ? "bg-blue-100 text-blue-800"
                                 : "bg-gray-100 text-gray-800"
-                          }`}
+                            }`}
                         >
                           {deliverable.status}
                         </div>
