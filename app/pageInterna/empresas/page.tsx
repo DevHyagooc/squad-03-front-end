@@ -1,26 +1,139 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
+import {  Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
-import Link from "next/link"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { deleteEmpresa, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
+import Loading from "@/components/loading"
+import UpdateEmpresa from "@/components/updateDialog/updateEmpresa"
+import InfoEmpresa from "@/components/infoDialog/infoEmpresa"
 
-export default function ColaboradoresPage() {
+export interface Empresa {
+  idOrgao: number;
+  nomeFantasia: string;
+  razaoSocial: string;
+  cnpj: string;
+  numeroEmpresa: string;
+  estado: string;
+  cidade: string;
+  inscricaoMunicipal: string;
+  tipoEmpresa: string;
+  cep: string;
+  bairro: string;
+  logradouro: string;
+  numero: string;
+  complemento: string;
+  email: string;
+  telefone: string;
+  representante: Representante;
+}
+
+export interface Representante {
+  id: number;
+  nome: string;
+  cpf: string;
+  email: string;
+  telefone: string;
+}
+
+export default function EmpresasPage() {
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
+  const [listEmpresas, setListEmpresas] = useState<Empresa[]>([]);
+  const [selectedEmpresas, setSelectedEmpresas] = useState<Empresa | null>(null)
+
+  const fetchListEmpresas = async () => {
+    setLoading(true);
+    try {
+      const data = await getEmpresaList();
+      setListEmpresas(data);
+    } catch (err) {
+      console.error("Erro ao buscar empresas", err)
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchListEmpresas();
+  }, []);
 
   const handleButtonClick = () => {
     setShowForm(true);
   };
 
-  const closeForm = () => {
-    setShowForm(false);  // Altere isso para setShowForm para fechar o formulário
-    console.log("Formulário fechado");
+  const handleCreateEmpresa = async (empresa: any) => {
+    try {
+      await postEmpresa(empresa);       // chama a API de criação
+      await fetchListEmpresas();       // recarrega a lista
+    } catch (err) {
+      console.error("Erro ao criar empresa", err);
+    }
   };
+
+  const handleUpdate = async (emp: Empresa) => {
+    try {
+      await updateEmpresa(emp.idOrgao, emp);
+      // fecha o dialog e refaz a lista
+      closeUpdateDialog();
+      fetchListEmpresas();
+    } catch (err) {
+      console.error("Erro ao atualizar empresa", err);
+    }
+  };
+
+  const closeForm = () => {
+    setShowForm(false);
+    console.log("Formulário fechado");
+    fetchListEmpresas();
+  };
+
+  const confirmDelete = (id: any) => {
+    deleteEmpresa(id)
+    setShowDeleteDialog(false);
+    fetchListEmpresas();
+    fetchListEmpresas();
+  };
+
+  const openInfoDialog = (empresa: Empresa) => {
+    setSelectedEmpresas(empresa);
+    fetchListEmpresas();
+    setShowInfoDialog(true); // Abre o diálogo de informações
+  };
+
+  // Função para abrir o Dialog de exclusão
+  const openDeleteDialog = (empresa: Empresa) => {
+    setSelectedEmpresas(empresa);
+    setShowDeleteDialog(true); // Abre o diálogo de exclusão
+  };
+
+  const openUpdateDialog = (empresa: Empresa) => {
+    setSelectedEmpresas(empresa)
+    setShowUpdateDialog(true);
+  }
+
+  const closeInfoDialog = () => {
+    setShowInfoDialog(false); // Fecha o diálogo de informações
+    setSelectedEmpresas(null);
+  };
+
+  const closeDeleteDialog = () => {
+    setShowDeleteDialog(false); // Fecha o diálogo de exclusão
+    setSelectedEmpresas(null);
+  };
+
+  const closeUpdateDialog = () => {
+    setShowUpdateDialog(false);
+    setSelectedEmpresas(null);
+  }
 
   return (
     <div className="flex flex-col gap-6 p-8">
@@ -38,8 +151,24 @@ export default function ColaboradoresPage() {
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
-            <FormEmpresa closeForm={closeForm} />
+            <div className="flex justify-between items-center mb-4">
+              <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
+              <DialogClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowForm(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogClose>
+            </div>
+
+            {/* Seu formulário */}
+            <FormEmpresa 
+              closeForm={() => setShowForm(false)}
+                onSubmit={handleCreateEmpresa}
+            />
 
           </DialogContent>
         </Dialog>
@@ -50,7 +179,7 @@ export default function ColaboradoresPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Pesquisar entregáveis..." />
+              <Input placeholder="Pesquisar empresas..." />
             </div>
             <Select>
               <SelectTrigger>
@@ -85,103 +214,90 @@ export default function ColaboradoresPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Nome da Empresa</TableHead>
-                <TableHead>Contrato</TableHead>
-                <TableHead>Data de Entrega</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                {
-                  id: "ENT-001",
-                  name: "Relatório Mensal",
-                  contract: "Contrato de Manutenção Predial",
-                  date: "15/04/2025",
-                  status: "Em andamento",
-                  responsible: "João Silva",
-                },
-                {
-                  id: "ENT-002",
-                  name: "Instalação de Equipamentos",
-                  contract: "Fornecimento de Equipamentos",
-                  date: "20/04/2025",
-                  status: "Planejado",
-                  responsible: "Maria Santos",
-                },
-                {
-                  id: "ENT-003",
-                  name: "Treinamento da Equipe",
-                  contract: "Serviços de Consultoria",
-                  date: "25/04/2025",
-                  status: "Planejado",
-                  responsible: "Carlos Oliveira",
-                },
-                {
-                  id: "ENT-004",
-                  name: "Documentação Técnica",
-                  contract: "Contrato de Prestação de Serviços",
-                  date: "10/04/2025",
-                  status: "Concluído",
-                  responsible: "Ana Pereira",
-                },
-                {
-                  id: "ENT-005",
-                  name: "Relatório de Qualidade",
-                  contract: "Contrato de Fornecimento",
-                  date: "05/04/2025",
-                  status: "Atrasado",
-                  responsible: "Pedro Costa",
-                },
-              ].map((deliverable) => (
-                <TableRow key={deliverable.id}>
-                  <TableCell>{deliverable.id}</TableCell>
-                  <TableCell>{deliverable.name}</TableCell>
-                  <TableCell>{deliverable.contract}</TableCell>
-                  <TableCell className="flex items-center gap-1">
-                    <CalendarDays className="h-3 w-3" />
-                    {deliverable.date}
-                  </TableCell>
-                  <TableCell>
-                    <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${deliverable.status === "Concluído"
-                        ? "bg-green-100 text-green-800"
-                        : deliverable.status === "Em andamento"
-                          ? "bg-blue-100 text-blue-800"
-                          : deliverable.status === "Planejado"
-                            ? "bg-gray-100 text-gray-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                    >
-                      {deliverable.status}
-                    </div>
-                  </TableCell>
-                  <TableCell>{deliverable.responsible}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <FileText className="h-4 w-4" />
-                      </Button>
-                      <Link href={`/entregaveis/${deliverable.id}`}>
-                        <Button variant="outline" size="sm">
-                          Detalhes
-                        </Button>
-                      </Link>
-                    </div>
-                  </TableCell>
+          {loading ? (
+            <Loading />
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Nome da Empresa</TableHead>
+                  <TableHead>Nome Fantasia</TableHead>
+                  {/* <TableHead>Razão Social</TableHead> */}
+                  {/* <TableHead>Numero da Empresa</TableHead> */}
+                  <TableHead>Estado</TableHead>
+                  {/* <TableHead>Cidade</TableHead> */}
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {listEmpresas.map(emp => (
+                  <TableRow key={emp.idOrgao}>
+                    <TableCell>EMP-{emp.idOrgao}</TableCell>
+                    <TableCell>{emp.razaoSocial}</TableCell>
+                    <TableCell>{emp.nomeFantasia}</TableCell>
+                    {/* <TableCell>{emp.razaoSocial}</TableCell> */}
+                    {/* <TableCell>{emp.numeroEmpresa}</TableCell> */}
+                    <TableCell>{emp.estado}</TableCell>
+                    {/* <TableCell>{emp.cidade}</TableCell> */}
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(emp)}>
+                          <Info className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => openUpdateDialog(emp)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(emp)}>
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
-    </div>
-  )
-}
 
+      {/* Dialog para exibir as informações da empresa */}
+      {showInfoDialog && selectedEmpresas && (
+        <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl"></DialogTitle>
+            <InfoEmpresa closeForm={closeInfoDialog} empresa={selectedEmpresas} />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog para exibir a confirmação de exclusão da empresa */}
+      {showDeleteDialog && selectedEmpresas && (
+        <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
+          <DialogContent className="max-w-sm text-center">
+            <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
+            <p>Você confirma a exclusão do orgão contratante {selectedEmpresas.razaoSocial}?</p>
+            <div className="flex gap-4">
+              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedEmpresas.idOrgao)}>
+                Confirmar
+              </Button>
+              <Button className='mr-auto ml-2' variant="outline" onClick={closeDeleteDialog}>
+                Cancelar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog para exibir o formulário para edição das informações */}
+      {showUpdateDialog && selectedEmpresas && (
+        <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl"></DialogTitle>
+            <UpdateEmpresa closeForm={closeUpdateDialog} empresa={selectedEmpresas} onSave={handleUpdate} />
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}

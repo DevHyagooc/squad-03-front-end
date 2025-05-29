@@ -4,14 +4,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
+import { CalendarDays, FileText, Plus, Search, Download, Inbox } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from "next/link"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
+import { StringToBoolean } from "class-variance-authority/types"
+import { Empresa } from "../empresas/page"
+import { Colaborador } from "@/components/updateDialog/updateColaborador"
+import Loading from "@/components/loading"
+import { getContratoList } from "@/services/contrato"
+import { formatDate2 } from "@/lib/formatData"
+
+interface Contrato {
+  idContrato: number;
+  prazo: string;
+  valor: number;
+  status: StatusContrato;
+  criadoEm: string;
+  empresa: Empresa;
+  responsavel: Colaborador;
+}
+
+export type StatusContrato = "ATIVO" | "INATIVO" | "ENCERRADO" | "ARQUIVADO";
 
 export default function ContratosPage() {
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false); // Estado para controlar a exibição do FormFunc
+  const [listContratos, setListContratos] = useState<Contrato[]>([]);
+  const [selectedContrato, setSelectedContrato] = useState<Contrato | null>(null)
 
   const handleButtonClick = () => {
     setShowForm(true); // Exibe o formulário quando o botão for clicado
@@ -20,6 +41,22 @@ export default function ContratosPage() {
   const closeForm = () => {
     setShowForm(false); // Fecha o formulário quando o botão de "Cancelar" for clicado
   };
+
+  const fetchListContratos = async () => {
+    setLoading(true);
+    try {
+      const data = await getContratoList();
+      setListContratos(data.reverse());
+    } catch (err) {
+      console.error("Erro ao buscar órgaos contratantes", err)
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchListContratos();
+  }, []);
 
   return (
     <div className="flex flex-col gap-6 p-8">
@@ -73,8 +110,8 @@ export default function ContratosPage() {
               </SelectContent>
             </Select>
             <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Exportar
+              <Inbox className="mr-2 h-4 w-4" />
+              Arquivados
             </Button>
           </div>
         </CardContent>
@@ -82,98 +119,59 @@ export default function ContratosPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Nome do Contrato</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Data de Início</TableHead>
-                <TableHead>Data de Término</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                {
-                  id: "CT-2023-001",
-                  name: "Contrato de Manutenção Predial",
-                  client: "Empresa ABC",
-                  startDate: "01/01/2025",
-                  endDate: "31/12/2025",
-                  status: "Ativo",
-                },
-                {
-                  id: "CT-2023-002",
-                  name: "Fornecimento de Equipamentos",
-                  client: "Empresa XYZ",
-                  startDate: "15/02/2025",
-                  endDate: "15/08/2025",
-                  status: "Ativo",
-                },
-                {
-                  id: "CT-2023-003",
-                  name: "Serviços de Consultoria",
-                  client: "Empresa 123",
-                  startDate: "10/03/2025",
-                  endDate: "10/06/2025",
-                  status: "Em análise",
-                },
-                {
-                  id: "CT-2023-004",
-                  name: "Contrato de Prestação de Serviços",
-                  client: "Empresa DEF",
-                  startDate: "05/01/2025",
-                  endDate: "05/01/2026",
-                  status: "Ativo",
-                },
-                {
-                  id: "CT-2023-005",
-                  name: "Contrato de Fornecimento",
-                  client: "Empresa GHI",
-                  startDate: "20/12/2024",
-                  endDate: "20/12/2025",
-                  status: "Ativo",
-                },
-              ].map((contract) => (
-                <TableRow key={contract.id}>
-                  <TableCell>{contract.id}</TableCell>
-                  <TableCell>{contract.name}</TableCell>
-                  <TableCell>{contract.client}</TableCell>
-                  <TableCell>{contract.startDate}</TableCell>
-                  <TableCell>{contract.endDate}</TableCell>
-                  <TableCell>
-                    <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contract.status === "Ativo"
-                        ? "bg-green-100 text-green-800"
-                        : contract.status === "Em análise"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-gray-100 text-gray-800"
-                        }`}
-                    >
-                      {contract.status}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="icon">
-                        <FileText className="h-4 w-4" />
-                      </Button>
-                      <Link href={`/pageInterna/contratos/${contract.id}`}>
-                        <Button variant="outline" size="sm">
-                          Detalhes
-                        </Button>
-                      </Link>
-                    </div>
-                  </TableCell>
+          {loading ? (
+            <Loading />
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Cliente</TableHead>
+                  <TableHead>Data de Início</TableHead>
+                  <TableHead>Data de Término</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {listContratos.map((contrato) => (
+                  <TableRow key={contrato.idContrato}>
+                    <TableCell>CT-{contrato.idContrato}</TableCell>
+                    <TableCell>{contrato.empresa.razaoSocial}</TableCell>
+                    <TableCell>{formatDate2(contrato.criadoEm)}</TableCell>
+                    <TableCell>{formatDate2(contrato.prazo)}</TableCell>
+                    <TableCell>
+                      <div
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contrato.status === "ATIVO"
+                          ? "bg-green-100 text-green-800"
+                          : contrato.status === "INATIVO"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : contrato.status === "ENCERRADO"
+                              ? "bg-slate-100 text-slate-800"
+                              : contrato.status === "ARQUIVADO"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-white-100 text-black-800"
+                          }`}
+                      >
+                        {contrato.status}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Link href={`/pageInterna/contratos/${contrato.idContrato}`}>
+                          <Button variant="outline" size="sm">
+                            Gerenciar
+                          </Button>
+                        </Link>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>
   )
 }
-

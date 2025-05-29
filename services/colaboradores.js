@@ -16,7 +16,8 @@ export const postColaborador = async (colaborador) => {
             email: colaborador.email,
             cpf: colaborador.cpf,
             cargo: colaborador.cargo,
-            telefone: colaborador.telefone
+            telefone: colaborador.telefone,
+            dataNascimento: colaborador.dataNascimento
          })
       });
       if (!response.ok) {
@@ -24,7 +25,7 @@ export const postColaborador = async (colaborador) => {
       }
       return response.json();
    } catch (error) {
-      console.error('Erro na requisição GET:', error);
+      console.error('Erro na requisição POST:', error);
       throw error;
    }
 };
@@ -46,6 +47,7 @@ export const getColaboradorList = async () => {
       throw error;
    }
 };
+
 export const getColaboradorId = async (id) => {
    try {
       const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
@@ -64,6 +66,33 @@ export const getColaboradorId = async (id) => {
    }
 };
 
+export const putColaborador = async (id, colaborador) => {
+   try {
+      const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
+         method: "PUT",
+         headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`
+         },
+         body: JSON.stringify({
+            nome: colaborador.nome,
+            email: colaborador.email,
+            cpf: colaborador.cpf,
+            cargo: colaborador.cargo,
+            telefone: colaborador.telefone,
+            dataNascimento: colaborador.dataNascimento
+         })
+      });
+      if (!response.ok) {
+         throw new Error('Erro ao editar colaborador!');
+      }
+      return response.json();
+   } catch (error) {
+      console.error('Erro na requisição PUT:', error);
+      throw error;
+   }
+};
+
 export const deleteColaborador = async (id_colaborador) => {
    try {
       const response = await fetch(`${BASE_URL}/api/colaboradores/${id_colaborador}`, {
@@ -78,7 +107,27 @@ export const deleteColaborador = async (id_colaborador) => {
       }
       return 'Usuário deletado!';
    } catch (error) {
-      console.error('Erro na requisição GET:', error);
+      console.error('Erro na requisição DELETE:', error);
       throw error;
    }
+};
+
+export const updateColaborador = async (id, colaborador ) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/colaboradores/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            },
+            body: JSON.stringify(colaborador)
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar orgão contratante!');
+        }
+        return 'Orgão editado!';
+    } catch (error) {
+        console.error('Erro na requisição PUT', error)
+        throw error;
+    }
 };
