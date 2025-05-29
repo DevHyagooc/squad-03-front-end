@@ -109,7 +109,6 @@ export default function EmpresasPage() {
     setLoadingDetailEmpresa(true);
     setShowInfoDialog(true);
     try {
-      // supondo que você tenha um serviço getEmpresaById
       const data = await getEmpresaId(emp.idOrgao);
       setEmpresaDetail(data);
     } catch (err) {
