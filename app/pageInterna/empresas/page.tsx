@@ -275,7 +275,7 @@ export default function EmpresasPage() {
       {showInfoDialog && (
         <Dialog open onOpenChange={closeInfoDialog}>
           <DialogContent>
-            <DialogTitle className="text-2xl">Informações da Empresa</DialogTitle>
+            <DialogTitle className="text-2xl"></DialogTitle>
 
             {loadingDetailEmpresa ? (
               <div className="flex justify-center py-8">
