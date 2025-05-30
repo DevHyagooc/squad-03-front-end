@@ -175,9 +175,9 @@ export function EditarContratoDialog({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="ATIVO">Ativo</SelectItem>
-                      <SelectItem value="PENDENTE">Pendente</SelectItem>
-                      <SelectItem value="CANCELADO">Cancelado</SelectItem>
-                      <SelectItem value="FINALIZADO">Finalizado</SelectItem>
+                      <SelectItem value="INATIVO">Inativo</SelectItem>
+                      <SelectItem value="ENCERRADO">Encerrado</SelectItem>
+                      <SelectItem value="ARQUIVADO">Arquivado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

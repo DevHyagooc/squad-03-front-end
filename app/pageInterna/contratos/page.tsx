@@ -9,6 +9,28 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
+<<<<<<< HEAD
+=======
+import { Empresa } from "../empresas/page"
+import { Colaborador } from "@/components/updateDialog/updateColaborador"
+import Loading from "@/components/loading"
+import { getContratoList } from "@/services/contrato"
+import { formatDate2 } from "@/lib/formatData"
+
+interface Contrato {
+  idContrato: number;
+  prazo: string;
+  valor: number;
+  statusContrato: StatusContrato;
+  criadoEm: string;
+  dataInicio: string;
+  dataFim: string;
+  empresa: Empresa;
+  responsavel: Colaborador;
+}
+
+export type StatusContrato = "ATIVO" | "INATIVO" | "ENCERRADO" | "ARQUIVADO";
+>>>>>>> 439d57da3955890879ae06b4479b0bac66922797
 
 export default function ContratosPage() {
   const [loading, setLoading] = useState(false);
@@ -120,22 +142,22 @@ export default function ContratosPage() {
                   <TableRow key={contrato.idContrato}>
                     <TableCell>CT-{contrato.idContrato}</TableCell>
                     <TableCell>{contrato.empresa.razaoSocial}</TableCell>
-                    <TableCell>{formatDate2(contrato.criadoEm)}</TableCell>
-                    <TableCell>{formatDate2(contrato.prazo)}</TableCell>
+                    <TableCell>{formatDate2(contrato.dataInicio)}</TableCell>
+                    <TableCell>{formatDate2(contrato.dataFim)}</TableCell>
                     <TableCell>
                       <div
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contrato.status === "ATIVO"
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${contrato.statusContrato === "ATIVO"
                           ? "bg-green-100 text-green-800"
-                          : contrato.status === "INATIVO"
+                          : contrato.statusContrato === "INATIVO"
                             ? "bg-yellow-100 text-yellow-800"
-                            : contrato.status === "ENCERRADO"
+                            : contrato.statusContrato === "ENCERRADO"
                               ? "bg-slate-100 text-slate-800"
-                              : contrato.status === "ARQUIVADO"
+                              : contrato.statusContrato === "ARQUIVADO"
                                 ? "bg-red-100 text-red-800"
                                 : "bg-white-100 text-black-800"
                           }`}
                       >
-                        {contrato.status}
+                        {contrato.statusContrato}
                       </div>
                     </TableCell>
                     <TableCell>
