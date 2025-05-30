@@ -50,7 +50,6 @@ const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             </FormControl>
             <FormMessage>{errors.prazo && errors.prazo.message}</FormMessage>
           </FormItem>
-
           {/* Valor do contrato */}
           <FormItem className="px-2 focus-within:text-cyan-500">
             <FormLabel htmlFor="valorContrato">Valor do contrato:</FormLabel>
@@ -179,10 +178,10 @@ const FormContrato: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
         </div>
 
         <div className="flex justify-end gap-4">
-          <Button onClick={closeForm} variant="destructive" className="w-20">
+          <Button onClick={closeForm} variant="destructive" className="bg-black ">
             Cancelar
           </Button>
-          <Button type="submit" className="w-20">
+          <Button type="submit" className="bg-cyan-500 hover:bg-cyan-700">
             Salvar
           </Button>
         </div>

@@ -1,15 +1,20 @@
-import { FormProvider, useForm, Controller } from "react-hook-form";
+import { FormProvider, useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho esteja correto
 import { formatCPF, formatPhone, formatDate } from "@/lib/formatData";
 import { postColaborador } from "@/services/colaboradores";
+import { formatPhoneBr } from "@/lib/formatePhoneBr";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import 'react-phone-number-input';
 
 interface FormColabProps {
    closeForm: () => void;
+   onSubmit: (colaborador: any) => void;
 }
 
-const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
+const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
    const methods = useForm({
       defaultValues: {
          nome: "",
@@ -17,7 +22,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
          cargo: "",
          email: "",
          telefone: "",
-         nascimento: "",
+         dataNascimento: "",
       },
    });
 
@@ -26,15 +31,15 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
    // Expressão regular para validar um email
    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-   const onSubmit = (colaborador: any) => {
-      console.log(colaborador);
+   const handleFormSubmit: SubmitHandler<any> = (colaborador) => {
       postColaborador(colaborador)
+      onSubmit(colaborador);
       closeForm();
    };
 
    return (
       <FormProvider {...methods}>
-         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+         <form onSubmit={methods.handleSubmit(handleFormSubmit)} className="space-y-4">
             <div className="flex flex-wrap w-full gap-4 pb-3 pt-1 px-1 pl-2">
                <FormItem className="focus-within:text-cyan-500"> {/* Garantindo que focus-within esteja aqui */}
                   <FormLabel htmlFor="nome">Nome do Colaborador:</FormLabel>
@@ -135,14 +140,19 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
                         control={control}
                         rules={{ required: "Telefone é obrigatório" }}
                         render={({ field }) => (
-                           <Input
-                              id="telefone"
-                              type="text"
-                              placeholder="Digite aqui o número"
-                              className="w-52 mt-1 text-black"
-                              value={field.value}
-                              onChange={(e) => field.onChange(formatPhone(e.target.value))}
-                           />
+                           <div className="mt-1">
+                              <PhoneInput
+                                 international
+                                 defaultCountry="BR"
+                                 value={field.value || ""}
+                                 onChange={(phone) => field.onChange(phone)}
+                                 onBlur={field.onBlur}
+                                 placeholder="(xx) x xxxx-xxxx"
+                                 className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"
+                                    } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
+                                 id="telefone"
+                              />
+                           </div>
                         )}
                      />
                   </FormControl>
@@ -150,14 +160,14 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
                </FormItem>
 
                <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="nascimento">Data de Nascimento:</FormLabel>
+                  <FormLabel htmlFor="dataNascimento">Data de Nascimento:</FormLabel>
                   <FormControl>
                      <Controller
-                        name="nascimento"
+                        name="dataNascimento"
                         control={control}
                         render={({ field }) => (
                            <Input
-                              id="nascimento"
+                              id="dataNascimento"
                               type="text"
                               placeholder="dd/mm/aaaa"
                               className="w-52 mt-1 text-black"
@@ -171,10 +181,10 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm }) => {
             </div>
 
             <div className="flex justify-end gap-4">
-               <Button type="button" onClick={closeForm} variant="destructive" className="w-20">
+               <Button type="button" onClick={closeForm} variant="destructive" className="text-white bg-black">
                   Cancelar
                </Button>
-               <Button type="submit" className="w-20">
+               <Button type="submit" className="bg-cyan-500 hover:bg-cyan-700">
                   Salvar
                </Button>
             </div>
