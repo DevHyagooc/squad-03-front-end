@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080"
+const BASE_URL = "https://squad-03-back-end.onrender.com"
 const user = "admin"
 const password = "admin123"
 const auth = btoa(`${user}:${password}`)
