@@ -9,13 +9,11 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
-<<<<<<< HEAD
-=======
-import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
 import { getContratoList, getContratoListArquivados, getContratoListNaoArquivado } from "@/services/contrato"
 import { formatDate2 } from "@/lib/formatData"
+import { Empresa } from "../empresas/page"
 
 interface Contrato {
   idContrato: number;
@@ -30,7 +28,6 @@ interface Contrato {
 }
 
 export type StatusContrato = "ATIVO" | "INATIVO" | "ENCERRADO" | "ARQUIVADO";
->>>>>>> 439d57da3955890879ae06b4479b0bac66922797
 
 export default function ContratosPage() {
   const [loading, setLoading] = useState(false);

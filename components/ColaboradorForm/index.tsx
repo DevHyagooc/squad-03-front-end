@@ -12,7 +12,7 @@ const steps = ["Contrato", "Representante", "Contato", "Responsável"];
 
 type ContratoFormData = {
   empresa: string;
-  descricao: string
+  descricao: string;
   dataInicio: string;
   dataFim: string;
   tipoContrato: string;
@@ -45,7 +45,7 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const stepsFields = [
-    ["empresa","Descricao","dataInicio", "dataFim", "tipoContrato", "valorContrato"], // Step 0
+    ["empresa","descricao","dataInicio", "dataFim", "tipoContrato", "valorContrato"], // Step 0
     ["representante", "cpfRepresentante"], // Step 1
     ["telefoneEmpresa"], // Step 2
     ["responsavel"], // Step 3
@@ -109,17 +109,12 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
                 <Controller
                   name="descricao"
                   control={control}
-                  rules={{ required: "Descrição é obrigatória" }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      onChange={(e) => field.onChange(formatDate(e.target.value))}
-                    />
-                  )}
+                  rules={{ required: "Valor é obrigatório" }}
+                  render={({ field }) => <Input {...field} />}
                 />
               </FormControl>
               <FormMessage />
-            </FormItem>     
+            </FormItem>  
             <FormItem>
               <FormLabel>Data de Início*</FormLabel>
               <FormControl>
@@ -220,50 +215,6 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
           </div>
         )}
 
-        {step === 2 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-    <FormItem className="px-2 focus-within:text-cyan-500 w-full">
-      <FormLabel>Telefone*</FormLabel>
-      <FormControl>
-        <Controller
-          name="telefoneEmpresa"
-          control={control}
-          rules={{ required: "Telefone é obrigatório" }}
-          render={({ field }) => (
-            <div className="w-full mt-1">
-              <PhoneInput
-                international
-                defaultCountry="BR"
-                value={field.value || ""}
-                onChange={field.onChange}
-                className="w-full h-auto border border-input rounded-md px-3 py-1 text-sm text-black"
-              />
-            </div>
-          )}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  </div>
-)}
-
-
-        {step === 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
-              <FormLabel>Responsável pelo Contrato*</FormLabel>
-              <FormControl>
-                <Controller
-                  name="responsavel"
-                  control={control}
-                  rules={{ required: "Responsável é obrigatório" }}
-                  render={({ field }) => <Input {...field} />}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </div>
-        )}
 
         {/* NAVEGAÇÃO */}
         <div className="flex justify-between pt-6 border-t">
@@ -295,4 +246,3 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
 };
 
 export default FormContrato;
-+
