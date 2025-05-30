@@ -37,9 +37,6 @@ export const getContratoId = async (id) => {
         console.error('Erro na requisição GET', error);
         throw error;
     }
-<<<<<<< HEAD
-};
-=======
 };
 
 export const updateContrato = async (id, contrato) => {
@@ -79,4 +76,39 @@ export const getContratoListByStatus = async (status) => {
         throw error;
     }
 }
->>>>>>> 1fa81143e6a7fd445039eb5a40946efd326c6266
+
+export const getContratoListArquivados = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/contrato/arquivados`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao obter lista de contratos')
+        }
+        return response.json();
+    } catch (error) {
+        console.error('Erro na requisição GET', error);
+        throw error;
+    }
+};
+
+export const getContratoListNaoArquivado = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/contrato/nao-arquivados`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao obter lista de contratos')
+        }
+        return response.json();
+    } catch (error) {
+        console.error('Erro na requisição GET', error);
+        throw error;
+    }
+};
