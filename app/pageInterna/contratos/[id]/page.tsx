@@ -10,6 +10,8 @@ import Link from "next/link"
 import { getContratoId } from "@/services/contrato"
 import { EditarContratoDialog } from "@/components/EditContratoForm/index"
 import { KanbanEntregaveis } from "@/components/KanbanContrato/index"
+import { DocumentosContrato } from "@/components/DocumentosContrato/index"
+import { useRef } from "react"
 
 export interface Empresa {
   idOrgao: number
@@ -79,6 +81,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
   const [contrato, setContrato] = useState<Contrato | null>(null)
   const [Loading, setLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Carrega os dados do contrato
   useState(() => {
@@ -113,11 +116,11 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
     switch (status.toUpperCase()) {
       case "ATIVO":
         return "bg-green-100 text-green-800"
-      case "PENDENTE":
+      case "INATIVO":
         return "bg-yellow-100 text-yellow-800"
-      case "CANCELADO":
+      case "ENCERRADO":
         return "bg-red-100 text-red-800"
-      case "FINALIZADO":
+      case "ARQUIVADO":
         return "bg-blue-100 text-blue-800"
       default:
         return "bg-gray-100 text-gray-800"
@@ -406,6 +409,9 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                   <KanbanEntregaveis contratoId={contrato.idContrato} />
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="documentos">
+              <DocumentosContrato contratoId={contrato.idContrato} />
             </TabsContent>
             <TabsContent value="representantes">
               <Card>
