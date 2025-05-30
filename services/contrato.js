@@ -37,4 +37,46 @@ export const getContratoId = async (id) => {
         console.error('Erro na requisição GET', error);
         throw error;
     }
+<<<<<<< HEAD
 };
+=======
+};
+
+export const updateContrato = async (id, contrato) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/contrato/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            },
+            body: JSON.stringify(contrato)
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar contrato!');
+        }
+        return 'Orgão editado!';
+    } catch (error) {
+        console.error('Erro na requisição PUT', error)
+        throw error;
+    }
+};
+
+export const getContratoListByStatus = async (status) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/contrato/status/${status}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${auth}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao obter lista de contratos')
+        }
+        return response.json();
+    } catch (error) {
+        console.error('Erro na requisição GET', error);
+        throw error;
+    }
+}
+>>>>>>> 1fa81143e6a7fd445039eb5a40946efd326c6266

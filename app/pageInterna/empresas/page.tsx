@@ -4,67 +4,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {  Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
+import { CalendarDays, FileText, Plus, Search, Download } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
-import React, { useState, useEffect } from 'react';
-import { deleteEmpresa, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
-import Loading from "@/components/loading"
-import UpdateEmpresa from "@/components/updateDialog/updateEmpresa"
-import InfoEmpresa from "@/components/infoDialog/infoEmpresa"
-
-export interface Empresa {
-  idOrgao: number;
-  nomeFantasia: string;
-  razaoSocial: string;
-  cnpj: string;
-  numeroEmpresa: string;
-  estado: string;
-  cidade: string;
-  inscricaoMunicipal: string;
-  tipoEmpresa: string;
-  cep: string;
-  bairro: string;
-  logradouro: string;
-  numero: string;
-  complemento: string;
-  email: string;
-  telefone: string;
-  representante: Representante;
-}
-
-export interface Representante {
-  id: number;
-  nome: string;
-  cpf: string;
-  email: string;
-  telefone: string;
-}
+import Link from "next/link"
+import React, { useState } from 'react';
 
 export default function EmpresasPage() {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
-  const [listEmpresas, setListEmpresas] = useState<Empresa[]>([]);
-  const [selectedEmpresas, setSelectedEmpresas] = useState<Empresa | null>(null)
-
-  const fetchListEmpresas = async () => {
-    setLoading(true);
-    try {
-      const data = await getEmpresaList();
-      setListEmpresas(data);
-    } catch (err) {
-      console.error("Erro ao buscar empresas", err)
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchListEmpresas();
-  }, []);
 
   const handleButtonClick = () => {
     setShowForm(true);
@@ -96,45 +44,6 @@ export default function EmpresasPage() {
     fetchListEmpresas();
   };
 
-  const confirmDelete = (id: any) => {
-    deleteEmpresa(id)
-    setShowDeleteDialog(false);
-    fetchListEmpresas();
-    fetchListEmpresas();
-  };
-
-  const openInfoDialog = (empresa: Empresa) => {
-    setSelectedEmpresas(empresa);
-    fetchListEmpresas();
-    setShowInfoDialog(true); // Abre o diálogo de informações
-  };
-
-  // Função para abrir o Dialog de exclusão
-  const openDeleteDialog = (empresa: Empresa) => {
-    setSelectedEmpresas(empresa);
-    setShowDeleteDialog(true); // Abre o diálogo de exclusão
-  };
-
-  const openUpdateDialog = (empresa: Empresa) => {
-    setSelectedEmpresas(empresa)
-    setShowUpdateDialog(true);
-  }
-
-  const closeInfoDialog = () => {
-    setShowInfoDialog(false); // Fecha o diálogo de informações
-    setSelectedEmpresas(null);
-  };
-
-  const closeDeleteDialog = () => {
-    setShowDeleteDialog(false); // Fecha o diálogo de exclusão
-    setSelectedEmpresas(null);
-  };
-
-  const closeUpdateDialog = () => {
-    setShowUpdateDialog(false);
-    setSelectedEmpresas(null);
-  }
-
   return (
     <div className="flex flex-col gap-6 p-8">
       <div className="flex items-center justify-between">
@@ -151,24 +60,8 @@ export default function EmpresasPage() {
 
           {/* DialogContent que contém o conteúdo do modal */}
           <DialogContent>
-            <div className="flex justify-between items-center mb-4">
-              <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
-              <DialogClose asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowForm(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </DialogClose>
-            </div>
-
-            {/* Seu formulário */}
-            <FormEmpresa 
-              closeForm={() => setShowForm(false)}
-                onSubmit={handleCreateEmpresa}
-            />
+            <DialogTitle className="text-2xl">Cadastrar Nova Empresa</DialogTitle>
+            <FormEmpresa closeForm={closeForm} />
 
           </DialogContent>
         </Dialog>
@@ -260,44 +153,6 @@ export default function EmpresasPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* Dialog para exibir as informações da empresa */}
-      {showInfoDialog && selectedEmpresas && (
-        <Dialog open={showInfoDialog} onOpenChange={() => closeInfoDialog()}>
-          <DialogContent>
-            <DialogTitle className="text-2xl"></DialogTitle>
-            <InfoEmpresa closeForm={closeInfoDialog} empresa={selectedEmpresas} />
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Dialog para exibir a confirmação de exclusão da empresa */}
-      {showDeleteDialog && selectedEmpresas && (
-        <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
-          <DialogContent className="max-w-sm text-center">
-            <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
-            <p>Você confirma a exclusão do orgão contratante {selectedEmpresas.razaoSocial}?</p>
-            <div className="flex gap-4">
-              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedEmpresas.idOrgao)}>
-                Confirmar
-              </Button>
-              <Button className='mr-auto ml-2' variant="outline" onClick={closeDeleteDialog}>
-                Cancelar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Dialog para exibir o formulário para edição das informações */}
-      {showUpdateDialog && selectedEmpresas && (
-        <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
-          <DialogContent>
-            <DialogTitle className="text-2xl"></DialogTitle>
-            <UpdateEmpresa closeForm={closeUpdateDialog} empresa={selectedEmpresas} onSave={handleUpdate} />
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }

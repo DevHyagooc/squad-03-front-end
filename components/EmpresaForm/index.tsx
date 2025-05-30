@@ -11,15 +11,6 @@ import {
 } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";
 import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
-import { formatPhoneBr } from "@/lib/formatePhoneBr";
-import PhoneInput from "react-phone-number-input";
-import 'react-phone-number-input/style.css';
-import 'react-phone-number-input';
-
-interface FormEmpresaProps {
-  closeForm: () => void;
-  onSubmit?: (empresa: any) => void;
-}
 
 const steps = ["Empresa", "Endereço", "Contato Empresa", "Representante"];
 
@@ -476,23 +467,10 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
                   control={control}
                   rules={{ required: "Telefone é obrigatório" }}
                   render={({ field }) => (
-                    <><div className="mt-1">
-                      <PhoneInput
-                        international
-                        defaultCountry="BR"
-                        id="telefone"
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        placeholder="(xx) x xxxx-xxxx"
-                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"}
-                          bg-background text-sm
-                          ring-offset-background
-                          focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2
-                        `} />
-                    </div><Input
-                        {...field}
-                        onChange={(e) => field.onChange(formatPhone(e.target.value))} /></>
+                    <Input 
+                      {...field} 
+                      onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                    />
                   )}
                 />
               </FormControl>

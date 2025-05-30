@@ -9,24 +9,6 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
-import { StringToBoolean } from "class-variance-authority/types"
-import { Empresa } from "../empresas/page"
-import { Colaborador } from "@/components/updateDialog/updateColaborador"
-import Loading from "@/components/loading"
-import { getContratoList } from "@/services/contrato"
-import { formatDate2 } from "@/lib/formatData"
-
-interface Contrato {
-  idContrato: number;
-  prazo: string;
-  valor: number;
-  status: StatusContrato;
-  criadoEm: string;
-  empresa: Empresa;
-  responsavel: Colaborador;
-}
-
-export type StatusContrato = "ATIVO" | "INATIVO" | "ENCERRADO" | "ARQUIVADO";
 
 export default function ContratosPage() {
   const [loading, setLoading] = useState(false);
