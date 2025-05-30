@@ -12,7 +12,7 @@ import FormContrato from "@/components/ContratoForm"
 import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
-import { getContratoList } from "@/services/contrato"
+import { getContratoList, getContratoListArquivados, getContratoListNaoArquivado } from "@/services/contrato"
 import { formatDate2 } from "@/lib/formatData"
 
 interface Contrato {
@@ -46,7 +46,7 @@ export default function ContratosPage() {
   const fetchListContratos = async () => {
     setLoading(true);
     try {
-      const data = await getContratoList();
+      const data = await getContratoListNaoArquivado();
       setListContratos(data.reverse());
     } catch (err) {
       console.error("Erro ao buscar órgaos contratantes", err)
@@ -110,10 +110,14 @@ export default function ContratosPage() {
                 <SelectItem value="ultimo-ano">Último Ano</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
-              <Inbox className="mr-2 h-4 w-4" />
-              Arquivados
-            </Button>
+            <div>
+              <Link href={`/pageInterna/contratos/contratos-arquivados`}>
+                <Button variant="outline">
+                  <Inbox className="mr-2 h-4 w-4" />
+                  Arquivados
+                </Button>
+              </Link>
+            </div>
           </div>
         </CardContent>
       </Card>
