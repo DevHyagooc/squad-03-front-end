@@ -10,15 +10,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";
-import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
-import { formatPhoneBr } from "@/lib/formatePhoneBr";
-import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import 'react-phone-number-input';
+import { formatCEP, formatCNPJ, formatCPF } from "@/lib/formatData";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { toast } from "@/hooks/use-toast";
 
 interface FormEmpresaProps {
   closeForm: () => void;
-  onSubmit?: (empresa: any) => void;
+  onSubmit?: (empresa: any) => Promise<void>;
+  onEmpresaCreated?: () => void;
 }
 
 const steps = ["Empresa", "Endereço", "Contato Empresa", "Representante"];
@@ -44,7 +44,11 @@ type FormData = {
   representanteTelefone: string;
 };
 
-const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
+const FormEmpresa: React.FC<FormEmpresaProps> = ({
+  closeForm,
+  onSubmit,
+  onEmpresaCreated,
+}) => {
   const methods = useForm<FormData>({
     defaultValues: {
       cnpj: "",
@@ -78,48 +82,65 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
     trigger,
   } = methods;
 
-  // Observa todos os valores do formulário
-  const formValues = watch();
   const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleFormSubmit: SubmitHandler<any> = (empresa) => {
+  const handleFormSubmit: SubmitHandler<FormData> = async (empresa) => {
+    setIsSubmitting(true);
 
     const payload = {
-      // campos “chave-valor” 1:1
       razaoSocial: empresa.razaoSocial,
       nomeFantasia: empresa.nomeFantasia,
       cnpj: empresa.cnpj,
       inscricaoMunicipal: empresa.inscricaoMunicipal,
-      tipoEmpresa: empresa.tipoEmpresa,       // rename aqui
+      tipoEmpresa: empresa.tipoEmpresa,
       cep: empresa.cep,
       bairro: empresa.bairro,
       logradouro: empresa.logradouro,
       numero: empresa.numero,
       complemento: empresa.complemento,
       estado: empresa.estado,
-      cidade: empresa.cidade,         // seu post usa “cidade”
+      cidade: empresa.cidade,
       email: empresa.email,
       telefone: empresa.telefone,
-
-      // monta o array de representantes
       representantes: [
         {
           nome: empresa.representanteNome,
           cpf: empresa.representanteCpf,
           email: empresa.emailRepresentante,
           telefone: empresa.representanteTelefone,
-        }
-      ]
+        },
+      ],
     };
 
+    try {
+      if (onSubmit) {
+        await onSubmit(payload);
+      }
 
-    if (onSubmit) onSubmit(payload);
-    closeForm();
-  }
+      toast({
+        title: "Sucesso",
+        description: "Empresa criada com sucesso!",
+      });
+
+      if (onEmpresaCreated) {
+        onEmpresaCreated();
+      }
+
+      closeForm();
+    } catch (error) {
+      console.error("Erro ao criar empresa:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível criar a empresa. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleNext = async () => {
-    // Valida os campos do passo atual antes de avançar
     const fields = stepsFields[step];
     const isValidStep = await trigger(fields as any);
 
@@ -152,25 +173,12 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
     }
   };
 
-  // const onSubmit = async (data: FormData) => {
-  //   setIsSubmitting(true);
-  //   try {
-  //     const data = await postEmpresa(data)
-  //     console.log("Dados enviados:", data);
-  //     closeForm();
-  //   } catch (error) {
-  //     console.error("Erro ao salvar:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
   // Campos requeridos para validação em cada step
   const stepsFields = [
-    ["cnpj", "razaoSocial", "tipoEmpresa"], // Step 0
-    ["cep", "logradouro", "numero", "municipio", "estado"], // Step 1
-    ["email", "telefone"], // Step 2
-    ["representanteNome", "representanteCpf"], // Step 3
+    ["cnpj", "razaoSocial", "tipoEmpresa"],                 // Step 0
+    ["cep", "logradouro", "numero", "cidade", "estado"],    // Step 1
+    ["email", "telefone"],                                  // Step 2
+    ["representanteNome", "representanteCpf", "emailRepresentante", "representanteTelefone"], // Step 3
   ];
 
   return (
@@ -178,14 +186,16 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">{steps[step]}</h2>
-          <span className="text-sm text-gray-500">Passo {step + 1} de {steps.length}</span>
+          <span className="text-sm text-gray-500">
+            Passo {step + 1} de {steps.length}
+          </span>
         </div>
 
         {/* Progress bar */}
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <div
             className="bg-cyan-500 h-2.5 rounded-full transition-all duration-300"
-            style={{ width: `${((step + 1) / 4) * 100}%` }}
+            style={{ width: `${((step + 1) / steps.length) * 100}%` }}
           ></div>
         </div>
 
@@ -249,28 +259,28 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel htmlFor="tipoEmpresa">Tipo de Empresa:</FormLabel>
+              <FormLabel htmlFor="tipoEmpresa">Tipo de Empresa*</FormLabel>
               <FormControl>
                 <Controller
                   name="tipoEmpresa"
                   control={control}
-                  defaultValue=""
                   rules={{ required: "Tipo de empresa é obrigatório" }}
                   render={({ field }) => (
                     <select
                       id="tipoEmpresa"
                       {...field}
-                      className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                      className="w-52 mt-1 text-black flex h-9 rounded-md border border-input bg-background px-2 text-sm"
                     >
                       <option value="">Selecione...</option>
                       <option value="Pública">Pública</option>
                       <option value="Privada">Privada</option>
-
                     </select>
                   )}
                 />
               </FormControl>
-              <FormMessage>{errors.tipoEmpresa && errors.tipoEmpresa.message}</FormMessage>
+              <FormMessage>
+                {errors.tipoEmpresa && errors.tipoEmpresa.message}
+              </FormMessage>
             </FormItem>
           </div>
         )}
@@ -378,7 +388,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
           </div>
         )}
 
-        {/* STEP 2: Contato */}
+        {/* STEP 2: Contato Empresa */}
         {step === 2 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem className="px-2 focus-within:text-cyan-500">
@@ -391,8 +401,8 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
                     required: "Email é obrigatório",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email inválido"
-                    }
+                      message: "Email inválido",
+                    },
                   }}
                   render={({ field }) => <Input type="email" {...field} />}
                 />
@@ -401,7 +411,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel htmlFor="telefone">Telefone*</FormLabel>
+              <FormLabel>Telefone*</FormLabel>
               <FormControl>
                 <Controller
                   name="telefone"
@@ -412,16 +422,13 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
                       <PhoneInput
                         international
                         defaultCountry="BR"
-                        id="telefone"
                         value={field.value || ""}
                         onChange={field.onChange}
                         onBlur={field.onBlur}
                         placeholder="(xx) x xxxx-xxxx"
-                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"}
-                          bg-background text-sm
-                          ring-offset-background
-                          focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2
-                        `}
+                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${
+                          errors.telefone ? "border-red-500" : "border-input"
+                        } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
                       />
                     </div>
                   )}
@@ -461,6 +468,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
                     <Input
                       {...field}
                       onChange={(e) => field.onChange(formatCPF(e.target.value))}
+                      placeholder="xxx.xxx.xxx-xx"
                     />
                   )}
                 />
@@ -469,7 +477,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
             </FormItem>
 
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel htmlFor="representanteTelefone">Telefone*</FormLabel>
+              <FormLabel>Telefone*</FormLabel>
               <FormControl>
                 <Controller
                   name="representanteTelefone"
@@ -480,23 +488,20 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
                       <PhoneInput
                         international
                         defaultCountry="BR"
-                        id="telefone"
                         value={field.value || ""}
                         onChange={field.onChange}
                         onBlur={field.onBlur}
                         placeholder="(xx) x xxxx-xxxx"
-                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"}
-                          bg-background text-sm
-                          ring-offset-background
-                          focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2
-                        `}
+                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${
+                          errors.representanteTelefone ? "border-red-500" : "border-input"
+                        } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
                       />
                     </div>
                   )}
                 />
               </FormControl>
               <FormMessage>
-                {errors.telefone && errors.telefone.message}
+                {errors.representanteTelefone && errors.representanteTelefone.message}
               </FormMessage>
             </FormItem>
 
@@ -510,35 +515,25 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
                     required: "Email é obrigatório",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Email inválido"
-                    }
+                      message: "Email inválido",
+                    },
                   }}
-                  render={({ field }) => <Input type="emailRepresentante" {...field} />}
+                  render={({ field }) => <Input type="email" {...field} />}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           </div>
         )}
-        {/* NAVEGAÇÃO */}
 
+        {/* NAVEGAÇÃO */}
         <div className="flex justify-between pt-6 border-t">
           {step === 0 ? (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={closeForm}
-              className="text-white bg-black"
-
-            >
+            <Button type="button" variant="destructive" onClick={closeForm}>
               Cancelar
             </Button>
           ) : (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleBack}
-            >
+            <Button type="button" variant="outline" onClick={handleBack}>
               Voltar
             </Button>
           )}
@@ -555,18 +550,36 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ closeForm, onSubmit }) => {
           ) : (
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isValid}
               className="bg-cyan-500 hover:bg-cyan-700"
             >
               {isSubmitting ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Salvando...
                 </>
-              ) : 'Salvar'}
+              ) : (
+                "Salvar"
+              )}
             </Button>
           )}
         </div>

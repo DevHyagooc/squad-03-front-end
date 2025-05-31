@@ -394,7 +394,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
           <Tabs defaultValue="entregaveis" className="space-y-4">
             <TabsList>
               <TabsTrigger value="entregaveis">Entregáveis</TabsTrigger>
-              <TabsTrigger value="ordens">Ordens de Serviço</TabsTrigger>
+              <TabsTrigger value="ordens">Agregados</TabsTrigger>
               <TabsTrigger value="recaptulacoes">Repactuação</TabsTrigger>
               <TabsTrigger value="aditivos">Aditivos</TabsTrigger>
               <TabsTrigger value="documentos">Documentos</TabsTrigger>
