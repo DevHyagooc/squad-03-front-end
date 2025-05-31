@@ -22,6 +22,17 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/formatData.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "lib/formatData.ts",
+    "app/pageInterna/pagePerfil/formBody.tsx",
+    "app/pageInterna/pagePerfil/page.tsx",
+    "app/pageInterna/pagePerfil/alterarPerfil/page.tsx",
+    "components/header.tsx",
+    "app/novaSenha"
+  ],
   "exclude": ["node_modules"]
 }

@@ -75,9 +75,15 @@ export function Header({ onMenuClick }: HeaderProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuItem>
+
+            <Link href="/pageInterna/pagePerfil">
+            <DropdownMenuItem>
+              perfil
+            </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
             <DropdownMenuSeparator />
+
             <Link href="/pageLogin/login">
               <DropdownMenuItem className="text-red-600">Sair</DropdownMenuItem>
             </Link>
