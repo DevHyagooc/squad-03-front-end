@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import FormColab from "@/components/ColaboradorForm"
+import FormColab from "@/components/colaboradorForm"
 import React, { useEffect, useState } from 'react';
 import { deleteColaborador, getColaboradorId, getColaboradorList, putColaborador } from "@/services/colaboradores";
 import Loading from "@/components/loading/index";

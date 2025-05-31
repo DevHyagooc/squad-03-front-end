@@ -9,9 +9,12 @@ import { FileText, FileSignature, Download, Edit, Calendar, User, Building, Doll
 import Link from "next/link"
 import { getContratoId } from "@/services/contrato"
 import { EditarContratoDialog } from "@/components/EditContratoForm/index"
-import { KanbanEntregaveis } from "@/components/KanbanContrato/index"
-import { DocumentosContrato } from "@/components/DocumentosContrato/index"
+import { KanbanEntregaveis } from "@/components/kanbanContrato/index"
+import { DocumentosContrato } from "@/components/documentosContrato/index"
 import { useRef } from "react"
+import { AgregadosContrato } from "@/components/agregadosContrato"
+import { RepactuacoesContrato } from "@/components/repactuacoesContrato"
+import { AditivosContrato } from "@/components/aditivosContrato"
 
 export interface Empresa {
   idOrgao: number
@@ -407,7 +410,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 </CardHeader>
                 <CardContent className="p-0 overflow-hidden">
                   <div className="p-6 overflow-hidden">
-                  <KanbanEntregaveis contratoId={contrato.idContrato} />
+                    <KanbanEntregaveis contratoId={contrato.idContrato} />
                   </div>
                 </CardContent>
               </Card>
@@ -451,6 +454,15 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                   </Table>
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="ordens">
+              <AgregadosContrato contratoId={contrato.idContrato} />
+            </TabsContent>
+            <TabsContent value="recaptulacoes">
+              <RepactuacoesContrato contratoId={contrato.idContrato} />
+            </TabsContent>
+            <TabsContent value="aditivos">
+              <AditivosContrato contratoId={contrato.idContrato} />
             </TabsContent>
           </Tabs>
         </div>
