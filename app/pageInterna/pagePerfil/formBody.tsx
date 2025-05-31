@@ -186,7 +186,9 @@ export default function FormBody() {
           )}
         </div>
         <DialogFooter>
-          <Button className="mt-4" type="submit">Savar mudanças</Button>
+          <Button className="mt-4 mr-36 bg-black flex gap-4 hover:bg-red-700" type="submit">Cancelar</Button>
+          
+          <Button className="mt-4 bg-cyan-500 hover:bg-cyan-700" type="submit">Savar mudanças</Button>
         </DialogFooter>
         </form>
       </DialogContent>
