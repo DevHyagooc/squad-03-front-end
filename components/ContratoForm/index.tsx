@@ -7,35 +7,45 @@ import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/f
 import 'react-phone-number-input/style.css'
 import PhoneInput from "react-phone-number-input";
 import { formatCPF, formatDate } from "@/lib/formatData";
+import { Switch } from "@/components/ui/switch"
 
-const steps = ["Contrato", "Representante", "Contato", "Responsável"];
+const steps = ["Contrato", "Valores"];
 
 type ContratoFormData = {
-  empresa: string;
+  empresaId: string;
   descricao: string
   dataInicio: string;
   dataFim: string;
+  termosDePagamento: string;
   tipoContrato: string;
-  valorContrato: string;
-  representante: string;
+  valorContrato: number;
+  responsavelId: string;
   cpfRepresentante: string;
   telefoneEmpresa: string;
   responsavel: string;
+  autoRenovacao: boolean;
+  valorTotalPago: number;
+  diasParaCancelamento: number;
+  motivoCancelamento: string;
 };
 
 const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
   const methods = useForm<ContratoFormData>({
     defaultValues: {
-      empresa: "",
+      empresaId: "",
       descricao: "",
       dataInicio: "",
       dataFim: "",
+      termosDePagamento:"",
       tipoContrato: "",
       valorContrato: "",
-      representante: "",
-      cpfRepresentante: "",
-      telefoneEmpresa: "",
-      responsavel: "",
+      responsavelId: "",
+      autoRenovacao: "",
+      valorTotalPago:"",
+      diasParaCancelamento:"",
+      motivoCancelamento:"",
+      responsavelId:"",
+
     }
   });
 
@@ -45,10 +55,8 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const stepsFields = [
-    ["empresa","Descricao","dataInicio", "dataFim", "tipoContrato", "valorContrato"], // Step 0
-    ["representante", "cpfRepresentante"], // Step 1
-    ["telefoneEmpresa"], // Step 2
-    ["responsavel"], // Step 3
+    ["empresaId","descricao","dataInicio", "dataFim", "tipoContrato", "responsavelId"], // Step 0
+    ["termosDePagamento", "valorTotalPago","diasParaCancelamento","motivoCancelamento"," valorContrato","autoRenovacao"], // Step 1
   ];
 
   const onSubmit = (data: ContratoFormData) => {
@@ -82,11 +90,11 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
         {step === 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Empresa - dropdown mockado */}
-            <FormItem>
-              <FormLabel>Empresa*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500" >
+              <FormLabel>Empresa:*</FormLabel>
               <FormControl>
                 <Controller
-                  name="empresa"
+                  name="empresaId"
                   control={control}
                   rules={{ required: "Empresa é obrigatória" }}
                   render={({ field }) => (
@@ -103,8 +111,8 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
               </FormControl>
               <FormMessage />
             </FormItem>
-          <FormItem>
-              <FormLabel>Descrição*</FormLabel>
+          <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Descrição*:</FormLabel>
               <FormControl>
                 <Controller
                   name="descricao"
@@ -112,16 +120,14 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
                   rules={{ required: "Descrição é obrigatória" }}
                   render={({ field }) => (
                     <Input
-                      {...field}
-                      onChange={(e) => field.onChange(formatDate(e.target.value))}
-                    />
+                      {...field}/>
                   )}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>     
-            <FormItem>
-              <FormLabel>Data de Início*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Data de Início*:</FormLabel>
               <FormControl>
                 <Controller
                   name="dataInicio"
@@ -139,8 +145,8 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
-              <FormLabel>Data Final*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Data Final*:</FormLabel>
               <FormControl>
                 <Controller
                   name="dataFim"
@@ -158,26 +164,34 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
               <FormMessage />
             </FormItem>
 
-            <FormItem>
-              <FormLabel>Tipo de Contrato*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500" >
+              <FormLabel>Tipo de Contrato*:</FormLabel>
               <FormControl>
                 <Controller
                   name="tipoContrato"
                   control={control}
                   rules={{ required: "Tipo de contrato é obrigatório" }}
                   render={({ field }) => (
-                    <Input {...field} />
+                    <select
+                      {...field}
+                      className="w-full text-black border rounded-md h-9 px-2"
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="Desenvolvimento de Software">Desenvolvimento de Software</option>
+                      <option value="Manutenção de Software">Manutenção de Software</option>
+                      <option value= "fornecimento de software">Fornecimento de Software</option>
+                    </select>
                   )}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
 
-            <FormItem>
-              <FormLabel>Valor*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Responsável pelo Contrato:*</FormLabel>
               <FormControl>
                 <Controller
-                  name="valorContrato"
+                  name="respresentantes"
                   control={control}
                   rules={{ required: "Valor é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
@@ -190,78 +204,93 @@ const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
 
         {step === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
-              <FormLabel>Representante*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Termos de Pagamento:</FormLabel>
               <FormControl>
                 <Controller
-                  name="representante"
+                  name="termosDePagamento"
                   control={control}
-                  rules={{ required: "Nome do representante é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
 
-            <FormItem>
-              <FormLabel>CPF do Representante*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Total Pago*:</FormLabel>
               <FormControl>
                 <Controller
-                  name="cpfRepresentante"
+                  name="valorTotalPago"
                   control={control}
-                  rules={{ required: "CPF é obrigatório" }}
+                  rules={{ required: "Valor total pago é obrigatório" }}
                   render={({ field }) => (
-                    <Input {...field} onChange={(e) => field.onChange(formatCPF(e.target.value))} />
+                    <Input {...field}  />
                   )}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
-          </div>
-        )}
 
-        {step === 2 && (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-    <FormItem className="px-2 focus-within:text-cyan-500 w-full">
-      <FormLabel>Telefone*</FormLabel>
-      <FormControl>
-        <Controller
-          name="telefoneEmpresa"
-          control={control}
-          rules={{ required: "Telefone é obrigatório" }}
-          render={({ field }) => (
-            <div className="w-full mt-1">
-              <PhoneInput
-                international
-                defaultCountry="BR"
-                value={field.value || ""}
-                onChange={field.onChange}
-                className="w-full h-auto border border-input rounded-md px-3 py-1 text-sm text-black"
-              />
-            </div>
-          )}
-        />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  </div>
-)}
-
-
-        {step === 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem>
-              <FormLabel>Responsável pelo Contrato*</FormLabel>
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Dias para o Cancelamento*:</FormLabel>
               <FormControl>
                 <Controller
-                  name="responsavel"
+                  name="diasParaCancelamento"
                   control={control}
-                  rules={{ required: "Responsável é obrigatório" }}
-                  render={({ field }) => <Input {...field} />}
+                  rules={{ required: "Valor total pago é obrigatório" }}
+                  render={({ field }) => (
+                    <Input {...field}  />
+                  )}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
+
+                        <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Motivo para o Cancelamento:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="motivoCancelamento"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field}  />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+             <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Valor Contrato*:</FormLabel>
+              <FormControl>
+                <Controller
+                  name="valorContrato"
+                  control={control}
+                  rules={{ required: "Valor total pago é obrigatório" }}
+                  render={({ field }) => (
+                    <Input {...field}  />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem className="px-2 focus-within:text-cyan-500" label="Auto Renovação">
+              <FormLabel >Auto Renovação</FormLabel>
+              <FormControl>
+              <Controller
+              name="autoRenovacao"
+              control={control}
+              defaultValue={false}
+              render={({ field }) => (
+              <Switch className="flex bg-cyan-500 items-right gap-4"
+              checked={field.value}
+              onCheckedChange={field.onChange} 
+              /> )}
+               
+        />
+            </FormControl>
+             </FormItem>
           </div>
         )}
 
