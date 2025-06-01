@@ -9,7 +9,7 @@ import { FileText, FileSignature, Download, Edit, Calendar, User, Building, Doll
 import Link from "next/link"
 import { getContratoId } from "../../../../services/contrato"
 import { EditarContratoDialog } from "../../../../components/EditContratoForm"
-import { KanbanEntregaveis } from "../../../../components/KanbanContrato"
+import { KanbanEntregaveis } from "@/components/KanbanContrato"
 import { DocumentosContrato } from "../../../../components/DocumentosContrato"
 import { useRef } from "react"
 import { AgregadosContrato } from "../../../../components/agregadosContrato"
