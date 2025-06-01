@@ -91,7 +91,6 @@ export const postEmpresa = async (emp) => {
                 nomeFantasia: emp.nomeFantasia,
                 razaoSocial: emp.razaoSocial,
                 cnpj: emp.cnpj,
-                numeroEmpresa: emp.numeroEmpresa,
                 estado: emp.estado,
                 cidade: emp.cidade,
                 inscricaoMunicipal: emp.inscricaoMunicipal,
