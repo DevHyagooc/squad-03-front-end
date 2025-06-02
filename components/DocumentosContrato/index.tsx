@@ -186,13 +186,13 @@ export function DocumentosContrato({ contratoId }: DocumentosContratoProps) {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="flex items-center justify-center">
-            <div className="relative w-8 h-8">
-              <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
-              <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
+          <div className=" inset-0 flex items-center justify-center pointer-events-none z-50 bg-white/40 backdrop-blur-sm">
+                <div className="relative w-12 h-12">
+                    <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
+                    <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
+                </div>
+                <span className="ml-2">Carregando Documentos...</span>
             </div>
-            <span className="ml-2">Carregando documentos...</span>
-          </div>
         </CardContent>
       </Card>
     )
