@@ -12,6 +12,7 @@ import { EditarContratoDialog } from "@/components/EditContratoForm/index"
 import { KanbanEntregaveis } from "@/components/KanbanContrato/index"
 import { DocumentosContrato } from "@/components/DocumentosContrato/index"
 import { useRef } from "react"
+import { AgregadosContrato } from "@/components/agregados-contrato"
 
 export interface Empresa {
   idOrgao: number
@@ -412,6 +413,9 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 </CardContent>
               </Card>
             </TabsContent>
+             <TabsContent value="ordens">
+            <AgregadosContrato contratoId={contrato.idContrato} />
+          </TabsContent>
             <TabsContent value="documentos">
               <DocumentosContrato contratoId={contrato.idContrato} />
             </TabsContent>
