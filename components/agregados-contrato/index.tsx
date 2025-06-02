@@ -224,9 +224,17 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <Card>
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-center">
+                        <div className="relative w-8 h-8">
+                            <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
+                            <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
+                        </div>
+                        <span className="ml-2">Carregando Aditivos...</span>
+                    </div>
+                </CardContent>
+            </Card>
     )
   }
 
