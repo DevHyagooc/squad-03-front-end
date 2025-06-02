@@ -231,7 +231,7 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
                             <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
                             <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
                         </div>
-                        <span className="ml-2">Carregando Aditivos...</span>
+                        <span className="ml-2">Carregando Agregados...</span>
                     </div>
                 </CardContent>
             </Card>
