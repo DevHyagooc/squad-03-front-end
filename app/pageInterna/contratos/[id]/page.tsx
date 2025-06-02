@@ -461,9 +461,6 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="ordens">
-              <AgregadosContrato contratoId={contrato.idContrato} />
-            </TabsContent>
             <TabsContent value="recaptulacoes">
               <RepactuacoesContrato contratoId={contrato.idContrato} />
             </TabsContent>
