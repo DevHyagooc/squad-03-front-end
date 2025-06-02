@@ -12,9 +12,12 @@ import { EditarContratoDialog } from "../../../../components/EditContratoForm"
 import { KanbanEntregaveis } from "@/components/KanbanContrato"
 import { DocumentosContrato } from "../../../../components/DocumentosContrato"
 import { useRef } from "react"
-import { AgregadosContrato } from "../../../../components/agregadosContrato"
+
+import { AgregadosContrato } from "@/components/agregados-contrato"
+
 import { RepactuacoesContrato } from "../../../../components/repactuacoesContrato"
 import { AditivosContrato } from "../../../../components/aditivosContrato"
+
 
 export interface Empresa {
   idOrgao: number
@@ -415,6 +418,9 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 </CardContent>
               </Card>
             </TabsContent>
+             <TabsContent value="ordens">
+            <AgregadosContrato contratoId={contrato.idContrato} />
+          </TabsContent>
             <TabsContent value="documentos">
               <DocumentosContrato contratoId={contrato.idContrato} />
             </TabsContent>
