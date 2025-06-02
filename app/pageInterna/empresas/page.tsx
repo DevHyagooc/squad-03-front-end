@@ -39,6 +39,7 @@ export interface Representante {
   cpf: string;
   email: string;
   telefone: string;
+  idOrgao: number
 }
 
 export default function EmpresasPage() {
@@ -84,7 +85,6 @@ export default function EmpresasPage() {
   const handleUpdate = async (emp: Empresa) => {
     try {
       await updateEmpresa(emp.idOrgao, emp);
-      // fecha o dialog e refaz a lista
       closeUpdateDialog();
       fetchListEmpresas();
     } catch (err) {
@@ -316,7 +316,7 @@ export default function EmpresasPage() {
         <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
           <DialogContent>
             <DialogTitle className="text-2xl"></DialogTitle>
-            <UpdateEmpresa closeForm={closeUpdateDialog} empresa={selectedEmpresas} onSave={handleUpdate} />
+            <UpdateEmpresa empresa={selectedEmpresas} onSave={handleUpdate} onCancel={closeUpdateDialog}/>
           </DialogContent>
         </Dialog>
       )}

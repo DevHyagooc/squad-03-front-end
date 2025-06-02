@@ -1,17 +1,23 @@
 "use client"
 
 import { useState, use } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "../../../../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table"
 import { FileText, FileSignature, Download, Edit, Calendar, User, Building, DollarSign, FileCheck } from "lucide-react"
 import Link from "next/link"
-import { getContratoId } from "@/services/contrato"
-import { EditarContratoDialog } from "@/components/EditContratoForm/index"
-import { KanbanEntregaveis } from "@/components/KanbanContrato/index"
-import { DocumentosContrato } from "@/components/DocumentosContrato/index"
+import { getContratoId } from "../../../../services/contrato"
+import { EditarContratoDialog } from "../../../../components/EditContratoForm"
+import { KanbanEntregaveis } from "@/components/KanbanContrato"
+import { DocumentosContrato } from "../../../../components/DocumentosContrato"
 import { useRef } from "react"
+
+import { AgregadosContrato } from "@/components/agregados-contrato"
+
+import { RepactuacoesContrato } from "../../../../components/repactuacoesContrato"
+import { AditivosContrato } from "../../../../components/aditivosContrato"
+
 
 export interface Empresa {
   idOrgao: number
@@ -394,8 +400,8 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
           <Tabs defaultValue="entregaveis" className="space-y-4">
             <TabsList>
               <TabsTrigger value="entregaveis">Entregáveis</TabsTrigger>
-              <TabsTrigger value="ordens">Ordens de Serviço</TabsTrigger>
-              <TabsTrigger value="recaptulacoes">Recaptulações</TabsTrigger>
+              <TabsTrigger value="ordens">Agregados</TabsTrigger>
+              <TabsTrigger value="recaptulacoes">Repactuação</TabsTrigger>
               <TabsTrigger value="aditivos">Aditivos</TabsTrigger>
               <TabsTrigger value="documentos">Documentos</TabsTrigger>
               <TabsTrigger value="representantes">Representantes</TabsTrigger>
@@ -407,11 +413,14 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 </CardHeader>
                 <CardContent className="p-0 overflow-hidden">
                   <div className="p-6 overflow-hidden">
-                  <KanbanEntregaveis contratoId={contrato.idContrato} />
+                    <KanbanEntregaveis contratoId={contrato.idContrato} />
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
+             <TabsContent value="ordens">
+            <AgregadosContrato contratoId={contrato.idContrato} />
+          </TabsContent>
             <TabsContent value="documentos">
               <DocumentosContrato contratoId={contrato.idContrato} />
             </TabsContent>
@@ -451,6 +460,12 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                   </Table>
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="recaptulacoes">
+              <RepactuacoesContrato contratoId={contrato.idContrato} />
+            </TabsContent>
+            <TabsContent value="aditivos">
+              <AditivosContrato contratoId={contrato.idContrato} />
             </TabsContent>
           </Tabs>
         </div>
