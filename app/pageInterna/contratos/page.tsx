@@ -8,7 +8,7 @@ import { CalendarDays, FileText, Plus, Search, Download, Inbox } from "lucide-re
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
-import FormContrato from "../../../components/contratoForm"
+
 import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
@@ -75,10 +75,10 @@ export default function ContratosPage() {
           </DialogTrigger>
 
           {/* DialogContent que contém o conteúdo do modal */}
-          <DialogContent>
+          {/* <DialogContent>
             <DialogTitle className="text-2xl">Novo Contrato</DialogTitle>
             <FormContrato closeForm={closeForm} />
-          </DialogContent>
+          </DialogContent> */}
         </Dialog>
       </div>
       <Card className="border-none pt-1">
