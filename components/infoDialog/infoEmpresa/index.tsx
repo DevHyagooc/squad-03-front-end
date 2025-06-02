@@ -4,17 +4,6 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 import { X } from "lucide-react";
 import { Empresa } from "@/app/pageInterna/empresas/page";
 
-// interface Empresa {
-//   idOrgao: number;
-//     nome: string;
-//     nomeFantasia: string;
-//     razaoSocial: string;
-//     cnpj: string;
-//     numeroEmpresa: string;
-//     estado: string;
-//     cidade: string;
-// }
-
 interface FormEmpresaPorps {
     closeForm: () => void;
     empresa: Empresa
