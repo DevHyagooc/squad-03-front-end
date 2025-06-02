@@ -94,17 +94,9 @@ export default function ColaboradoresPage() {
   }, []);
 
   // Função para abrir o Dialog de informações do colaborador
-  const openInfoDialog = async (colab: Colaborador) => {
-    setLoadingDetail(true);
-    setShowInfoDialog(true);
-    try {
-      const data = await getColaboradorId(colab.idFuncionario);
-      setColaboradorDetail(data);
-    } catch (error) {
-      console.error("Erro ao buscar detalhes:", error);
-    } finally {
-      setLoadingDetail(false);  // Desativa o loading
-    }
+  const openInfoDialog = (colaborador: Colaborador) => {
+    setSelectedColaborador(colaborador);
+    setShowInfoDialog(true); // Abre o diálogo de informações
   };
 
   // Função para abrir o Dialog de exclusão
@@ -259,6 +251,16 @@ export default function ColaboradoresPage() {
                 />
               )
             )}
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog para exibir as informações do colaborador */}
+      {showUpdateDialog && selectedColaborador && (
+        <Dialog open={showUpdateDialog} onOpenChange={() => closeUpdateDialog()}>
+          <DialogContent>
+            <DialogTitle className="text-2xl">Informações do Colaborador</DialogTitle>
+            <InfoColab closeForm={closeInfoDialog} colaborador={selectedColaborador} />
           </DialogContent>
         </Dialog>
       )}

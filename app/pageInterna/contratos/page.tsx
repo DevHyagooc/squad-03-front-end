@@ -9,11 +9,14 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
 
+import FormContrato from "@/components/ContratoForm"
+
 import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
 import { getContratoList, getContratoListArquivados, getContratoListNaoArquivado } from "@/services/contrato"
 import { formatDate2 } from "@/lib/formatData"
+import { Empresa } from "../empresas/page"
 
 interface Contrato {
   idContrato: number;
@@ -75,10 +78,10 @@ export default function ContratosPage() {
           </DialogTrigger>
 
           {/* DialogContent que contém o conteúdo do modal */}
-          {/* <DialogContent>
+          <DialogContent>
             <DialogTitle className="text-2xl">Novo Contrato</DialogTitle>
             <FormContrato closeForm={closeForm} />
-          </DialogContent> */}
+          </DialogContent>
         </Dialog>
       </div>
       <Card className="border-none pt-1">

@@ -1,196 +1,248 @@
-import { FormProvider, useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Button } from "../ui/button";
+// FormContrato.tsx
+import { useState } from "react";
+import { useForm, FormProvider, Controller } from "react-hook-form";
 import { Input } from "../ui/input";
-import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";  // Certifique-se de que o caminho esteja correto
-import { formatCPF, formatPhone, formatDate } from "@/lib/formatData";
-import { postColaborador } from "@/services/colaboradores";
-import { formatPhoneBr } from "@/lib/formatePhoneBr";
-import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import 'react-phone-number-input';
+import { Button } from "../ui/button";
+import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import 'react-phone-number-input/style.css'
+import PhoneInput from "react-phone-number-input";
+import { formatCPF, formatDate } from "@/lib/formatData";
 
-interface FormColabProps {
-   closeForm: () => void;
-   onSubmit: (colaborador: any) => void;
-}
+const steps = ["Contrato", "Representante", "Contato", "Responsável"];
 
-const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
-   const methods = useForm({
-      defaultValues: {
-         nome: "",
-         cpf: "",
-         cargo: "",
-         email: "",
-         telefone: "",
-         dataNascimento: "",
-      },
-   });
-
-   const { control, handleSubmit, formState: { errors } } = methods;
-
-   // Expressão regular para validar um email
-   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-   const handleFormSubmit: SubmitHandler<any> = (colaborador) => {
-      postColaborador(colaborador)
-      onSubmit(colaborador);
-      closeForm();
-   };
-
-   return (
-      <FormProvider {...methods}>
-         <form onSubmit={methods.handleSubmit(handleFormSubmit)} className="space-y-4">
-            <div className="flex flex-wrap w-full gap-4 pb-3 pt-1 px-1 pl-2">
-               <FormItem className="focus-within:text-cyan-500"> {/* Garantindo que focus-within esteja aqui */}
-                  <FormLabel htmlFor="nome">Nome do Colaborador:</FormLabel>
-                  <FormControl>
-                     <Controller
-                        name="nome"
-                        control={control}
-                        rules={{ required: "Nome é obrigatório" }}
-                        render={({ field }) => (
-                           <Input
-                              id="nome"
-                              type="text"
-                              placeholder="Nome Completo..."
-                              className="w-52 mt-1 text-black"
-                              {...field}
-                           />
-                        )}
-                     />
-                  </FormControl>
-                  <FormMessage>{errors.nome && errors.nome.message}</FormMessage>
-               </FormItem>
-
-               <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="cpf">CPF:</FormLabel>
-                  <FormControl>
-                     <Controller
-                        name="cpf"
-                        control={control}
-                        rules={{ required: "CPF é obrigatório" }}
-                        render={({ field }) => (
-                           <Input
-                              id="cpf"
-                              type="text"
-                              placeholder="xxx.xxx.xxx-xx"
-                              className="w-52 mt-1 text-black"
-                              value={field.value}
-                              onChange={(e) => field.onChange(formatCPF(e.target.value))}
-                           />
-                        )}
-                     />
-                  </FormControl>
-                  <FormMessage>{errors.cpf && errors.cpf.message}</FormMessage>
-               </FormItem>
-
-               <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="cargo">Cargo do colaborador:</FormLabel>
-                  <FormControl>
-                     <Controller
-                        name="cargo"
-                        control={control}
-                        render={({ field }) => (
-                           <select
-                              id="cargo"
-                              className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-sm"
-                              {...field}
-                           >
-                              <option value="" disabled>Escolha um cargo...</option>
-                              <option value="Desenvolvedor Back-end">Desenvolvedor Back-end</option>
-                           </select>
-                        )}
-                     />
-                  </FormControl>
-                  <FormMessage>{errors.cargo && errors.cargo.message}</FormMessage>
-               </FormItem>
-
-               <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="email">Email:</FormLabel>
-                  <FormControl>
-                     <Controller
-                        name="email"
-                        control={control}
-                        rules={{
-                           required: "Email é obrigatório",
-                           pattern: {
-                              value: emailRegex,
-                              message: "Formato de email inválido"
-                           }
-                        }}
-                        render={({ field }) => (
-                           <Input
-                              id="email"
-                              type="text"
-                              placeholder="Digite aqui o email"
-                              className="w-52 mt-1 text-black"
-                              {...field}
-                           />
-                        )}
-                     />
-                  </FormControl>
-                  <FormMessage>{errors.email && errors.email.message}</FormMessage>
-               </FormItem>
-
-               <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="telefone">Telefone:</FormLabel>
-                  <FormControl>
-                     <Controller
-                        name="telefone"
-                        control={control}
-                        rules={{ required: "Telefone é obrigatório" }}
-                        render={({ field }) => (
-                           <div className="mt-1">
-                              <PhoneInput
-                                 international
-                                 defaultCountry="BR"
-                                 value={field.value || ""}
-                                 onChange={(phone) => field.onChange(phone)}
-                                 onBlur={field.onBlur}
-                                 placeholder="(xx) x xxxx-xxxx"
-                                 className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"
-                                    } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
-                                 id="telefone"
-                              />
-                           </div>
-                        )}
-                     />
-                  </FormControl>
-                  <FormMessage>{errors.telefone && errors.telefone.message}</FormMessage>
-               </FormItem>
-
-               <FormItem className="focus-within:text-cyan-500">
-                  <FormLabel htmlFor="dataNascimento">Data de Nascimento:</FormLabel>
-                  <FormControl>
-                     <Controller
-                        name="dataNascimento"
-                        control={control}
-                        render={({ field }) => (
-                           <Input
-                              id="dataNascimento"
-                              type="text"
-                              placeholder="dd/mm/aaaa"
-                              className="w-52 mt-1 text-black"
-                              value={field.value}
-                              onChange={(e) => field.onChange(formatDate(e.target.value))}
-                           />
-                        )}
-                     />
-                  </FormControl>
-               </FormItem>
-            </div>
-
-            <div className="flex justify-end gap-4">
-               <Button type="button" onClick={closeForm} variant="destructive" className="text-white bg-black">
-                  Cancelar
-               </Button>
-               <Button type="submit" className="bg-cyan-500 hover:bg-cyan-700">
-                  Salvar
-               </Button>
-            </div>
-         </form>
-      </FormProvider>
-   );
+type ContratoFormData = {
+  empresa: string;
+  descricao: string;
+  dataInicio: string;
+  dataFim: string;
+  tipoContrato: string;
+  valorContrato: string;
+  representante: string;
+  cpfRepresentante: string;
+  telefoneEmpresa: string;
+  responsavel: string;
 };
 
-export default FormColab;
+const FormContrato = ({ closeForm }: { closeForm: () => void }) => {
+  const methods = useForm<ContratoFormData>({
+    defaultValues: {
+      empresa: "",
+      descricao: "",
+      dataInicio: "",
+      dataFim: "",
+      tipoContrato: "",
+      valorContrato: "",
+      representante: "",
+      cpfRepresentante: "",
+      telefoneEmpresa: "",
+      responsavel: "",
+    }
+  });
+
+  const { control, handleSubmit, watch, trigger, formState: { errors } } = methods;
+
+  const [step, setStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const stepsFields = [
+    ["empresa","descricao","dataInicio", "dataFim", "tipoContrato", "valorContrato"], // Step 0
+    ["representante", "cpfRepresentante"], // Step 1
+    ["telefoneEmpresa"], // Step 2
+    ["responsavel"], // Step 3
+  ];
+
+  const onSubmit = (data: ContratoFormData) => {
+    console.log(data);
+    closeForm();
+  };
+
+  const handleNext = async () => {
+    const fields = stepsFields[step];
+    const valid = await trigger(fields as any);
+    if (valid) setStep(step + 1);
+  };
+
+  const handleBack = () => setStep(step - 1);
+
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold">{steps[step]}</h2>
+          <span className="text-sm text-gray-500">Passo {step + 1} de {steps.length}</span>
+        </div>
+
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div
+            className="bg-cyan-500 h-2.5 rounded-full"
+            style={{ width: `${((step + 1) / steps.length) * 100}%` }}
+          />
+        </div>
+
+        {step === 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Empresa - dropdown mockado */}
+            <FormItem>
+              <FormLabel>Empresa*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="empresa"
+                  control={control}
+                  rules={{ required: "Empresa é obrigatória" }}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      className="w-full text-black border rounded-md h-9 px-2"
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="Empresa A">Empresa A</option>
+                      <option value="Empresa B">Empresa B</option>
+                    </select>
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          <FormItem>
+              <FormLabel>Descrição*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="descricao"
+                  control={control}
+                  rules={{ required: "Valor é obrigatório" }}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>  
+            <FormItem>
+              <FormLabel>Data de Início*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="dataInicio"
+                  control={control}
+                  rules={{ required: "Data de início é obrigatória" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="DD/MM/AAAA"
+                      onChange={(e) => field.onChange(formatDate(e.target.value))}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Data Final*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="dataFim"
+                  control={control}
+                  rules={{ required: "Data final é obrigatória" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="DD/MM/AAAA"
+                      onChange={(e) => field.onChange(formatDate(e.target.value))}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Tipo de Contrato*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="tipoContrato"
+                  control={control}
+                  rules={{ required: "Tipo de contrato é obrigatório" }}
+                  render={({ field }) => (
+                    <Input {...field} />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Valor*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="valorContrato"
+                  control={control}
+                  rules={{ required: "Valor é obrigatório" }}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormItem>
+              <FormLabel>Representante*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="representante"
+                  control={control}
+                  rules={{ required: "Nome do representante é obrigatório" }}
+                  render={({ field }) => <Input {...field} />}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>CPF do Representante*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="cpfRepresentante"
+                  control={control}
+                  rules={{ required: "CPF é obrigatório" }}
+                  render={({ field }) => (
+                    <Input {...field} onChange={(e) => field.onChange(formatCPF(e.target.value))} />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+
+
+        {/* NAVEGAÇÃO */}
+        <div className="flex justify-between pt-6 border-t">
+          {step === 0 ? (
+            <Button type="button" variant="destructive" onClick={closeForm}>
+              Cancelar
+            </Button>
+          ) : (
+            <Button type="button" variant="outline" onClick={handleBack}>
+              Voltar
+            </Button>
+          )}
+
+          {step < steps.length - 1 ? (
+            <Button type="button" onClick={handleNext}>
+              Próximo
+            </Button>
+          ) : (
+            <Button type="submit" disabled={isSubmitting}
+            className="bg-cyan-500 hover:bg-cyan-700"
+            >
+              {isSubmitting ? "Salvando..." : "Salvar"}
+            </Button>
+          )}
+        </div>
+      </form>
+    </FormProvider>
+  );
+};
+
+export default FormContrato;

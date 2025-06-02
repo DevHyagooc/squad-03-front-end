@@ -10,7 +10,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";
-import { formatCEP, formatCNPJ, formatCPF } from "@/lib/formatData";
+import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
+
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { toast } from "@/hooks/use-toast";
@@ -20,6 +21,7 @@ interface FormEmpresaProps {
   onSubmit?: (empresa: any) => Promise<void>;
   onEmpresaCreated?: () => void;
 }
+
 
 const steps = ["Empresa", "Endereço", "Contato Empresa", "Representante"];
 
@@ -484,6 +486,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
                   control={control}
                   rules={{ required: "Telefone é obrigatório" }}
                   render={({ field }) => (
+
                     <div className="mt-1">
                       <PhoneInput
                         international
@@ -497,6 +500,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
                         } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
                       />
                     </div>
+
                   )}
                 />
               </FormControl>
