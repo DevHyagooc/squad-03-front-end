@@ -8,6 +8,7 @@ import { CalendarDays, FileText, Plus, Search, Download, Inbox } from "lucide-re
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from "next/link"
 import React, { useEffect, useState } from 'react';
+
 import { Empresa } from "../empresas/page"
 import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
