@@ -72,18 +72,13 @@ const tiposAditivo = [
 ];
 
 export function AditivosContrato({ contratoId }: AditivosContratoProps) {
-  // ─── Estados principais ─────────────────────────────────────────────────────
   const [aditivos, setAditivos] = useState<AditivoResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ─── Diálogo de CRIAR / EDITAR ADITIVO ───────────────────────────────────────
-  // selectedAditivoParaEdicao == null → Modo “criar”
-  // se for AditivoResponse → Modo “editar” (pré-preenche o form)
   const [isAditivoDialogOpen, setIsAditivoDialogOpen] = useState(false);
   const [selectedAditivoParaEdicao, setSelectedAditivoParaEdicao] =
     useState<AditivoResponse | null>(null);
 
-  // Campos do formulário
   const [formData, setFormData] = useState<AditivoRequest>({
     tipo: "",
     descricaoMudancas: "",
@@ -93,21 +88,18 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
   });
   const [dataVigencia, setDataVigencia] = useState<Date>();
 
-  // ─── Diálogo de CONFIRMAÇÃO DE EXCLUSÃO DE ADITIVO ───────────────────────────
   const [isDeleteAditivoDialogOpen, setIsDeleteAditivoDialogOpen] =
     useState(false);
   const [aditivoParaDeletar, setAditivoParaDeletar] = useState<number | null>(
     null
   );
 
-  // ─── Diálogo de UPLOAD DE DOCUMENTO ─────────────────────────────────────────
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
   const [selectedAditivo, setSelectedAditivo] = useState<AditivoResponse | null>(
     null
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // ─── Carrega a lista de aditivos sempre que o contratoId mudar ──────────────
   useEffect(() => {
     loadAditivos();
   }, [contratoId]);
@@ -128,7 +120,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     }
   }
 
-  // ─── ABRIR DIALOG DE CRIAR ADITIVO (reseta formulário) ──────────────────────
   function onOpenCreateAditivoDialog() {
     setSelectedAditivoParaEdicao(null);
     setFormData({
@@ -142,23 +133,20 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     setIsAditivoDialogOpen(true);
   }
 
-  // ─── ABRIR DIALOG DE EDITAR ADITIVO (pré-preenche formulário) ───────────────
   function onOpenEditAditivoDialog(aditivo: AditivoResponse) {
     setSelectedAditivoParaEdicao(aditivo);
     setFormData({
       tipo: aditivo.tipo,
       descricaoMudancas: aditivo.descricaoMudancas,
       justificativa: aditivo.justificativa,
-      dataVigencia: aditivo.dataVigencia, // string "YYYY-MM-DD"
+      dataVigencia: aditivo.dataVigencia,
       contratoId: contratoId,
     });
     setDataVigencia(new Date(aditivo.dataVigencia));
     setIsAditivoDialogOpen(true);
   }
 
-  // ─── INSERIR (POST) OU ATUALIZAR (PUT) ADITIVO ───────────────────────────────
   async function handleSubmitAditivo() {
-    // Validações mínimas
     if (!dataVigencia) {
       toast({
         title: "Atenção",
@@ -176,16 +164,14 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
       return;
     }
 
-    // Prepara payload (sempre com contratoId e data formatada)
     const payload: AditivoRequest = {
       ...formData,
-      dataVigencia: dataVigencia.toISOString().split("T")[0], // "YYYY-MM-DD"
+      dataVigencia: dataVigencia.toISOString().split("T")[0], 
       contratoId: contratoId,
     };
 
     try {
       if (selectedAditivoParaEdicao) {
-        // ─── atualizar
         await updateAditivo(
           selectedAditivoParaEdicao.idAditivoContractual,
           payload
@@ -195,7 +181,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
           description: "Aditivo atualizado com sucesso!",
         });
       } else {
-        // ─── criar
         await createAditivo(payload);
         toast({
           title: "Sucesso",
@@ -216,13 +201,11 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     }
   }
 
-  // ─── ABRE O DIÁLOGO DE CONFIRMAÇÃO PARA DELETAR ───────────────────────────────
   function onRequestDeleteAditivo(idAditivo: number) {
     setAditivoParaDeletar(idAditivo);
     setIsDeleteAditivoDialogOpen(true);
   }
 
-  // ─── DELETA DEFINITIVAMENTE O ADITIVO APÓS CONFIRMAÇÃO ────────────────────────
   async function onConfirmDeleteAditivo() {
     if (aditivoParaDeletar == null) {
       setIsDeleteAditivoDialogOpen(false);
@@ -247,7 +230,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     }
   }
 
-  // ─── FAZ O UPLOAD DO DOCUMENTO PARA ESSE ADITIVO ─────────────────────────────
   async function handleUploadDocument() {
     if (!selectedFile || !selectedAditivo) {
       toast({
@@ -278,7 +260,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     }
   }
 
-  // ─── FAZ O DOWNLOAD DO DOCUMENTO DO ADITIVO ─────────────────────────────────
   async function handleDownloadDocument(documentoId: number, fileName: string) {
     try {
       const blob = await downloadAditivoDocument(documentoId);
@@ -303,7 +284,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     }
   }
 
-  // ─── DELETA UM DOCUMENTO DO ADITIVO (SEM DIÁLOGO ADICIONAL AQUI) ─────────────
   async function handleDeleteDocument(documentoId: number) {
     try {
       await deleteAditivoDocument(documentoId);
@@ -321,7 +301,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     }
   }
 
-  // ─── RESETAR O FORMULÁRIO (para fechar/limpar) ───────────────────────────────
   function resetForm() {
     setFormData({
       tipo: "",
@@ -334,7 +313,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     setSelectedAditivoParaEdicao(null);
   }
 
-  // ─── CONVERTE O CÓDIGO DE “tipo” PARA LABEL LEITÁVEL ─────────────────────────
   function getTipoLabel(tipo: string) {
     const tipoEncontrado = tiposAditivo.find((t) => t.value === tipo);
     return tipoEncontrado ? tipoEncontrado.label : tipo;
@@ -358,9 +336,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
 
   return (
     <div className="space-y-6">
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
-      {/*  CABEÇALHO E BOTÃO “NOVO ADITIVO”                                        */}
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Aditivos do Contrato</h2>
         <Button onClick={onOpenCreateAditivoDialog}>
@@ -369,13 +344,9 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
         </Button>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
-      {/*  CASO NÃO HAJA ADITIVOS                                                    */}
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
       {aditivos.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center h-40">
-            <FileText className="h-10 w-10 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
               Nenhum aditivo encontrado para este contrato.
             </p>
@@ -397,7 +368,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                 <div className="flex justify-between items-center">
                   <CardTitle>{getTipoLabel(aditivo.tipo)}</CardTitle>
                   <div className="flex space-x-2">
-                    {/* ─── BOTÃO “EDITAR” ─────────────────────────────────────────── */}
                     <Button
                       variant="outline"
                       size="sm"
@@ -407,7 +377,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                       Editar
                     </Button>
 
-                    {/* ─── BOTÃO “DELETAR” ────────────────────────────────────────── */}
                     <Button
                       variant="destructive"
                       size="sm"
@@ -419,7 +388,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                       Excluir
                     </Button>
 
-                    {/* ─── BOTÃO “ANEXAR DOCUMENTO” ───────────────────────────────── */}
                     <Button
                       variant="outline"
                       size="sm"
@@ -526,9 +494,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
         </div>
       )}
 
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
-      {/*  DIALOG DE CONFIRMAÇÃO PARA EXCLUIR ADITIVO                                */}
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
       <Dialog
         open={isDeleteAditivoDialogOpen}
         onOpenChange={setIsDeleteAditivoDialogOpen}
@@ -557,9 +522,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
         </DialogContent>
       </Dialog>
 
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
-      {/*  DIALOG PARA CRIAR / EDITAR ADITIVO                                        */}
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
       <Dialog open={isAditivoDialogOpen} onOpenChange={setIsAditivoDialogOpen}>
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
@@ -568,7 +530,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
             </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            {/* Tipo de Aditivo */}
             <div className="grid gap-2">
               <Label htmlFor="tipo">Tipo de Aditivo</Label>
               <Select
@@ -589,8 +550,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Descrição das Mudanças */}
             <div className="grid gap-2">
               <Label htmlFor="descricaoMudancas">
                 Descrição das Mudanças
@@ -609,7 +568,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
               />
             </div>
 
-            {/* Justificativa */}
             <div className="grid gap-2">
               <Label htmlFor="justificativa">Justificativa</Label>
               <Textarea
@@ -623,7 +581,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
               />
             </div>
 
-            {/* Data de Vigência */}
             <div className="grid gap-2">
               <Label>Data de Vigência</Label>
               <Popover>
@@ -671,9 +628,6 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
         </DialogContent>
       </Dialog>
 
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
-      {/*  DIALOG PARA ANEXAR DOCUMENTO                                                */}
-      {/* ─────────────────────────────────────────────────────────────────────────── */}
       <Dialog
         open={isDocumentDialogOpen}
         onOpenChange={setIsDocumentDialogOpen}

@@ -56,15 +56,63 @@ interface KanbanEntregaveisProps {
     contratoId: number
 }
 
+//
+// ─── DEFAULT + LOCALSTORAGE UTILITIES ───────────────────────────────────────
+//
+
+// Chave que usaremos para gravar/ler colunas
+const LOCAL_STORAGE_KEY = "kanbanColumns";
+
+// Seu estado inicial “fallback”
 const defaultColumns: KanbanColumn[] = [
-    { id: "pendente", title: "Pendente", status: "PENDENTE" },
-    { id: "em-andamento", title: "Em Andamento", status: "EM_ANDAMENTO" },
-    { id: "em-revisao", title: "Em Revisão", status: "EM_REVISAO" },
-    { id: "concluido", title: "Concluído", status: "CONCLUIDO" },
-]
+  { id: "pendente", title: "Pendente", status: "PENDENTE" },
+  { id: "em-andamento", title: "Em Andamento", status: "EM_ANDAMENTO" },
+  { id: "em-revisao", title: "Em Revisão", status: "EM_REVISAO" },
+  { id: "concluido", title: "Concluído", status: "CONCLUIDO" },
+];
+
+/**
+ * Tenta ler as colunas do localStorage. Se não existir ou der erro,
+ * retorna o defaultColumns.
+ */
+function loadColumnsFromStorage(): KanbanColumn[] {
+  try {
+    const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (raw) {
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.warn("Erro ao ler colunas do localStorage:", e);
+  }
+  return defaultColumns;
+}
+
+/**
+ * Grava as colunas no localStorage.
+ */
+function saveColumnsToStorage(cols: KanbanColumn[]) {
+  try {
+    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cols));
+  } catch (e) {
+    console.warn("Não foi possível salvar colunas no localStorage:", e);
+  }
+}
 
 export function KanbanEntregaveis({ contratoId }: KanbanEntregaveisProps) {
-    const [columns, setColumns] = useState<KanbanColumn[]>(defaultColumns)
+  // ─── 1. COLUMNS (INICIALIZAÇÃO A PARTIR DO STORAGE) ─────────────────────────
+  const [columns, setColumns] = useState<KanbanColumn[]>(() => {
+    if (typeof window !== "undefined") {
+      return loadColumnsFromStorage();
+    }
+    return defaultColumns;
+  });
+
+  // ─── 2. QUANDO COLUMNS MUDAR, GRAVA NO STORAGE ───────────────────────────────
+  useEffect(() => {
+    saveColumnsToStorage(columns);
+  }, [columns]);
+
+
     const [entregaveis, setEntregaveis] = useState<Entregavel[]>([])
     const [loading, setLoading] = useState(true)
     const [selectedEntregavel, setSelectedEntregavel] = useState<Entregavel | null>(null)
