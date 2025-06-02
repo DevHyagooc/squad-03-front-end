@@ -25,6 +25,7 @@ import {
     downloadAditivoDocument,
     deleteAditivoDocument,
 } from "@/services/aditivo"
+import { AlertDialog } from "@radix-ui/react-alert-dialog"
 
 interface AditivosContratoProps {
     contratoId: number
@@ -54,6 +55,13 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
     })
     const [dataVigencia, setDataVigencia] = useState<Date>()
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [documentoParaDeletar, setDocumentoParaDeletar] = useState<number | null>(null);
+
+    const onRequestDeleteDocument = (documentoId: number) => {
+        setDocumentoParaDeletar(documentoId);
+        setIsDeleteDialogOpen(true);
+    };
 
     useEffect(() => {
         loadAditivos()
@@ -119,7 +127,7 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
         }
 
         try {
-            await uploadAditivoDocument(selectedAditivo.idAditivoContratual, selectedFile)
+            await uploadAditivoDocument(selectedAditivo.idAditivoContractual, selectedFile)
             toast({
                 title: "Sucesso",
                 description: "Documento anexado com sucesso!",
@@ -134,6 +142,8 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                 variant: "destructive",
             })
         }
+
+        console.log(selectedAditivo.idAditivoContractual)
     }
 
     const handleDownloadDocument = async (documentoId: number, fileName: string) => {
@@ -162,26 +172,29 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
         }
     }
 
-    const handleDeleteDocument = async (documentoId: number) => {
-        if (!confirm("Tem certeza que deseja excluir este documento?")) {
-            return
+    const onConfirmDeleteDocument = async () => {
+        if (documentoParaDeletar == null) {
+            setIsDeleteDialogOpen(false);
+            return;
         }
-
         try {
-            await deleteAditivoDocument(documentoId)
+            await deleteAditivoDocument(documentoParaDeletar);
             toast({
                 title: "Sucesso",
                 description: "Documento excluído com sucesso!",
-            })
-            loadAditivos()
+            });
+            loadAditivos();
         } catch (error) {
             toast({
                 title: "Erro",
                 description: "Não foi possível excluir o documento.",
                 variant: "destructive",
-            })
+            });
+        } finally {
+            setIsDeleteDialogOpen(false);
+            setDocumentoParaDeletar(null);
         }
-    }
+    };
 
     const resetForm = () => {
         setFormData({
@@ -239,7 +252,7 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
             ) : (
                 <div className="grid gap-6">
                     {aditivos.map((aditivo) => (
-                        <Card key={aditivo.idAditivoContratual}>
+                        <Card key={aditivo.idAditivoContractual}>
                             <CardHeader>
                                 <div className="flex justify-between items-center">
                                     <CardTitle>{getTipoLabel(aditivo.tipo)}</CardTitle>
@@ -313,7 +326,7 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                                                                     variant="ghost"
                                                                     size="sm"
                                                                     className="text-red-500 hover:text-red-700"
-                                                                    onClick={() => handleDeleteDocument(doc.idDocumento)}
+                                                                    onClick={() => onRequestDeleteDocument(doc.idDocumento)}
                                                                 >
                                                                     <Trash2 className="h-4 w-4" />
                                                                 </Button>
@@ -330,6 +343,34 @@ export function AditivosContrato({ contratoId }: AditivosContratoProps) {
                     ))}
                 </div>
             )}
+
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent className="sm:max-w-[400px]">
+                    <DialogHeader>
+                        <DialogTitle>Tem certeza que deseja excluir?</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-2">
+                        <p className="text-sm text-muted-foreground">
+                            Esta ação não pode ser desfeita. O documento será excluído
+                            permanentemente.
+                        </p>
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsDeleteDialogOpen(false)}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={onConfirmDeleteDocument}
+                        >
+                            Excluir
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Dialog para criar aditivo */}
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

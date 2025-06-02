@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { toast } from "@/hooks/use-toast"
-import { format } from "date-fns"
+import { format, startOfDay } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { CalendarIcon, Edit, Plus, Save, Trash2, X } from "lucide-react"
@@ -88,6 +88,8 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
     loadAgregados()
     loadColaboradores()
   }, [contratoId])
+
+  const hoje = startOfDay(new Date());
 
   const loadColaboradores = async () => {
     try {
@@ -225,16 +227,16 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
   if (loading) {
     return (
       <Card>
-                <CardContent className="p-6">
-                    <div className="flex items-center justify-center">
-                        <div className="relative w-8 h-8">
-                            <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
-                            <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
-                        </div>
-                        <span className="ml-2">Carregando Agregados...</span>
-                    </div>
-                </CardContent>
-            </Card>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center">
+            <div className="relative w-8 h-8">
+              <div className="absolute inset-0 border-4 border-gray-300 rounded-full opacity-25"></div>
+              <div className="absolute inset-0 border-4 border-t-gray-800 rounded-full animate-spin"></div>
+            </div>
+            <span className="ml-2">Carregando Agregados...</span>
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -288,9 +290,8 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
                     </TableCell>
                     <TableCell>
                       <div
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          !agregado.dataFim ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                        }`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${!agregado.dataFim ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                          }`}
                       >
                         {!agregado.dataFim ? "Ativo" : "Encerrado"}
                       </div>
@@ -366,7 +367,7 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={dataInicio} onSelect={setDataInicio} initialFocus />
+                  <Calendar mode="single" selected={dataInicio} onSelect={setDataInicio} initialFocus disabled={(date) => date < hoje}/>
                 </PopoverContent>
               </Popover>
             </div>

@@ -30,7 +30,7 @@ export interface AditivoDocumentoResponse {
 }
 
 export interface AditivoResponse {
-    idAditivoContratual: number
+    idAditivoContractual: number
     tipo: string
     descricaoMudancas: string
     justificativa: string
@@ -62,7 +62,7 @@ export async function createAditivo(aditivo: AditivoRequest): Promise<AditivoRes
 
 // Atenção: aqui foi alterado para enviar 'aditivoId' como parâmetro de query e só enviar o file no FormData
 export async function uploadAditivoDocument(
-    aditivoId: number,
+    idAditivoContractual: number,
     file: File
 ): Promise<AditivoDocumentoResponse> {
     // Cria um FormData só com o arquivo
@@ -71,7 +71,7 @@ export async function uploadAditivoDocument(
 
     // Monta a URL com ?aditivoId=...
     const url = `${BASE_URL}/api/aditivo/documento/upload?aditivoId=${encodeURIComponent(
-        aditivoId.toString()
+        idAditivoContractual.toString()
     )}`
 
     const response = await fetch(url, {
