@@ -4,7 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } from "lucide-react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil, Key } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
 import React, { useEffect, useState } from 'react';
@@ -29,13 +38,14 @@ export default function ColaboradoresPage() {
   const [colaborador, setColaborador] = useState<Colaborador | null>(null);
   const [colaboradorDetail, setColaboradorDetail] = useState<Colaborador | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
-
   // Estados separados para controle dos diálogos
   const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
   const [showConfirmUpdateDialog, setShowConfirmUpdateDialog] = useState<boolean>(false); // Controle do diálogo de exclusão
   const [showInfoDialog, setShowInfoDialog] = useState<boolean>(false); // Controle do diálogo de informações
+  
+  
 
   const fetchListColaboradores = async () => {
     setLoading(true);  // Ativa o loading
@@ -72,6 +82,7 @@ export default function ColaboradoresPage() {
   const submitForm = () => {
     setShowForm(false);
     fetchListColaboradores();
+    
   };
 
   const confirmDelete = (id: any) => {
@@ -137,8 +148,15 @@ export default function ColaboradoresPage() {
     setShowConfirmUpdateDialog(false); // Fecha o diálogo de exclusão
     setSelectedColaborador(null);
   };
-
+  //Paginação
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+   const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentItems = listColaboradores.slice(indexOfFirstItem, indexOfLastItem)
+  const totalPages = Math.ceil(listColaboradores.length / itemsPerPage)
   return (
+    
     <div className="flex flex-col gap-6 p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Colaboradores</h1>
@@ -201,6 +219,7 @@ export default function ColaboradoresPage() {
           {loading ? (
             <Loading />
           ) : (
+            <>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -213,7 +232,7 @@ export default function ColaboradoresPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {listColaboradores.map((colaborador) => (
+                {currentItems.map((colaborador) => (
                   <TableRow key={colaborador.idFuncionario}>
                     <TableCell>{`CL-${colaborador.idFuncionario}`}</TableCell>
                     <TableCell className="max-w-[150px] truncate">{colaborador.nome}</TableCell>
@@ -237,6 +256,120 @@ export default function ColaboradoresPage() {
                 ))}
               </TableBody>
             </Table>
+            
+          {/* Paginação */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center py-4">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage((prev) => Math.max(prev - 1, 1))
+                          }}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+
+                      {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                        let pageNumber: number
+
+                        // Lógica para mostrar as páginas corretas
+                        if (totalPages <= 5) {
+                          pageNumber = i + 1
+                        } else if (currentPage <= 3) {
+                          pageNumber = i + 1
+                          if (i === 4)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNumber = totalPages - 4 + i
+                          if (i === 0)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                        } else {
+                          if (i === 0)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationLink
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    setCurrentPage(1)
+                                  }}
+                                >
+                                  1
+                                </PaginationLink>
+                              </PaginationItem>
+                            )
+                          if (i === 1)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                          if (i === 3)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                          if (i === 4)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationLink
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    setCurrentPage(totalPages)
+                                  }}
+                                >
+                                  {totalPages}
+                                </PaginationLink>
+                              </PaginationItem>
+                            )
+                          pageNumber = currentPage + i - 2
+                        }
+
+                        return (
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                setCurrentPage(pageNumber)
+                              }}
+                              isActive={currentPage === pageNumber}
+                            >
+                              {pageNumber}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      })}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                          }}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

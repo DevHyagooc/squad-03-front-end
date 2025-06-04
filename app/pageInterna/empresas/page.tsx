@@ -12,6 +12,15 @@ import { deleteEmpresa, getEmpresaId, getEmpresaList, postEmpresa, updateEmpresa
 import Loading from "@/components/loading"
 import UpdateEmpresa from "@/components/updateDialog/updateEmpresa"
 import InfoEmpresa from "@/components/infoDialog/infoEmpresa"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export interface Empresa {
   idOrgao: number;
@@ -51,7 +60,7 @@ export default function EmpresasPage() {
   const [selectedEmpresas, setSelectedEmpresas] = useState<Empresa | null>(null)
   const [empresaDetail, setEmpresaDetail] = useState<Empresa | null>(null);
   const [loadingDetailEmpresa, setLoadingDetailEmpresa] = useState(false);
-
+  
   const fetchListEmpresas = async () => {
     setLoading(true);
     try {
@@ -64,6 +73,14 @@ export default function EmpresasPage() {
     }
   }
 
+  // Paginação
+    //Paginação
+      const [currentPage, setCurrentPage] = useState(1)
+      const itemsPerPage = 10
+       const indexOfLastItem = currentPage * itemsPerPage
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage
+      const currentItems = listEmpresas.slice(indexOfFirstItem, indexOfLastItem)
+      const totalPages = Math.ceil(listEmpresas.length / itemsPerPage)
   useEffect(() => {
     fetchListEmpresas();
   }, []);
@@ -226,6 +243,7 @@ export default function EmpresasPage() {
           {loading ? (
             <Loading />
           ) : (
+            <>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -240,7 +258,7 @@ export default function EmpresasPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {listEmpresas.map(emp => (
+                {currentItems.map(emp => (
                   <TableRow key={emp.idOrgao}>
                     <TableCell>EMP-{emp.idOrgao}</TableCell>
                     <TableCell>{emp.razaoSocial}</TableCell>
@@ -266,6 +284,120 @@ export default function EmpresasPage() {
                 ))}
               </TableBody>
             </Table>
+
+          {/* Paginação */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center py-4">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage((prev) => Math.max(prev - 1, 1))
+                          }}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+
+                      {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                        let pageNumber: number
+
+                        // Lógica para mostrar as páginas corretas
+                        if (totalPages <= 5) {
+                          pageNumber = i + 1
+                        } else if (currentPage <= 3) {
+                          pageNumber = i + 1
+                          if (i === 4)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNumber = totalPages - 4 + i
+                          if (i === 0)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                        } else {
+                          if (i === 0)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationLink
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    setCurrentPage(1)
+                                  }}
+                                >
+                                  1
+                                </PaginationLink>
+                              </PaginationItem>
+                            )
+                          if (i === 1)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                          if (i === 3)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            )
+                          if (i === 4)
+                            return (
+                              <PaginationItem key={i}>
+                                <PaginationLink
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    setCurrentPage(totalPages)
+                                  }}
+                                >
+                                  {totalPages}
+                                </PaginationLink>
+                              </PaginationItem>
+                            )
+                          pageNumber = currentPage + i - 2
+                        }
+
+                        return (
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                setCurrentPage(pageNumber)
+                              }}
+                              isActive={currentPage === pageNumber}
+                            >
+                              {pageNumber}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      })}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                          }}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
