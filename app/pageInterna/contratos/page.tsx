@@ -42,7 +42,8 @@ export default function ContratosPage() {
   };
 
   const closeForm = () => {
-    setShowForm(false); // Fecha o formulário quando o botão de "Cancelar" for clicado
+    setShowForm(false);
+    fetchListContratos() // Fecha o formulário quando o botão de "Cancelar" for clicado
   };
 
   const fetchListContratos = async () => {
