@@ -16,7 +16,6 @@ import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
 import { getContratoList, getContratoListArquivados, getContratoListNaoArquivado } from "@/services/contrato"
 import { formatDate2 } from "@/lib/formatData"
-import { Empresa } from "../empresas/page"
 
 interface Contrato {
   idContrato: number;

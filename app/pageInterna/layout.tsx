@@ -1,48 +1,59 @@
-"use client"
+// app/pageInterna/layout.tsx
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import "@/app/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Sidebar } from "@/components/sidebar"
-import { Header } from "@/components/header"
-import { Toaster } from "@/components/ui/toaster"
+import React, { ReactNode, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import "@/app/globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Sidebar } from "@/components/sidebar";
+import { Header } from "@/components/header";
+import { Toaster } from "@/components/ui/toaster";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+interface PageInternaLayoutProps {
+  children: ReactNode;
+}
 
-  // Fecha a sidebar quando a tela for redimensionada para desktop
+export default function RootLayout({ children }: PageInternaLayoutProps) {
+  const router = useRouter();
+
+  // 1) Estado para controlar se já verificamos o JWT
+  const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
+
+  // 2) Estado para controlar a abertura/fechamento da sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // 3) useEffect para, ao montar o layout, checar se existe token em localStorage
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setSidebarOpen(false)
-      }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Se não houver token, redireciona para a página de login
+      // Ajuste "/pageLogin" caso o seu caminho de login seja outro (ex: "/login")
+      router.replace("/pageLogin/login");
+    } else {
+      // Se existir token, sinaliza que podemos renderizar as children
+      setCheckingAuth(false);
     }
+  }, [router]);
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
+  // 4) Enquanto estiver checando (checkingAuth === true), retornamos null para não exibir nada.
+  if (checkingAuth) {
+    return null;
   }
 
-  const closeSidebar = () => {
-    setSidebarOpen(false)
-  }
-
+  // 5) Assim que checkingAuth for false, renderizamos o layout completo:
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+    >
       <div className="min-h-screen bg-background overflow-x-hidden">
         {/* Header fixo */}
-        <Header onMenuClick={toggleSidebar} />
+        <Header onMenuClick={() => setSidebarOpen((prev) => !prev)} />
 
         {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Conteúdo principal com padding-top para compensar o header fixo */}
         <main className="pt-16 min-h-screen lg:ml-64">
@@ -53,5 +64,5 @@ export default function RootLayout({
       </div>
       <Toaster />
     </ThemeProvider>
-  )
+  );
 }

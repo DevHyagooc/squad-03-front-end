@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-interface Documento {
+export interface Documento {
   idDocumento: number
   nomeArquivo: string
   mimeType: string

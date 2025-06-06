@@ -26,16 +26,16 @@ import { ptBR } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import {
-    getEntregavelId,
+    getEntregavelById,
     postEntregavel,
     updateEntregavel,
     deleteEntregavel,
     getEntregaveisByContratoId,
 } from "@/services/entregavel"
 import type { Contrato } from "@/app/pageInterna/contratos/[id]/page"
-import { getContratoId } from "@/services/contrato"
+import { getContratoById } from "@/services/contrato"
 
-interface Entregavel {
+export interface Entregavel {
     idEntregavel: number
     titulo: string
     descricao: string
@@ -134,7 +134,7 @@ export function KanbanEntregaveis({ contratoId }: KanbanEntregaveisProps) {
 
     const loadContrato = async () => {
         try {
-            const data = await getContratoId(contratoId)
+            const data = await getContratoById(contratoId)
             setContratoDetalhado(data)
         } catch (error) {
             toast({
@@ -185,7 +185,7 @@ export function KanbanEntregaveis({ contratoId }: KanbanEntregaveisProps) {
         if (event.defaultPrevented) return
 
         try {
-            const detailedEntregavel = await getEntregavelId(entregavel.idEntregavel)
+            const detailedEntregavel = await getEntregavelById(entregavel.idEntregavel)
             setSelectedEntregavel(detailedEntregavel)
             setIsDetailModalOpen(true)
         } catch (error) {

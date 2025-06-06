@@ -24,23 +24,38 @@ const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({
   onCancel,
   onEmpresaUpdated,
 }) => {
-  // Estado do formulário
-  const [formData, setFormData] = useState<Empresa>({ ...initialData });
-  const [activeTab, setActiveTab] = useState<"gerais" | "endereco" | "contato">("gerais");
+  // Estado do formulário (incluindo array de representantes)
+  const [formData, setFormData] = useState<Empresa>({
+    ...initialData,
+    // garante que, se vier undefined, inicialize como array vazio
+    representantes: initialData.representantes ?? [],
+  });
+
+  // Índice do representante selecionado (para a opção 2.2)
+  const [selectedRepIndex, setSelectedRepIndex] = useState<number>(0);
+
+  const [activeTab, setActiveTab] = useState<"gerais" | "endereco" | "contato" | "representante">(
+    "gerais"
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sempre que a empresa inicial mudar, recarrega os dados
+  // Quando a empresa inicial mudar, recarrega o formData e reseta o índice
   useEffect(() => {
-    setFormData({ ...initialData });
+    setFormData({
+      ...initialData,
+      representantes: initialData.representantes ?? [],
+    });
+    setSelectedRepIndex(0);
     setActiveTab("gerais");
   }, [initialData]);
 
   // Verifica se houve alteração em relação aos dados iniciais
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(initialData);
 
-  // Manipulador genérico para inputs de texto e selects
+  // Manipulador genérico para inputs de texto e selects (apenas para campos de nível superior)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -127,13 +142,16 @@ const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({
         <Tabs
           defaultValue="gerais"
           value={activeTab}
-          onValueChange={(tab) => setActiveTab(tab as "gerais" | "endereco" | "contato")}
+          onValueChange={(tab) =>
+            setActiveTab(tab as "gerais" | "endereco" | "contato" | "representante")
+          }
           className="w-full"
         >
-          <TabsList className="grid grid-cols-3 mb-4">
+          <TabsList className="grid grid-cols-4 mb-4">
             <TabsTrigger value="gerais">Dados Gerais</TabsTrigger>
             <TabsTrigger value="endereco">Endereço</TabsTrigger>
             <TabsTrigger value="contato">Contato</TabsTrigger>
+            <TabsTrigger value="representante">Representante</TabsTrigger>
           </TabsList>
 
           {/* TAB 1: Dados Gerais */}
@@ -348,6 +366,111 @@ const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({
               </div>
             </div>
           </TabsContent>
+
+          {/* TAB 4: Representante (opção 2.2) */}
+          <TabsContent value="representante" className="space-y-4">
+            {/* 1) Select para escolher qual representante editar */}
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="selectRep" className="text-sm font-medium">
+                Escolha o Representante
+              </Label>
+              <select
+                id="selectRep"
+                value={selectedRepIndex}
+                onChange={(e) => setSelectedRepIndex(Number(e.target.value))}
+                className="w-52 mt-1 h-9 rounded-md border border-input bg-background px-2 text-sm"
+              >
+                {formData.representantes.map((rep, idx) => (
+                  <option key={rep.id} value={idx}>
+                    {rep.nome}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 2) Campos do representante selecionado */}
+            {formData.representantes.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nome */}
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="representanteNome" className="text-sm font-medium">
+                    Nome*
+                  </Label>
+                  <Input
+                    id="representanteNome"
+                    name="representanteNome"
+                    type="text"
+                    value={formData.representantes[selectedRepIndex]?.nome ?? ""}
+                    onChange={(e) => {
+                      const novoNome = e.target.value;
+                      setFormData((prev) => {
+                        const copia = [...prev.representantes];
+                        copia[selectedRepIndex] = {
+                          ...copia[selectedRepIndex],
+                          nome: novoNome,
+                        };
+                        return { ...prev, representantes: copia };
+                      });
+                    }}
+                    className="text-sm"
+                    required
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="representanteEmail" className="text-sm font-medium">
+                    Email*
+                  </Label>
+                  <Input
+                    id="representanteEmail"
+                    name="representanteEmail"
+                    type="email"
+                    value={formData.representantes[selectedRepIndex]?.email ?? ""}
+                    onChange={(e) => {
+                      const novoEmail = e.target.value;
+                      setFormData((prev) => {
+                        const copia = [...prev.representantes];
+                        copia[selectedRepIndex] = {
+                          ...copia[selectedRepIndex],
+                          email: novoEmail,
+                        };
+                        return { ...prev, representantes: copia };
+                      });
+                    }}
+                    className="text-sm"
+                    required
+                  />
+                </div>
+
+                {/* Telefone */}
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="representanteTelefone" className="text-sm font-medium">
+                    Telefone*
+                  </Label>
+                  <Input
+                    id="representanteTelefone"
+                    name="representanteTelefone"
+                    type="text"
+                    value={formData.representantes[selectedRepIndex]?.telefone ?? ""}
+                    onChange={(e) => {
+                      const novoTel = e.target.value;
+                      setFormData((prev) => {
+                        const copia = [...prev.representantes];
+                        copia[selectedRepIndex] = {
+                          ...copia[selectedRepIndex],
+                          telefone: novoTel,
+                        };
+                        return { ...prev, representantes: copia };
+                      });
+                    }}
+                    className="text-sm"
+                    required
+                  />
+                </div>
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
 
         {/* Rodapé com botões */}
@@ -356,7 +479,11 @@ const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({
             <X className="mr-2 h-4 w-4" />
             Cancelar
           </Button>
-          <Button type="submit" disabled={isSubmitting || !hasChanges} className="bg-gray-800 hover:bg-gray-700 text-white">
+          <Button
+            type="submit"
+            disabled={isSubmitting || !hasChanges}
+            className="bg-gray-800 hover:bg-gray-700 text-white"
+          >
             <Save className="mr-2 h-4 w-4" />
             {isSubmitting ? "Salvando..." : "Salvar Alterações"}
           </Button>

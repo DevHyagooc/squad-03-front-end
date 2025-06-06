@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Bell, User, Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Bell, User, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +9,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import Link from "next/link"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 interface HeaderProps {
-  onMenuClick: () => void
+  onMenuClick: () => void;
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
+  const router = useRouter();
+
+  // Função que será chamada ao clicar em “Sair”
+  const handleLogout = () => {
+    // 1) Remove o token (JWT) do localStorage
+    localStorage.removeItem("token");
+    // 2) Redireciona para a rota de login (substitua se sua rota for diferente)
+    router.replace("/pageLogin/login");
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 w-full">
       <div className="flex items-center gap-4">
@@ -35,6 +46,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       {/* Ações do usuário */}
       <div className="flex items-center gap-4">
+        {/* Dropdown de Notificações */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="relative">
@@ -62,6 +74,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Dropdown de Perfil do Usuário */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
@@ -78,12 +91,16 @@ export function Header({ onMenuClick }: HeaderProps) {
             <DropdownMenuItem>Perfil</DropdownMenuItem>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link href="/pageLogin/login">
-              <DropdownMenuItem className="text-red-600">Sair</DropdownMenuItem>
-            </Link>
+            {/* Aqui substituímos o Link por um DropdownMenuItem com onClick */}
+            <DropdownMenuItem 
+              className="text-red-600"
+              onSelect={handleLogout} // ou onClick, dependendo da versão do seu componente
+            >
+              Sair
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }

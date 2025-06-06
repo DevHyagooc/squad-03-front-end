@@ -6,15 +6,7 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { formatDate, formatPhone } from "@/lib/formatData";
 import ConfirmationDialog from "@/components/confirmDialog";
-
-export interface Colaborador {
-  idFuncionario: string;
-  nome: string;
-  cargo: string;
-  telefone: string;
-  email: string;
-  dataNascimento: string;
-}
+import { Colaborador } from "@/app/pageInterna/colaboradores/page";
 
 export interface UpdateColaboradorProps {
   closeForm: () => void;
