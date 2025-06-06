@@ -3,20 +3,41 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import FormHeader from "./formHeader";
+import { login } from "@/services/login";
+
+type LoginFormData = {
+  email: string;
+  senha: string;
+};
 
 export default function FormBody() {
   const router = useRouter();
-
+  const [authError, setAuthError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    router.push("/pageInterna");
+  const onSubmit = async (data: LoginFormData) => {
+    setAuthError(null);
+
+    try {
+      // Chama nosso service de login: ele faz POST /auth/login e salva o token
+      await login({
+        email: data.email,
+        senha: data.senha,
+      });
+
+      // Se não lançar erro, o token foi salvo com sucesso em localStorage
+      // Redireciona para a página interna protegida (por exemplo: /pageInterna)
+      router.push("/pageInterna");
+    } catch (err: any) {
+      // Se o login falhar (400, 401, ou erro de rede), exibimos a mensagem capturada
+      setAuthError(err.message || "Falha na autenticação");
+    }
   };
 
   return (
@@ -52,7 +73,7 @@ export default function FormBody() {
           </div>
           {errors.email && (
             <div id="email-error" className="text-xs text-red-600 pt-1">
-              {errors.email.message as string} {/* Certifique-se de que isso é uma string */}
+              {errors.email.message as string}
             </div>
           )}
         </div>
@@ -77,10 +98,15 @@ export default function FormBody() {
           </div>
           {errors.senha && (
             <div id="senha-error" className="text-xs text-red-600 pt-1">
-              {errors.senha.message as string} {/* Certifique-se de que isso é uma string */}
+              {errors.senha.message as string}
             </div>
           )}
         </div>
+
+        {/* Exibe erro de autenticação, se houver */}
+        {authError && (
+          <div className="text-sm text-red-600 pt-1">{authError}</div>
+        )}
 
         {/* Lembrar Senha e Link para Recuperação */}
         <div className="flex items-center justify-between text-sm text-gray-700">
@@ -100,10 +126,16 @@ export default function FormBody() {
         <div>
           <button
             type="submit"
-            className="w-full mt-4 py-2 bg-stone-700 opacity-100 text-white rounded-xl shadow-lg hover:bg-cyan-500 hover:text-stone-700 duration-500"
-
+            disabled={isSubmitting}
+            className={`
+              w-full mt-4 py-2 
+              ${isSubmitting
+                ? "bg-gray-400"
+                : "bg-stone-700 hover:bg-cyan-500 hover:text-stone-700"} 
+              opacity-100 text-white rounded-xl shadow-lg duration-500
+            `}
           >
-            Entrar
+            {isSubmitting ? "Entrando..." : "Entrar"}
           </button>
         </div>
       </form>

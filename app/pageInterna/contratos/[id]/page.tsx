@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table"
 import { FileText, FileSignature, Download, Edit, Calendar, User, Building, DollarSign, FileCheck } from "lucide-react"
 import Link from "next/link"
-import { getContratoId } from "../../../../services/contrato"
+import { getContratoById } from "../../../../services/contrato"
 import { EditarContratoDialog } from "../../../../components/EditContratoForm"
 import { KanbanEntregaveis } from "@/components/KanbanContrato"
 import { DocumentosContrato } from "../../../../components/DocumentosContrato"
@@ -93,7 +93,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
   useState(() => {
     const fetchContrato = async () => {
       try {
-        const data = await getContratoId(resolvedParams.id)
+        const data = await getContratoById(resolvedParams.id)
         setContrato(data)
       } catch (error) {
         console.error("Erro ao carregar contrato:", error)
@@ -109,7 +109,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
   const handleContratoUpdated = async () => {
     setLoading(true)
     try {
-      const data = await getContratoId(resolvedParams.id)
+      const data = await getContratoById(resolvedParams.id)
       setContrato(data)
     } catch (error) {
       console.error("Erro ao recarregar contrato:", error)

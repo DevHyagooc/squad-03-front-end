@@ -8,7 +8,7 @@ import { Plus, Search, Download, X, Info, Pencil, Trash } from "lucide-react"
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormEmpresa from "@/components/EmpresaForm"
 import React, { useState, useEffect } from 'react';
-import { deleteEmpresa, getEmpresaId, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
+import { deleteEmpresa, getEmpresaById, getEmpresaList, postEmpresa, updateEmpresa } from "@/services/empresas";
 import Loading from "@/components/loading"
 import UpdateEmpresa from "@/components/updateDialog/updateEmpresa"
 import InfoEmpresa from "@/components/infoDialog/infoEmpresa"
@@ -18,7 +18,6 @@ export interface Empresa {
   nomeFantasia: string;
   razaoSocial: string;
   cnpj: string;
-  numeroEmpresa: string;
   estado: string;
   cidade: string;
   inscricaoMunicipal: string;
@@ -30,7 +29,7 @@ export interface Empresa {
   complemento: string;
   email: string;
   telefone: string;
-  representante: Representante;
+  representantes: Representante[];
 }
 
 export interface Representante {
@@ -109,7 +108,7 @@ export default function EmpresasPage() {
     setLoadingDetailEmpresa(true);
     setShowInfoDialog(true);
     try {
-      const data = await getEmpresaId(emp.idOrgao);
+      const data = await getEmpresaById(emp.idOrgao);
       setEmpresaDetail(data);
     } catch (err) {
       console.error("Erro ao buscar detalhes da empresa:", err);

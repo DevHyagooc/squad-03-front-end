@@ -39,12 +39,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       href: "/pageInterna/colaboradores",
       active: pathname === "/pageInterna/colaboradores",
     },
-    {
-      label: "Configurações",
-      icon: Settings,
-      href: "/pageInterna/configuracoes",
-      active: pathname === "/pageInterna/configuracoes",
-    },
+    // {
+    //   label: "Configurações",
+    //   icon: Settings,
+    //   href: "/pageInterna/configuracoes",
+    //   active: pathname === "/pageInterna/configuracoes",
+    // },
   ]
 
   return (

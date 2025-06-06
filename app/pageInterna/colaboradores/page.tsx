@@ -8,15 +8,19 @@ import { CalendarDays, FileText, Plus, Search, Download, Info, Trash, Pencil } f
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import FormColab from "@/components/ColaboradorForm"
 import React, { useEffect, useState } from 'react';
-import { deleteColaborador, getColaboradorId, getColaboradorList, putColaborador } from "@/services/colaboradores";
+import { deleteColaborador, getColaboradorById, getColaboradorList, updateColaborador } from "@/services/colaboradores";
 import Loading from "@/components/loading/index";
 import InfoColab from "@/components/infoDialog/InfoColaborador"
 import UpdateColab from "@/components/updateDialog/updateColaborador"
+import { Empresa } from "../empresas/page"
+import { getEmpresaList } from "@/services/empresas"
+import { toast } from "sonner"
 
 export interface Colaborador {
   idFuncionario: string;
   nome: string;
   cargo: string;
+  cpf: string;
   telefone: string;
   email: string;
   dataNascimento: string;
@@ -55,7 +59,7 @@ export default function ColaboradoresPage() {
 
   const handleUpdate = async (colaborador: Colaborador) => {
     try {
-      await putColaborador(colaborador.idFuncionario, colaborador);
+      await updateColaborador(colaborador.idFuncionario, colaborador);
       // fecha o dialog e refaz a lista
       closeUpdateDialog();
       fetchListColaboradores();
@@ -82,21 +86,34 @@ export default function ColaboradoresPage() {
   };
 
   const confirmUpdate = (id: any, colaborador: any) => {
-    putColaborador(id, colaborador)
+    updateColaborador(id, colaborador)
     setShowUpdateDialog(false);
     fetchListColaboradores();
     fetchListColaboradores();
   };
-
   // Lógica para buscar colaboradores
   useEffect(() => {
     fetchListColaboradores();
   }, []);
 
   // Função para abrir o Dialog de informações do colaborador
-  const openInfoDialog = (colaborador: Colaborador) => {
-    setSelectedColaborador(colaborador);
-    setShowInfoDialog(true); // Abre o diálogo de informações
+  const openInfoDialog = async (colab: Colaborador) => {
+    setSelectedColaborador(colab);       // guarda quem o usuário clicou
+    setLoadingDetail(true);              // mostra loading (caso queira mostrar spinner)
+    setShowInfoDialog(true);             // já abre a modal (com spinner, enquanto busca)
+
+    try {
+      // faz a requisição real para buscar o colaborador completo por ID
+      const detalhe = await getColaboradorById(colab.idFuncionario);
+      setColaboradorDetail(detalhe);
+    } catch (err) {
+      console.error("Erro ao buscar detalhes do colaborador:", err);
+      toast.error("Não foi possível carregar detalhes do colaborador.");
+      // fecha o diálogo automaticamente, se preferir:
+      setShowInfoDialog(false);
+    } finally {
+      setLoadingDetail(false);            // acaba o loading
+    }
   };
 
   // Função para abrir o Dialog de exclusão
@@ -155,21 +172,21 @@ export default function ColaboradoresPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Pesquisar entregáveis..." />
+              <Input placeholder="Pesquisar colaboradores..." />
             </div>
             <Select>
               <SelectTrigger>
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder="cargo" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="planejado">Planejado</SelectItem>
+                <SelectItem value="desenvolvedorBackEnd">Desenvolvedor Back-end</SelectItem>
                 <SelectItem value="em-andamento">Em Andamento</SelectItem>
                 <SelectItem value="concluido">Concluído</SelectItem>
                 <SelectItem value="atrasado">Atrasado</SelectItem>
               </SelectContent>
             </Select>
-            <Select>
+            {/* <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Contrato" />
               </SelectTrigger>
@@ -183,7 +200,7 @@ export default function ColaboradoresPage() {
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Exportar
-            </Button>
+            </Button> */}
           </div>
         </CardContent>
       </Card>
