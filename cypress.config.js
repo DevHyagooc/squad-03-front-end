@@ -1,0 +1,13 @@
+const { defineConfig } = require("cypress");
+
+module.exports = defineConfig({
+   e2e: {
+      baseUrl: 'https://squad-03-back-end.onrender.com',
+      experimentalRunAllSpecs: true,
+      defaultCommandTimeout: 10000,
+   },
+   fixturesFolder: false,
+   video: false,
+   viewportWidth: 1920,
+   viewportHeight: 1080,
+})
