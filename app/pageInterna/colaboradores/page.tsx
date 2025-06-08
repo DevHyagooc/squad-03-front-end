@@ -176,7 +176,7 @@ export default function ColaboradoresPage() {
             </div>
             <Select>
               <SelectTrigger>
-                <SelectValue placeholder="cargo" />
+                <SelectValue placeholder="Cargo" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos</SelectItem>

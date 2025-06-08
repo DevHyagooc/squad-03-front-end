@@ -21,27 +21,21 @@ interface HeaderProps {
 export function Header({ onMenuClick }: HeaderProps) {
   const router = useRouter();
 
-  // Função que será chamada ao clicar em “Sair”
   const handleLogout = () => {
-    // 1) Remove o token (JWT) do localStorage
     localStorage.removeItem("token");
-    // 2) Redireciona para a rota de login (substitua se sua rota for diferente)
-    router.replace("/pageLogin/login");
+    router.replace("/");
   };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 w-full">
       <div className="flex items-center gap-4">
-        {/* Botão hamburger - visível apenas no mobile */}
         <Button variant="ghost" size="icon" onClick={onMenuClick} className="lg:hidden">
           <Menu className="h-5 w-5" />
         </Button>
 
-        {/* Logo - sempre visível */}
         <img src="/images/logoGetInfo.png" className="w-28" alt="Logo GetInfo" />
       </div>
 
-      {/* Espaçador */}
       <div className="flex-1" />
 
       {/* Ações do usuário */}
@@ -94,7 +88,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             {/* Aqui substituímos o Link por um DropdownMenuItem com onClick */}
             <DropdownMenuItem 
               className="text-red-600"
-              onSelect={handleLogout} // ou onClick, dependendo da versão do seu componente
+              onSelect={handleLogout}
             >
               Sair
             </DropdownMenuItem>
