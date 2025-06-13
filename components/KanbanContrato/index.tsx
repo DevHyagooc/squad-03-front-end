@@ -545,12 +545,12 @@ export function KanbanEntregaveis({ contratoId }: KanbanEntregaveisProps) {
                         </div>
                     ))}
 
-                    <div className="flex-shrink-0 flex items-start pt-4">
+                    {/* <div className="flex-shrink-0 flex items-start pt-4">
                         <Button variant="outline" size="sm" onClick={handleAddColumn} className="h-10">
                             <Plus className="mr-2 h-4 w-4" />
                             Adicionar coluna
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

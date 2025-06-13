@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import React from "react";
+import Cookies from "js-cookie"
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -22,9 +23,11 @@ export function Header({ onMenuClick }: HeaderProps) {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.replace("/");
-  };
+    // remove o cookie auth_token em todo o site
+    Cookies.remove("auth_token", { path: "/" })
+    // redireciona
+    router.replace("/")
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 w-full">

@@ -101,7 +101,6 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
         setLoading(false)
       }
     }
-
     fetchContrato()
   })
 
@@ -171,14 +170,14 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 <Edit className="mr-2 h-4 w-4" />
                 Editar
               </Button>
-              <Button variant="outline">
+              {/* <Button variant="outline">
                 <Download className="mr-2 h-4 w-4" />
                 Exportar
               </Button>
               <Button>
                 <FileSignature className="mr-2 h-4 w-4" />
                 Adicionar Aditivo
-              </Button>
+              </Button> */}
             </div>
           </div>
 

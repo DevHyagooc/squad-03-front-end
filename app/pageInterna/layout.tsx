@@ -9,6 +9,8 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 
+import Cookies from "js-cookie"
+
 interface PageInternaLayoutProps {
   children: ReactNode;
 }
@@ -24,7 +26,7 @@ export default function RootLayout({ children }: PageInternaLayoutProps) {
 
   // 3) useEffect para, ao montar o layout, checar se existe token em localStorage
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("auth_token");
     if (!token) {
       // Se não houver token, redireciona para a página de login
       // Ajuste "/pageLogin" caso o seu caminho de login seja outro (ex: "/login")

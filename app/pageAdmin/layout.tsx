@@ -1,30 +1,22 @@
-import type React from "react"
-import type { Metadata } from "next"
+// app/pageAdmin/layout.tsx
+import type { ReactNode } from "react"
 import { Inter } from "next/font/google"
-import "@/app/globals2.css";
 import { AuthProvider } from "@/context/auth-context"
-import { Toaster } from "@/components/ui/toaster"
+import "@/app/globals2.css"   // se precisar das mesmas classes globais
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "Getinfo Admin",
-  description: "User Management System for Getinfo",
-}
-
-export default function RootLayout({
+export default function PageAdminLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: {
+  children: ReactNode
+}) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
-      </body>
-    </html>
+    // tudo que vier aqui vai direto dentro do <body> do root
+    <AuthProvider>
+      <div className={inter.className}>
+        {children}
+      </div>
+    </AuthProvider>
   )
 }
