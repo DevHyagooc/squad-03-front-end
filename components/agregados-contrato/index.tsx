@@ -89,7 +89,7 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
     loadColaboradores()
   }, [contratoId])
 
-  const hoje = startOfDay(new Date());
+  // const hoje = startOfDay(new Date());
 
   const loadColaboradores = async () => {
     try {
@@ -367,7 +367,7 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar mode="single" selected={dataInicio} onSelect={setDataInicio} initialFocus disabled={(date) => date < hoje}/>
+                  <Calendar mode="single" selected={dataInicio} onSelect={setDataInicio} />
                 </PopoverContent>
               </Popover>
             </div>

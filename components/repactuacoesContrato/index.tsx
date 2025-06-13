@@ -270,7 +270,7 @@ export function RepactuacoesContrato({ contratoId }: RepactuacoesContratoProps) 
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="indice">Índice</Label>
+                            <Label htmlFor="indice">Descrição</Label>
                             <Input
                                 id="indice"
                                 value={formData.indice}
@@ -279,7 +279,7 @@ export function RepactuacoesContrato({ contratoId }: RepactuacoesContratoProps) 
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label>Data Base</Label>
+                            <Label>Data de Vigência</Label>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
