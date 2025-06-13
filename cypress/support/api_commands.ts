@@ -8,17 +8,6 @@ type DocumentoPayload = {
    };
 };
 
-Cypress.Commands.add('postRegisterAuth', user => {
-   cy.request({
-      method: 'POST',
-      url: '/auth/register',
-      body: {
-         email: user.email,
-         senha: user.senha
-      }
-   })
-})
-
 Cypress.Commands.add('postLoginAuth', user => {
    cy.request({
       method: 'POST',
@@ -301,7 +290,6 @@ declare namespace Cypress {
    }
 
    interface Chainable<Subject = any> {
-      postRegisterAuth(user: { email: string, senha: string }): Chainable<any>;
       postLoginAuth(user: { email: string, senha: string }): Chainable<any>;
 
       postColab(colab: {

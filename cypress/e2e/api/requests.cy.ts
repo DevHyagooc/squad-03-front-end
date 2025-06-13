@@ -1,15 +1,7 @@
-import { valuesReq } from "../../../cypress/fixtures/constRequests"
+import { valuesReq } from "../../fixtures/objectsRequests"
 describe('Requisições GetInfo', () => {
 
   context('Autenticação', () => {
-    it.skip('Registrar usuário', () => {
-      cy.postRegisterAuth(valuesReq.user)
-        .then(response => {
-          expect(response.status).to.equal(200)
-          cy.log(JSON.stringify(response.body))
-        })
-    })
-
     it('Logar usuário', () => {
       cy.postLoginAuth(valuesReq.user)
         .then(response => {
