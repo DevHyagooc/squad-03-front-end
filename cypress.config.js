@@ -6,8 +6,7 @@ module.exports = defineConfig({
       experimentalRunAllSpecs: true,
       defaultCommandTimeout: 10000,
    },
-   fixturesFolder: false,
    video: false,
-   viewportWidth: 1920,
-   viewportHeight: 1080,
+   viewportWidth: 1280,
+   viewportHeight: 720,
 })
