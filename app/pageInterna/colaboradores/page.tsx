@@ -12,8 +12,6 @@ import { deleteColaborador, getColaboradorById, getColaboradorList, updateColabo
 import Loading from "@/components/loading/index";
 import InfoColab from "@/components/infoDialog/InfoColaborador"
 import UpdateColab from "@/components/updateDialog/updateColaborador"
-import { Empresa } from "../empresas/page"
-import { getEmpresaList } from "@/services/empresas"
 import { toast } from "sonner"
 
 export interface Colaborador {
@@ -62,20 +60,20 @@ export default function ColaboradoresPage() {
       await updateColaborador(colaborador.idFuncionario, colaborador);
       // fecha o dialog e refaz a lista
       closeUpdateDialog();
-      fetchListColaboradores();
-      fetchListColaboradores();
+      await fetchListColaboradores();
     } catch (err) {
       console.error("Erro ao atualizar orgão", err);
     }
   };
 
-  const closeForm = () => {
+  const closeForm = async () => {
     setShowForm(false);
+    await fetchListColaboradores();
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     setShowForm(false);
-    fetchListColaboradores();
+    await fetchListColaboradores();
   };
 
   const confirmDelete = (id: any) => {

@@ -67,7 +67,6 @@ const tiposAditivo = [
   { value: "ACRESCIMO", label: "Acréscimo" },
   { value: "SUPRESSAO", label: "Supressão" },
   { value: "REAJUSTE", label: "Reajuste" },
-  { value: "REPACTUACAO", label: "Repactuação" },
   { value: "OUTROS", label: "Outros" },
 ];
 

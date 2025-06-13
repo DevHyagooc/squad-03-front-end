@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, use } from "react"
+import { useState, use, useEffect } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs"
@@ -90,7 +90,7 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Carrega os dados do contrato
-  useState(() => {
+  useEffect(() => {
     const fetchContrato = async () => {
       try {
         const data = await getContratoById(resolvedParams.id)

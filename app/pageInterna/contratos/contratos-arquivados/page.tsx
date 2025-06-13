@@ -225,7 +225,6 @@ export default function ContratosArquivadosPage() {
 
       <Card>
         <CardHeader className="px-6 py-4">
-          <CardTitle>Lista de Contratos Arquivados</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
