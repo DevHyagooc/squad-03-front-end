@@ -30,7 +30,7 @@ export async function login(credentials: LoginCredentials): Promise<string> {
 
   // Se não for status 2xx, tenta ler a mensagem de erro e lança
   if (!response.ok) {
-    let erroMsg = "Falha ao fazer login";
+    let erroMsg = "Falha ao fazer login!";
     try {
       const jsonErro = await response.json();
       if (jsonErro && jsonErro.message) {
