@@ -10,7 +10,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {  getColaboradorList } from "@/services/colaboradores"; // ajuste os paths conforme seu projeto
+import { getColaboradorList } from "@/services/colaboradores"; // ajuste os paths conforme seu projeto
 import { getEmpresaList } from "@/services/empresas";
 import { Empresa } from "@/app/pageInterna/empresas/page";
 import { Colaborador } from "@/app/pageInterna/colaboradores/page";
@@ -124,48 +124,46 @@ const FormContrato: React.FC<FormContratoProps> = ({
   };
 
   const handleFormSubmit: SubmitHandler<FormData> = async (data) => {
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  // Monta payload conforme solicitado
-  const payload = {
-    numeroContrato: data.numeroContrato,
-    descricao: data.descricao,
-    dataInicio: data.dataInicio,
-    dataFim: data.dataFim,
-    termosDePagamento: data.termosDePagamento,
-    valorTotalPago: data.valorTotalPago,
-    valorContrato: data.valorContrato,
-    autoRenovacao: data.autoRenovacao,
-    diasParaCancelamento: data.diasParaCancelamento,
-    motivoCancelamento: data.motivoCancelamento,
-    statusContrato: data.statusContrato,
-    tipoContrato: data.tipoContrato,
-    tags: data.tags,
-    empresaId: data.empresaId,
-    responsavelId: data.responsavelId,
+    // Monta payload conforme solicitado
+    const payload = {
+      numeroContrato: data.numeroContrato,
+      descricao: data.descricao,
+      dataInicio: data.dataInicio,
+      dataFim: data.dataFim,
+      termosDePagamento: data.termosDePagamento,
+      valorTotalPago: data.valorTotalPago,
+      valorContrato: data.valorContrato,
+      autoRenovacao: data.autoRenovacao,
+      diasParaCancelamento: data.diasParaCancelamento,
+      motivoCancelamento: data.motivoCancelamento,
+      statusContrato: "ATIVO",
+      tipoContrato: data.tipoContrato,
+      tags: data.tags,
+      empresaId: data.empresaId,
+      responsavelId: data.responsavelId,
+    };
+
+    try {
+      // Aqui você chama diretamente sua função de API
+      const contratoCriado = await createContrato(payload);
+
+      // Se tiver callbacks para notificar quem chamou:
+      if (onSubmit) {
+        onSubmit(contratoCriado);
+      }
+      if (onContratoCreated) {
+        onContratoCreated(contratoCriado);
+      }
+
+      closeForm();
+    } catch (error) {
+      console.error("Erro ao criar contrato:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  try {
-    // Aqui você chama diretamente sua função de API
-    const contratoCriado = await createContrato(payload);
-
-    // Se tiver callbacks para notificar quem chamou:
-    if (onSubmit) {
-      onSubmit(contratoCriado);
-    }
-    if (onContratoCreated) {
-      onContratoCreated(contratoCriado);
-    }
-
-    closeForm();
-  } catch (error) {
-    console.error("Erro ao criar contrato:", error);
-    // Exiba um toast ou mensagem de erro, se quiser:
-    // toast.error(error.message || "Falha ao criar contrato");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
 
   return (
     <FormProvider {...methods}>
@@ -185,16 +183,76 @@ const FormContrato: React.FC<FormContratoProps> = ({
           />
         </div>
 
-        {/* STEP 0: Informações Básicas */}
+        {/* STEP 3: Associações */}
         {step === 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel>Número do Contrato*</FormLabel>
+              <FormLabel>Empresa*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="empresaId"
+                  control={control}
+                  rules={{ required: "Empresa é obrigatória" }}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      className="w-full mt-1 text-black h-9 rounded-md border border-input bg-background px-2 text-sm"
+                    >
+                      <option value={0} disabled>
+                        Selecione a empresa...
+                      </option>
+                      {empresas.map((emp) => (
+                        <option key={emp.idOrgao} value={emp.idOrgao}>
+                          {emp.nomeFantasia}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Colaborador Responsável*</FormLabel>
+              <FormControl>
+                <Controller
+                  name="responsavelId"
+                  control={control}
+                  rules={{ required: "Responsável é obrigatório" }}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      className="w-full mt-1 text-black h-9 rounded-md border border-input bg-background px-2 text-sm"
+                    >
+                      <option value="" disabled>
+                        Selecione o colaborador responsável...
+                      </option>
+                      {colaboradores.map((col) => (
+                        <option key={col.idFuncionario} value={col.idFuncionario}>
+                          {col.nome} – {col.cargo}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+
+
+        {/* STEP 0: Informações Básicas */}
+        {step === 1 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormItem className="px-2 focus-within:text-cyan-500">
+              <FormLabel>Número do Contrato</FormLabel>
               <FormControl>
                 <Controller
                   name="numeroContrato"
                   control={control}
-                  rules={{ required: "Número do contrato é obrigatório" }}
+                  // rules={{ required: "Número do contrato é obrigatório" }}
                   render={({ field }) => <Input {...field} />}
                 />
               </FormControl>
@@ -227,9 +285,10 @@ const FormContrato: React.FC<FormContratoProps> = ({
                       className="w-full mt-1 text-black h-9 rounded-md border border-input bg-background px-2 text-sm"
                     >
                       <option value="">Selecione...</option>
-                      <option value="Serviços">Serviços</option>
-                      <option value="Compra">Compra</option>
-                      <option value="Locação">Locação</option>
+                      <option value="Prestação de Serviços">Prestação de Serviços</option>
+                      <option value="Fornecimento">Fornecimento</option>
+                      <option value="Manutenção">Locação</option>
+                      <option value="Consultoria">Consultoria</option>
                       {/* adicione outros tipos conforme necessário */}
                     </select>
                   )}
@@ -238,7 +297,7 @@ const FormContrato: React.FC<FormContratoProps> = ({
               <FormMessage />
             </FormItem>
 
-            <FormItem className="px-2 focus-within:text-cyan-500">
+            {/* <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Status do Contrato*</FormLabel>
               <FormControl>
                 <Controller
@@ -259,7 +318,7 @@ const FormContrato: React.FC<FormContratoProps> = ({
                 />
               </FormControl>
               <FormMessage />
-            </FormItem>
+            </FormItem> */}
 
             <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Tags (separadas por vírgula)*</FormLabel>
@@ -282,7 +341,7 @@ const FormContrato: React.FC<FormContratoProps> = ({
         )}
 
         {/* STEP 1: Datas e Valores */}
-        {step === 1 && (
+        {step === 2 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Data Início*</FormLabel>
@@ -335,7 +394,7 @@ const FormContrato: React.FC<FormContratoProps> = ({
               <FormMessage />
             </FormItem>
 
-            <FormItem className="px-2 focus-within:text-cyan-500">
+            {/* <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Valor Total Pago*</FormLabel>
               <FormControl>
                 <Controller
@@ -356,12 +415,12 @@ const FormContrato: React.FC<FormContratoProps> = ({
                 />
               </FormControl>
               <FormMessage />
-            </FormItem>
+            </FormItem> */}
           </div>
         )}
 
         {/* STEP 2: Termos */}
-        {step === 2 && (
+        {step === 3 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Termos de Pagamento*</FormLabel>
@@ -370,7 +429,7 @@ const FormContrato: React.FC<FormContratoProps> = ({
                   name="termosDePagamento"
                   control={control}
                   rules={{ required: "Termos de pagamento são obrigatórios" }}
-                  render={({ field }) => <Input {...field} />}
+                  render={({ field }) => <Input {...field} placeholder="O pagamento foi acordado..."/>}
                 />
               </FormControl>
               <FormMessage />
@@ -414,10 +473,13 @@ const FormContrato: React.FC<FormContratoProps> = ({
                   )}
                 />
               </FormControl>
+              <p className="text-xs text-gray-500 mt-1">
+                Informe quantos dias de antecedência o cliente precisa solicitar o cancelamento.
+              </p>
               <FormMessage />
             </FormItem>
 
-            <FormItem className="px-2 focus-within:text-cyan-500">
+            {/* <FormItem className="px-2 focus-within:text-cyan-500">
               <FormLabel>Motivo Cancelamento*</FormLabel>
               <FormControl>
                 <Controller
@@ -428,66 +490,7 @@ const FormContrato: React.FC<FormContratoProps> = ({
                 />
               </FormControl>
               <FormMessage />
-            </FormItem>
-          </div>
-        )}
-
-        {/* STEP 3: Associações */}
-        {step === 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel>Empresa*</FormLabel>
-              <FormControl>
-                <Controller
-                  name="empresaId"
-                  control={control}
-                  rules={{ required: "Empresa é obrigatória" }}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      className="w-full mt-1 text-black h-9 rounded-md border border-input bg-background px-2 text-sm"
-                    >
-                      <option value={0} disabled>
-                        Selecione a empresa...
-                      </option>
-                      {empresas.map((emp) => (
-                        <option key={emp.idOrgao} value={emp.idOrgao}>
-                          {emp.nomeFantasia}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-
-            <FormItem className="px-2 focus-within:text-cyan-500">
-              <FormLabel>Responsável*</FormLabel>
-              <FormControl>
-                <Controller
-                  name="responsavelId"
-                  control={control}
-                  rules={{ required: "Responsável é obrigatório" }}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      className="w-full mt-1 text-black h-9 rounded-md border border-input bg-background px-2 text-sm"
-                    >
-                      <option value="" disabled>
-                        Selecione o colaborador...
-                      </option>
-                      {colaboradores.map((col) => (
-                        <option key={col.idFuncionario} value={col.idFuncionario}>
-                          {col.nome} – {col.cargo}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            </FormItem> */}
           </div>
         )}
 

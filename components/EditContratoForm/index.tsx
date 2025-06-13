@@ -185,17 +185,17 @@ export function EditarContratoDialog({
                 <div className="space-y-2">
                   <Label>Tipo do Contrato</Label>
                   <Select
-                    value={formData.tipoContrato || ''}
+                    value={formData.tipoContrato}
                     onValueChange={(value) => handleInputChange('tipoContrato', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PRESTACAO_SERVICOS">Prestação de Serviços</SelectItem>
-                      <SelectItem value="FORNECIMENTO">Fornecimento</SelectItem>
-                      <SelectItem value="MANUTENCAO">Manutenção</SelectItem>
-                      <SelectItem value="CONSULTORIA">Consultoria</SelectItem>
+                      <SelectItem value="Prestação de Serviços">Prestação de Serviços</SelectItem>
+                      <SelectItem value="Fornecimento">Fornecimento</SelectItem>
+                      <SelectItem value="Manutenção">Manutenção</SelectItem>
+                      <SelectItem value="Consultoria">Consultoria</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -28,7 +28,7 @@ export default function RootLayout({ children }: PageInternaLayoutProps) {
     if (!token) {
       // Se não houver token, redireciona para a página de login
       // Ajuste "/pageLogin" caso o seu caminho de login seja outro (ex: "/login")
-      router.replace("/pageLogin/login");
+      router.replace("/");
     } else {
       // Se existir token, sinaliza que podemos renderizar as children
       setCheckingAuth(false);

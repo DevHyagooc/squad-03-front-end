@@ -12,10 +12,10 @@ import React, { useEffect, useState } from 'react';
 import FormContrato from "@/components/ContratoForm"
 
 import { Empresa } from "../empresas/page"
-import { Colaborador } from "@/components/updateDialog/updateColaborador"
 import Loading from "@/components/loading"
 import { getContratoList, getContratoListArquivados, getContratoListNaoArquivado } from "@/services/contrato"
 import { formatDate2 } from "@/lib/formatData"
+import { Colaborador } from "../colaboradores/page"
 
 interface Contrato {
   idContrato: number;

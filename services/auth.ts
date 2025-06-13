@@ -1,5 +1,6 @@
 // src/services/auth.ts (ou você pode criar um arquivo separado, por exemplo: src/utils/fetchWithAuth.ts)
 const API_BASE_URL = "https://squad-03-back-end.onrender.com";
+// const API_BASE_URL = "http://localhost:8080";
 
 export async function fetchWithAuth(
   endpoint: string,

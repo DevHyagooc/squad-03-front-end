@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { getLocal } from "@/services/cep";
 import { formatCEP, formatCNPJ, formatCPF, formatPhone } from "@/lib/formatData";
+import { cpf, cnpj } from "cpf-cnpj-validator"
 
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -72,7 +73,8 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
       emailRepresentante: "",
       representanteTelefone: "",
     },
-    mode: "onChange",
+    mode: "onBlur",           // dispara validação quando o usuário sai do campo
+    reValidateMode: "onBlur", // revalida novamente também ao sair do campo
   });
 
   const {
@@ -210,12 +212,17 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
                 <Controller
                   name="cnpj"
                   control={control}
-                  rules={{ required: "CNPJ é obrigatório" }}
+                  rules={{
+                    required: "CNPJ é obrigatório",
+                    validate: value =>
+                      cnpj.isValid(value) || "Insira um CNPJ inválido"
+                  }}
                   render={({ field }) => (
                     <Input
                       {...field}
                       placeholder="xx.xxx.xxx/xxxx-xx"
                       onChange={(e) => field.onChange(formatCNPJ(e.target.value))}
+                      onBlur={field.onBlur}
                     />
                   )}
                 />
@@ -428,9 +435,8 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
                         onChange={field.onChange}
                         onBlur={field.onBlur}
                         placeholder="(xx) x xxxx-xxxx"
-                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${
-                          errors.telefone ? "border-red-500" : "border-input"
-                        } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
+                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.telefone ? "border-red-500" : "border-input"
+                          } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
                       />
                     </div>
                   )}
@@ -465,11 +471,16 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
                 <Controller
                   name="representanteCpf"
                   control={control}
-                  rules={{ required: "CPF é obrigatório" }}
+                  rules={{
+                    required: "CPF é obrigatório",
+                    validate: value =>
+                      cpf.isValid(value) || "CPF inválido"
+                  }}
                   render={({ field }) => (
                     <Input
                       {...field}
                       onChange={(e) => field.onChange(formatCPF(e.target.value))}
+                      onBlur={field.onBlur}
                       placeholder="xxx.xxx.xxx-xx"
                     />
                   )}
@@ -495,9 +506,8 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({
                         onChange={field.onChange}
                         onBlur={field.onBlur}
                         placeholder="(xx) x xxxx-xxxx"
-                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${
-                          errors.representanteTelefone ? "border-red-500" : "border-input"
-                        } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
+                        className={`w-52 h-9 px-3 py-2 border rounded-md text-black ${errors.representanteTelefone ? "border-red-500" : "border-input"
+                          } bg-background text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}
                       />
                     </div>
 

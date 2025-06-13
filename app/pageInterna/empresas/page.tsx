@@ -297,7 +297,7 @@ export default function EmpresasPage() {
         <Dialog open={showDeleteDialog} onOpenChange={() => closeDeleteDialog()}>
           <DialogContent className="max-w-sm text-center">
             <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
-            <p>Você confirma a exclusão do orgão contratante {selectedEmpresas.razaoSocial}?</p>
+            <p>Você confirma a exclusão da empresa {selectedEmpresas.razaoSocial}?</p>
             <div className="flex gap-4">
               <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedEmpresas.idOrgao)}>
                 Confirmar

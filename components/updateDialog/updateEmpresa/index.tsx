@@ -370,7 +370,7 @@ const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({
           {/* TAB 4: Representante (opção 2.2) */}
           <TabsContent value="representante" className="space-y-4">
             {/* 1) Select para escolher qual representante editar */}
-            <div className="flex flex-col space-y-1.5">
+            {/* <div className="flex flex-col space-y-1.5">
               <Label htmlFor="selectRep" className="text-sm font-medium">
                 Escolha o Representante
               </Label>
@@ -386,7 +386,7 @@ const UpdateEmpresa: React.FC<UpdateEmpresaProps> = ({
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
             {/* 2) Campos do representante selecionado */}
             {formData.representantes.length > 0 && (

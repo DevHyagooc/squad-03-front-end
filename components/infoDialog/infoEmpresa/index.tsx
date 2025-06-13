@@ -26,7 +26,7 @@ const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
       <CardContent className="pt-6 pb-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nome:</span>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Razão Social:</span>
             <span className="text-sm font-medium">{empresa.razaoSocial}</span>
           </div>
 
@@ -97,17 +97,17 @@ const InfoEmpresa: React.FC<FormEmpresaPorps> = ({ closeForm, empresa }) => {
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Representante:</span>
-            <span className="text-sm">{empresa.representante?.nome}</span>
+            <span className="text-sm">{empresa.representantes?.[0]?.nome}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email epresentante:</span>
-            <span className="text-sm">{empresa.representante?.email}</span>
+            <span className="text-sm">{empresa.representantes?.[0]?.email}</span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Telefone Representante:</span>
-            <span className="text-sm">{empresa.representante?.telefone}</span>
+            <span className="text-sm">{empresa.representantes?.[0]?.telefone}</span>
           </div>
         </div>
       </CardContent>
