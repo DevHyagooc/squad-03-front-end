@@ -41,7 +41,7 @@ yarn install --force
 
 ## 📦 Scripts
 
-npm run dev     # dev server em http://localhost:3000
-npm run build   # build para produção
-npm run start   # inicia build em prod
-npm run tests   # roda testes do cypress
+- npm run dev     # dev server em http://localhost:3000
+- npm run build   # build para produção
+- npm run start   # inicia build em prod
+- npm run tests   # roda testes do cypress
