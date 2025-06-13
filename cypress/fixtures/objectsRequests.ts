@@ -1,7 +1,7 @@
 export const valuesReq = {
    user: {
-      email: "hyago@email.com",
-      senha: "1234567"
+      email: "admin@admin.com",
+      senha: "admin123"
    },
    colab: {
       nome: "Cypress Test",

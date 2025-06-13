@@ -68,7 +68,6 @@ export default function ColaboradoresPage() {
 
   const closeForm = async () => {
     setShowForm(false);
-    await fetchListColaboradores();
   };
 
   const submitForm = async () => {
