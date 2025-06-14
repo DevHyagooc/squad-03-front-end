@@ -149,6 +149,7 @@ const UpdateColaborador: React.FC<UpdateColaboradorProps> = ({ closeForm, colabo
               Cancelar
             </Button>
             <Button
+              id="saveBtn"
               type="submit"
               className="bg-gray-800 hover:bg-gray-700 text-white"
               disabled={isSubmitting || !hasChanges}

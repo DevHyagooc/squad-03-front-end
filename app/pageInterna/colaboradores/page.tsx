@@ -60,7 +60,8 @@ export default function ColaboradoresPage() {
       await updateColaborador(colaborador.idFuncionario, colaborador);
       // fecha o dialog e refaz a lista
       closeUpdateDialog();
-      await fetchListColaboradores();
+      fetchListColaboradores();
+      fetchListColaboradores();
     } catch (err) {
       console.error("Erro ao atualizar orgão", err);
     }
@@ -72,7 +73,8 @@ export default function ColaboradoresPage() {
 
   const submitForm = async () => {
     setShowForm(false);
-    await fetchListColaboradores();
+    fetchListColaboradores();
+    fetchListColaboradores();
   };
 
   const confirmDelete = (id: any) => {
@@ -151,7 +153,7 @@ export default function ColaboradoresPage() {
 
         <Dialog open={showForm}>
           <DialogTrigger asChild>
-            <Button onClick={handleButtonClick}>
+            <Button id="btnNewColab" onClick={handleButtonClick}>
               <Plus className="mr-2 h-4 w-4" />
               Novo Colaborador
             </Button>
@@ -228,13 +230,13 @@ export default function ColaboradoresPage() {
                     <TableCell>{colaborador.email}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => openInfoDialog(colaborador)}>
+                        <Button id='btnInfo' variant="ghost" size="icon" onClick={() => openInfoDialog(colaborador)}>
                           <Info className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => openUpdateDialog(colaborador)}>
+                        <Button id='btnPencil' variant="ghost" size="icon" onClick={() => openUpdateDialog(colaborador)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(colaborador)}>
+                        <Button id='btnTrash' variant="ghost" size="icon" onClick={() => openDeleteDialog(colaborador)}>
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
@@ -313,7 +315,7 @@ export default function ColaboradoresPage() {
             <DialogTitle className="text-2xl">Confirmar Exclusão?</DialogTitle>
             <p>Você confirma a exclusão do colaborador {selectedColaborador.nome}?</p>
             <div className="flex gap-4">
-              <Button className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedColaborador.idFuncionario)}>
+              <Button id="btnConfirmDelete" className='mr-2 ml-auto' variant="destructive" onClick={() => confirmDelete(selectedColaborador.idFuncionario)}>
                 Confirmar
               </Button>
               <Button className='mr-auto ml-2' variant="outline" onClick={closeDeleteDialog}>

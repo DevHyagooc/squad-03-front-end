@@ -187,7 +187,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
                <Button type="button" onClick={closeForm} variant="destructive" className="text-white bg-black">
                   Cancelar
                </Button>
-               <Button type="submit" className="bg-cyan-500 hover:bg-cyan-700">
+               <Button id="saveBtn" type="submit" className="bg-cyan-500 hover:bg-cyan-700">
                   Salvar
                </Button>
             </div>

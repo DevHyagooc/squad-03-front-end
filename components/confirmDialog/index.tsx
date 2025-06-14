@@ -49,6 +49,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
+            id="btnConfirmEdit"
             onClick={handleConfirm}
             className={
               variant === "destructive"
