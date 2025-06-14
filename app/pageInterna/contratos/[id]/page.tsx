@@ -90,19 +90,21 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Carrega os dados do contrato
-  useEffect(() => {
-    const fetchContrato = async () => {
-      try {
-        const data = await getContratoById(resolvedParams.id)
-        setContrato(data)
-      } catch (error) {
-        console.error("Erro ao carregar contrato:", error)
-      } finally {
-        setLoading(false)
-      }
+
+  const fetchContrato = async () => {
+    try {
+      const data = await getContratoById(resolvedParams.id)
+      setContrato(data)
+    } catch (error) {
+      console.error("Erro ao carregar contrato:", error)
+    } finally {
+      setLoading(false)
     }
-    fetchContrato()
-  })
+  }
+
+  useEffect(() => {
+    fetchContrato();
+  }, []);
 
   // Recarrega os dados do contrato após atualização
   const handleContratoUpdated = async () => {
@@ -417,9 +419,9 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
                 </CardContent>
               </Card>
             </TabsContent>
-             <TabsContent value="ordens">
-            <AgregadosContrato contratoId={contrato.idContrato} />
-          </TabsContent>
+            <TabsContent value="ordens">
+              <AgregadosContrato contratoId={contrato.idContrato} />
+            </TabsContent>
             <TabsContent value="documentos">
               <DocumentosContrato contratoId={contrato.idContrato} />
             </TabsContent>

@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { Bell, User, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Bell, Menu } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,24 +9,54 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
-import React from "react";
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useRouter } from "next/navigation"
 import Cookies from "js-cookie"
+import { useState, useEffect } from "react"
+import { getUserProfile, type UserProfile } from "@/services/perfil"
 
 interface HeaderProps {
-  onMenuClick: () => void;
+  onMenuClick: () => void
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const router = useRouter();
+  const router = useRouter()
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const profile = await getUserProfile()
+        setUserProfile(profile)
+      } catch (error) {
+        console.error("Erro ao carregar perfil do usuário:", error)
+      }
+    }
+
+    loadUserProfile()
+  }, [])
+
+  const getUserInitials = (nome: string): string => {
+    if (!nome) return "U"
+
+    const names = nome.trim().split(" ")
+    if (names.length === 1) {
+      return names[0].charAt(0).toUpperCase()
+    }
+
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase()
+  }
 
   const handleLogout = () => {
     // remove o cookie auth_token em todo o site
     Cookies.remove("auth_token", { path: "/" })
     // redireciona
     router.replace("/")
+  }
+
+  const handleProfileClick = () => {
+    router.push("/pageInterna/perfil")
   }
 
   return (
@@ -76,8 +106,8 @@ export function Header({ onMenuClick }: HeaderProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar>
-                <AvatarFallback>
-                  <User className="h-5 w-5" />
+                <AvatarFallback className="bg-cyan-500 text-white font-medium">
+                  {userProfile ? getUserInitials(userProfile.nome) : "U"}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -85,19 +115,15 @@ export function Header({ onMenuClick }: HeaderProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuItem>
-            <DropdownMenuItem>Configurações</DropdownMenuItem>
+            <DropdownMenuItem onSelect={handleProfileClick}>Perfil</DropdownMenuItem>
+            {/* <DropdownMenuItem>Configurações</DropdownMenuItem> */}
             <DropdownMenuSeparator />
-            {/* Aqui substituímos o Link por um DropdownMenuItem com onClick */}
-            <DropdownMenuItem 
-              className="text-red-600"
-              onSelect={handleLogout}
-            >
+            <DropdownMenuItem className="text-red-600" onSelect={handleLogout}>
               Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </header>
-  );
+  )
 }
