@@ -1,17 +1,80 @@
-Cypress.Commands.add('login', (user, password) => {
-   cy.get('#email')
+import { default as elAuth } from '../elements/login'
+import { default as elColab } from '../elements/colaboradores'
+
+Cypress.Commands.add('login', (user: string, password: string) => {
+   cy.get(elAuth.INPUT_USER)
       .should('be.visible')
       .type(user)
-   cy.get('#senha')
+   cy.get(elAuth.INPUT_PASSWORD)
       .should('be.visible')
       .type(password)
-   cy.get('#submit-login')
+   cy.get(elAuth.BTN_SUBMIT)
       .should('be.visible')
       .click()
 })
 
-declare namespace Cypress {
-   interface Chainable<Subject = any> {
-      login(user: string, senha: string): Chainable<any>;
-   }
-}
+Cypress.Commands.add('createColab', colab => {
+   cy.get(elColab.BTN_NEW_COLAB)
+      .should('be.visible')
+      .click()
+   cy.contains('Cadastrar Novo Colaborador')
+      .should('be.visible')
+   cy.get(elColab.INPUT_NOME)
+      .should('be.visible')
+      .type(colab.nome)
+   cy.get(elColab.INPUT_CPF)
+      .should('be.visible')
+      .type(colab.cpf)
+   cy.get(elColab.INPUT_CARGO)
+      .should('be.visible')
+      .select(colab.cargo)
+   cy.get(elColab.INPUT_EMAIL)
+      .should('be.visible')
+      .type(colab.email)
+   cy.get(elColab.INPUT_TELEFONE)
+      .should('be.visible')
+      .type(colab.telefone)
+   cy.get(elColab.INPUT_NASCIMENTO)
+      .should('be.visible')
+      .type(colab.dataNascimento)
+
+   cy.get(elColab.SAVE_COLAB)
+      .should('be.visible')
+      .click()
+})
+
+Cypress.Commands.add('editarColab', nome => {
+   cy.contains(nome, { timeout: 2500 })
+      .should('be.visible')
+   cy.get(elColab.ICON_PENCIL)
+      .first()
+      .should('be.visible')
+      .click()
+   cy.contains('Editar Colaborador')
+      .should('be.visible')
+   cy.get(elColab.INPUT_EMAIL)
+      .should('be.visible')
+      .clear()
+      .type('editteste@email.com.br')
+
+   cy.get(elColab.SAVE_COLAB)
+      .should('be.visible')
+      .click()
+   cy.get(elColab.BTN_CONFIRM_EDIT)
+      .should('be.visible')
+      .click()
+   cy.contains('editteste@email.com.br')
+      .should('be.visible')
+})
+
+Cypress.Commands.add('deletarColab', nome => {
+   cy.contains(nome, { timeout: 2500 })
+      .should('be.visible')
+   cy.get(elColab.ICON_TRASH)
+      .first()
+      .should('be.visible')
+      .click()
+   cy.get(elColab.BTN_CONFIRM_DELETE)
+      .should('be.visible')
+      .click()
+})
