@@ -3,8 +3,8 @@
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 
-//const API_BASE_URL = "https://squad-03-back-end.onrender.com"
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://squad-03-back-end.onrender.com"
+//const API_BASE_URL = "http://localhost:8080";
 
 // Cookie configuration
 const TOKEN_COOKIE_NAME = "auth_token"
