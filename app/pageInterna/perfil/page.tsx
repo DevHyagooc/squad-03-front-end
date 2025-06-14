@@ -1,5 +1,7 @@
 "use client"
 
+import { cn } from "@/lib/utils"
+
 import type React from "react"
 
 import { useState, useEffect } from "react"
@@ -9,7 +11,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, User, Mail, Lock, Save, ArrowLeft } from "lucide-react"
-import { getUserProfile, updateUserProfile, type UserProfile, type UpdateProfileData } from "@/services/perfil"
+import {
+  getUserProfile,
+  updateUserProfile,
+  getDisplayRoles,
+  type UserProfile,
+  type UpdateProfileData,
+} from "@/services/perfil"
 import { useRouter } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 
@@ -265,13 +273,13 @@ export default function ProfilePage() {
       </Card>
 
       {/* Informações do usuário atual */}
-      {/* {profile && (
+      {profile && (
         <Card className="mt-6">
           <CardHeader>
             <CardTitle className="text-sm font-medium text-muted-foreground">Informações da Conta</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="text-sm space-y-1">
+            <div className="text-sm space-y-2">
               <p>
                 <span className="font-medium">ID:</span> {profile.id}
               </p>
@@ -281,10 +289,26 @@ export default function ProfilePage() {
               <p>
                 <span className="font-medium">Nome atual:</span> {profile.nome}
               </p>
+              <div>
+                <span className="font-medium">Roles:</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {getDisplayRoles(profile).map((role, index) => (
+                    <span
+                      key={index}
+                      className={cn(
+                        "inline-block px-2 py-1 rounded-full text-xs font-medium",
+                        role === "Admin" ? "bg-orange-100 text-orange-700" : "bg-blue-100 text-blue-700",
+                      )}
+                    >
+                      {role}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
-      )} */}
+      )}
     </div>
   )
 }

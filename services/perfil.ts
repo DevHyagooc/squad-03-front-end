@@ -1,9 +1,10 @@
 import { fetchWithAuth } from "./auth"
 
 export type UserProfile = {
-  id: string
+  id: number
   email: string
   nome: string
+  roles: string[] // Mudança: agora é um array de strings
 }
 
 export type UpdateProfileData = {
@@ -64,4 +65,44 @@ export async function updateUserProfile(data: UpdateProfileData): Promise<UserPr
 
   const updatedProfile = await response.json()
   return updatedProfile
+}
+
+/**
+ * Verifica se o usuário tem role de admin
+ */
+export function isAdmin(userProfile: UserProfile | null): boolean {
+  if (!userProfile || !userProfile.roles) {
+    return false
+  }
+
+  // Verifica se o array de roles contém ROLE_ADMIN
+  return userProfile.roles.includes("ROLE_ADMIN")
+}
+
+/**
+ * Verifica se o usuário tem uma role específica
+ */
+export function hasRole(userProfile: UserProfile | null, role: string): boolean {
+  if (!userProfile || !userProfile.roles) {
+    return false
+  }
+
+  return userProfile.roles.includes(role)
+}
+
+/**
+ * Retorna as roles do usuário formatadas para exibição
+ */
+export function getDisplayRoles(userProfile: UserProfile | null): string[] {
+  if (!userProfile || !userProfile.roles) {
+    return []
+  }
+
+  // Remove o prefixo "ROLE_" e formata para exibição
+  return userProfile.roles.map((role) =>
+    role
+      .replace("ROLE_", "")
+      .toLowerCase()
+      .replace(/^\w/, (c) => c.toUpperCase()),
+  )
 }
