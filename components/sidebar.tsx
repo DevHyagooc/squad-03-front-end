@@ -2,9 +2,11 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FileText, Users, MapPin, Settings, Home, X } from "lucide-react"
+import { FileText, Users, MapPin, Home, X, Shield } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
+import { getUserProfile, isAdmin, getDisplayRoles, type UserProfile } from "@/services/perfil"
 
 interface SidebarProps {
   isOpen: boolean
@@ -13,8 +15,27 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const routes = [
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const profile = await getUserProfile()
+        console.log("✅ Perfil carregado:", profile)
+        console.log("✅ É admin?", isAdmin(profile))
+        setUserProfile(profile)
+      } catch (error) {
+        console.error("Erro ao carregar perfil do usuário:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadUserProfile()
+  }, [])
+
+  const baseRoutes = [
     {
       label: "Dashboard",
       icon: Home,
@@ -39,13 +60,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       href: "/pageInterna/colaboradores",
       active: pathname === "/pageInterna/colaboradores",
     },
-    // {
-    //   label: "Configurações",
-    //   icon: Settings,
-    //   href: "/pageInterna/configuracoes",
-    //   active: pathname === "/pageInterna/configuracoes",
-    // },
   ]
+
+  // Rotas que só aparecem para admins
+  const adminRoutes = [
+    {
+      label: "Administração",
+      icon: Shield,
+      href: "/pageInterna/admin",
+      active: pathname === "/pageInterna/admin" || pathname.startsWith("/pageInterna/admin/"),
+    },
+  ]
+
+  // Combina as rotas baseado na role do usuário
+  const routes = [...baseRoutes, ...(isAdmin(userProfile) ? adminRoutes : [])]
 
   return (
     <>
@@ -85,13 +113,53 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:text-cyan-600 hover:bg-muted/50",
                 route.active ? "bg-muted text-cyan-600" : "text-muted-foreground",
+                // Destaque especial para o item de admin
+                route.label === "Administração" && "border border-orange-200 bg-orange-50/50 hover:bg-orange-100/50",
               )}
             >
-              <route.icon className="h-4 w-4 flex-shrink-0" />
+              <route.icon
+                className={cn("h-4 w-4 flex-shrink-0", route.label === "Administração" && "text-orange-600")}
+              />
               <span className="truncate">{route.label}</span>
+              {route.label === "Administração" && (
+                <span className="ml-auto text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full">Admin</span>
+              )}
             </Link>
           ))}
+
+          {/* Indicador de loading enquanto carrega o perfil */}
+          {loading && (
+            <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground">
+              <div className="h-4 w-4 animate-pulse bg-muted rounded" />
+              <div className="h-4 flex-1 animate-pulse bg-muted rounded" />
+            </div>
+          )}
         </div>
+
+        {/* Informações do usuário no rodapé da sidebar */}
+        {userProfile && (
+          <div className="mt-auto p-4 border-t">
+            <div className="text-xs text-muted-foreground space-y-2">
+              <p className="font-medium truncate">{userProfile.nome}</p>
+              <p className="truncate">{userProfile.email}</p>
+              {userProfile.roles && userProfile.roles.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {getDisplayRoles(userProfile).map((role, index) => (
+                    <span
+                      key={index}
+                      className={cn(
+                        "inline-block px-2 py-1 rounded-full text-xs font-medium",
+                        role === "Admin" ? "bg-orange-100 text-orange-700" : "bg-blue-100 text-blue-700",
+                      )}
+                    >
+                      {role}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </>
   )

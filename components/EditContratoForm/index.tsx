@@ -271,10 +271,10 @@ export function EditarContratoDialog({
                 <Label htmlFor="termosDePagamento">Termos de Pagamento (dias)</Label>
                 <Input
                   id="termosDePagamento"
-                  type="number"
+                  type="string"
                   value={formData.termosDePagamento || ''}
                   onChange={(e) => handleInputChange('termosDePagamento', e.target.value)}
-                  placeholder="Ex: 30"
+                  placeholder="Foi acordado que o pagamento..."
                 />
               </div>
 
@@ -341,7 +341,7 @@ export function EditarContratoDialog({
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="documentUrl">URL do Documento</Label>
                 <Input
                   id="documentUrl"
@@ -350,7 +350,7 @@ export function EditarContratoDialog({
                   onChange={(e) => handleInputChange('documentUrl', e.target.value)}
                   placeholder="https://exemplo.com/documento.pdf"
                 />
-              </div>
+              </div> */}
             </TabsContent>
           </Tabs>
 
