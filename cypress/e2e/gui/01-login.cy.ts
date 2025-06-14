@@ -1,6 +1,5 @@
 import { valuesReq } from "../../fixtures/objectsRequests"
-// const baseUrl = Cypress.env("baseSystemUrl")
-const baseUrl = 'http://localhost:3000'
+const baseUrl = Cypress.env("baseSystemUrl")
 const user = valuesReq.user.email
 const password = valuesReq.user.senha
 describe('Login', () => {
