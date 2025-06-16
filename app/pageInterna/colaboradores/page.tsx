@@ -13,6 +13,7 @@ import Loading from "@/components/loading/index";
 import InfoColab from "@/components/infoDialog/InfoColaborador"
 import UpdateColab from "@/components/updateDialog/updateColaborador"
 import { toast } from "sonner"
+import { validateHeaderName } from "http"
 
 export interface Colaborador {
   idFuncionario: string;
@@ -31,6 +32,8 @@ export default function ColaboradoresPage() {
   const [colaborador, setColaborador] = useState<Colaborador | null>(null);
   const [colaboradorDetail, setColaboradorDetail] = useState<Colaborador | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [searhcTerm, setSearchTerm] = useState("");
+  const [selectedCargo, setSelectedCargo] = useState<string>("todos");
 
   // Estados separados para controle dos diálogos
   const [selectedColaborador, setSelectedColaborador] = useState<Colaborador | null>(null);
@@ -169,18 +172,22 @@ export default function ColaboradoresPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Pesquisar colaboradores..." />
+              <Input 
+                placeholder="Pesquisar colaboradores..." 
+                value={searhcTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-            <Select>
+            <Select value={selectedCargo} onValueChange={(value) => setSelectedCargo(value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Cargo" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="desenvolvedorBackEnd">Desenvolvedor Back-end</SelectItem>
-                <SelectItem value="em-andamento">Em Andamento</SelectItem>
-                <SelectItem value="concluido">Concluído</SelectItem>
-                <SelectItem value="atrasado">Atrasado</SelectItem>
+                <SelectItem value="Desenvolvedor Back-end">Desenvolvedor Back-end</SelectItem>
+                <SelectItem value="Desenvolvedor Front-end">Desenvolvedor Front-end</SelectItem>
+                <SelectItem value="QA">QA</SelectItem>
+                <SelectItem value="Product Owner">Product Owner</SelectItem>
               </SelectContent>
             </Select>
             {/* <Select>
@@ -219,7 +226,13 @@ export default function ColaboradoresPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {listColaboradores.map((colaborador) => (
+                {listColaboradores.filter((colaborador) =>
+                  (colaborador.nome.toLowerCase().includes(searhcTerm.toLowerCase()) ||
+                  colaborador.email.toLowerCase().includes(searhcTerm.toLowerCase()))
+                  &&
+                  (selectedCargo === "todos" || colaborador.cargo === selectedCargo)
+                )
+                .map((colaborador) => (
                   <TableRow key={colaborador.idFuncionario}>
                     <TableCell>{`CL-${colaborador.idFuncionario}`}</TableCell>
                     <TableCell className="max-w-[150px] truncate">{colaborador.nome}</TableCell>

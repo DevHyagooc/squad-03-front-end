@@ -273,7 +273,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Informações do usuário atual */}
-      {profile && (
+      {/* {profile && (
         <Card className="mt-6">
           <CardHeader>
             <CardTitle className="text-sm font-medium text-muted-foreground">Informações da Conta</CardTitle>
@@ -308,7 +308,7 @@ export default function ProfilePage() {
             </div>
           </CardContent>
         </Card>
-      )}
+      )} */}
     </div>
   )
 }
