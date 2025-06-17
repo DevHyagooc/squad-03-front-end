@@ -19,7 +19,7 @@ const UpdateColaborador: React.FC<UpdateColaboradorProps> = ({ closeForm, colabo
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -78,14 +78,21 @@ const UpdateColaborador: React.FC<UpdateColaboradorProps> = ({ closeForm, colabo
                 <Label htmlFor="cargo" className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Cargo:
                 </Label>
-                <Input
+                <select
                   id="cargo"
                   name="cargo"
                   value={formData.cargo}
                   onChange={handleChange}
                   required
-                  className="text-sm"
-                />
+                  className="text-black mt-1 flex h-9 w-52 rounded-md border border-input bg-background px-2 py-2 text-sm"
+                >
+                  <option value="" disabled>Escolha um cargo...</option>
+                  <option value="Desenvolvedor Back-end">Desenvolvedor Back-end</option>
+                  <option value="Desenvolvedor Front-end">Desenvolvedor Front-end</option>
+                  <option value="Desenvolvedor FullStack">Desenvolvedor FullStack</option>
+                  <option value="QA">QA</option>
+                  <option value="Product Owner">Product Owner</option>
+                </select>
               </div>
 
               <div className="flex flex-col space-y-1.5">

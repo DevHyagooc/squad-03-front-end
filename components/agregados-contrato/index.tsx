@@ -10,10 +10,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { toast } from "@/hooks/use-toast"
-import { format, startOfDay } from "date-fns"
+import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { cn } from "@/lib/utils"
-import { CalendarIcon, Edit, Plus, Save, Trash2, X } from "lucide-react"
+import { CalendarIcon, Edit, Plus, Save, Trash2, X, Loader2 } from "lucide-react"
 import {
   createAgregado,
   getAgregadosByContrato,
@@ -31,7 +31,7 @@ interface AgregadoRequest {
   colaboradorId: number
 }
 
-interface Colaborador {
+export interface Colaborador {
   idFuncionario: number
   nome: string
   email: string
@@ -47,17 +47,19 @@ interface AgregadoResponse {
   dataInicio: string
   dataFim: string | null
   contratoId: number
-  colaboradorId: number
   colaborador: {
-    idFuncionario: number
-    nome: string
-    email: string
+    idFuncionario: number,
+    nome: string,
+    cpf: string,
     cargo: string
   }
   contrato: {
-    idContrato: number
-    numeroContrato: string
-    descricao: string
+    idContrato: number,
+    numeroContrato: string,
+    dataInicio: string,
+    descricao: string,
+    parteContratante: string,
+    parteContratada: string
   }
 }
 
@@ -81,8 +83,14 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
   const [dataFim, setDataFim] = useState<Date | undefined>()
   const [editId, setEditId] = useState<number | null>(null)
 
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [colaboradorToDelete, setColaboradorToDelete] = useState<{ id: number; nome: string } | null>(null)
+
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([])
   const [loadingColaboradores, setLoadingColaboradores] = useState(false)
+
+  const [savingAgregado, setSavingAgregado] = useState(false)
+  const [deletingAgregado, setDeletingAgregado] = useState(false)
 
   useEffect(() => {
     loadAgregados()
@@ -134,7 +142,7 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
         dataInicio: agregado.dataInicio,
         dataFim: agregado.dataFim,
         contratoId: contratoId,
-        colaboradorId: agregado.colaboradorId,
+        colaboradorId: agregado.colaborador.idFuncionario,
       })
       setDataInicio(new Date(agregado.dataInicio))
       setDataFim(agregado.dataFim ? new Date(agregado.dataFim) : undefined)
@@ -158,6 +166,8 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
         })
         return
       }
+
+      setSavingAgregado(true)
 
       const agregadoData = {
         ...formData,
@@ -188,28 +198,39 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
         description: isEditing ? "Não foi possível atualizar o agregado." : "Não foi possível adicionar o agregado.",
         variant: "destructive",
       })
+    } finally {
+      setSavingAgregado(false)
     }
   }
 
-  const handleDeleteAgregado = async (id: number) => {
-    if (!confirm("Tem certeza que deseja remover este colaborador do contrato?")) {
-      return
-    }
+  const handleDeleteAgregado = async () => {
+    if (!colaboradorToDelete) return
 
     try {
-      await deleteAgregado(id)
+      setDeletingAgregado(true)
+
+      await deleteAgregado(colaboradorToDelete.id)
       toast({
         title: "Sucesso",
         description: "Colaborador removido com sucesso!",
       })
       loadAgregados()
+      setDeleteModalOpen(false)
+      setColaboradorToDelete(null)
     } catch (error) {
       toast({
         title: "Erro",
         description: "Não foi possível remover o colaborador.",
         variant: "destructive",
       })
+    } finally {
+      setDeletingAgregado(false)
     }
+  }
+
+  const openDeleteModal = (id: number, nome: string) => {
+    setColaboradorToDelete({ id, nome })
+    setDeleteModalOpen(true)
   }
 
   const resetForm = () => {
@@ -290,8 +311,9 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
                     </TableCell>
                     <TableCell>
                       <div
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${!agregado.dataFim ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                          }`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          !agregado.dataFim ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                        }`}
                       >
                         {!agregado.dataFim ? "Ativo" : "Encerrado"}
                       </div>
@@ -305,7 +327,7 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
                           variant="ghost"
                           size="sm"
                           className="text-red-500 hover:text-red-700"
-                          onClick={() => handleDeleteAgregado(agregado.idAgregado)}
+                          onClick={() => openDeleteModal(agregado.idAgregado, agregado.colaborador.nome)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -401,9 +423,57 @@ export function AgregadosContrato({ contratoId }: AgregadosContratoProps) {
               <X className="mr-2 h-4 w-4" />
               Cancelar
             </Button>
-            <Button onClick={handleSaveAgregado}>
-              <Save className="mr-2 h-4 w-4" />
-              Salvar
+            <Button onClick={handleSaveAgregado} disabled={savingAgregado}>
+              {savingAgregado ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {isEditing ? "Atualizando..." : "Salvando..."}
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Salvar
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Confirmação para Deletar */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Confirmar Remoção</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground">
+              Tem certeza que deseja remover <strong>{colaboradorToDelete?.nome}</strong> deste contrato?
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">Esta ação não pode ser desfeita.</p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteModalOpen(false)
+                setColaboradorToDelete(null)
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteAgregado} disabled={deletingAgregado}>
+              {deletingAgregado ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Removendo...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Remover Colaborador
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
