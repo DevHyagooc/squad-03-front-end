@@ -99,6 +99,7 @@ const FormColab: React.FC<FormColabProps> = ({ closeForm, onSubmit }) => {
                               <option value="" disabled>Escolha um cargo...</option>
                               <option value="Desenvolvedor Back-end">Desenvolvedor Back-end</option>
                               <option value="Desenvolvedor Front-end">Desenvolvedor Front-end</option>
+                              <option value="Desenvolvedor FullStack">Desenvolvedor FullStack</option>
                               <option value="QA">QA</option>
                               <option value="Product Owner">Product Owner</option>
                            </select>
