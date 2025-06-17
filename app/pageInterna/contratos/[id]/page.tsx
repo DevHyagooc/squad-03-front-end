@@ -167,7 +167,22 @@ export default function ContratoDetalhesPage({ params }: { params: Promise<{ id:
               <h1 className="text-3xl font-bold">{contrato.descricao}</h1>
               <p className="text-muted-foreground">Contrato: {contrato.numeroContrato}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-4 items-center">
+              {/* Alerta se o contrato estiver próximo do fim */}
+              {(() => {
+                const hoje = new Date();
+                const dataFim = new Date(contrato.dataFim);
+                const diasRestantes = Math.ceil((dataFim.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
+
+                if (diasRestantes <= 30 && diasRestantes >= 0) {
+                  return (
+                    <div className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded-md shadow-sm">
+                      ⚠️ Contrato vence em {diasRestantes} dia(s)
+                    </div>
+                  );
+                }
+                return null;
+              })()}
               <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
                 <Edit className="mr-2 h-4 w-4" />
                 Editar
