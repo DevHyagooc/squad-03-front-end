@@ -67,7 +67,7 @@ export default function EmpresasPage() {
     setLoading(true)
     try {
       const data = await getEmpresaList()
-      setListEmpresas(data)
+      setListEmpresas(data.reverse())
     } catch (err) {
       console.error("Erro ao buscar empresas", err)
     } finally {
